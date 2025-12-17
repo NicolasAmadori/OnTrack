@@ -1,0 +1,62 @@
+services:
+  frontend:
+    image: frontend
+    build:
+      context: ./nodejs/frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./nodejs/frontend:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev"]
+    restart: unless-stopped
+    ports:
+      - 5173:5173
+    networks:
+      - outer
+      - inner
+
+  backend:
+    build:
+      context: ./nodejs/backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      DB_URI: mongodb://mongodb:27017/db-ot
+      SEED_DATABASE: "true"
+    depends_on:
+      - mongodb
+    networks:
+      - inner
+
+  mongodb:
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+    image: mymongo
+    command: [ "mongod" ]
+    restart: always
+    healthcheck:
+      test: |
+        host=`hostname --ip-address || echo '127.0.0.1'`;
+        mongosh --quiet $${host}/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - inner
+
+networks:
+  inner:
+    driver: bridge
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: "br-inner89012"
+      com.docker.network.enable_ipv6: "false"
+  outer:
+    driver: bridge
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.name: "br-outer89012"
+      com.docker.network.enable_ipv6: "false"
