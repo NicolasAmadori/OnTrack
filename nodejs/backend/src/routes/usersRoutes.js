@@ -1,13 +1,15 @@
 import { Router } from 'express';
 
 import {
-    create_user,
-    test
+    createUserValidator
+} from "../validators/userValidators.js";
+
+import {
+    create_user
 } from '../controllers/usersController.js';
 
 const router = Router();
 
-router.post("/", create_user);
-router.get("/", test);
+router.post("/", createUserValidator, create_user);
 
 export default router;
