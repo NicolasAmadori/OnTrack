@@ -1,0 +1,40 @@
+import User from '../models/userModel.js';
+
+import { verify } from '@node-rs/argon2';
+import { SignJWT } from 'jose';
+import { TOKEN_EXPIRY, JWT_KEY, ISSUER, AUDIENCE } from '../util/constants.js';
+
+export const authenticate = async function(req, res) {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
+
+        const token = {};
+        const user = await User.findOne({ email: email }).exec();
+
+        if (!user || !await verify(user.password, password)) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+        const userWithoutPassword = user.toObject();
+        delete userWithoutPassword.password;
+
+        token.id = userWithoutPassword._id.toString();
+
+        const jwt_signed_token = await new SignJWT(token) //Token encoding
+            .setProtectedHeader({ alg: 'HS256' })
+            .setIssuedAt()
+            .setIssuer(ISSUER)
+            .setAudience(AUDIENCE)
+            .setExpirationTime(TOKEN_EXPIRY)
+            .sign(JWT_KEY);
+        return res.status(200).json({
+            "token": jwt_signed_token,
+            "id": userWithoutPassword._id.toString()
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error during authentication: ' + error.message });
+    }
+}
