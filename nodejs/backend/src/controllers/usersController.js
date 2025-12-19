@@ -1,8 +1,6 @@
 import User from '../models/userModel.js';
 import { hash } from '@node-rs/argon2';
 
-import { PASSWORD_MIN_LENGTH } from "../util/constants.js";
-
 export const create_user = async function(req, res) {
     try {
         const user = req.body;
