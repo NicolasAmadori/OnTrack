@@ -1,15 +1,15 @@
 import { Router } from 'express';
 
 import {
-    createUserValidator
-} from "../validators/userValidators.js";
+    registerValidator
+} from "#src/validators/authValidators.js";
 
 import {
     create_user
-} from '../controllers/usersController.js';
+} from '#src/controllers/usersController.js';
 
 const router = Router();
 
-router.post("/", createUserValidator, create_user);
+router.post("/", registerValidator, create_user);
 
 export default router;

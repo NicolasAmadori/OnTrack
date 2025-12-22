@@ -1,13 +1,16 @@
 import { Router } from 'express';
 
 import {
-    authenticateValidator,
-    authHeaderValidator
-} from "../validators/authValidators.js";
+    loginValidator
+} from "#src/validators/authValidators.js";
 
 import {
-    validTokenValidator
-} from "../validators/tokenValidators.js";
+    authHeaderValidator
+} from "#src/validators/commonValidator.js";
+
+import {
+    verifyToken
+} from "#src/middleware/authMiddleware.js";
 
 import {
     authenticate,
@@ -16,7 +19,7 @@ import {
 
 const router = Router();
 
-router.post('/', authenticateValidator, authenticate);
-router.post('/validate', authHeaderValidator, validTokenValidator, validateToken);
+router.post('/', loginValidator, authenticate);
+router.post('/validate', authHeaderValidator, verifyToken, validateToken);
 
 export default router;

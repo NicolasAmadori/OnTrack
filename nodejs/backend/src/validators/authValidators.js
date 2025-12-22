@@ -1,8 +1,9 @@
-import { body, header } from 'express-validator';
-import { PASSWORD_MIN_LENGTH } from '../util/constants.js';
-import { validate } from './util.js'
+import { body, checkExact } from 'express-validator';
 
-export const authenticateValidator = [
+import { PASSWORD_MIN_LENGTH } from '#src/util/constants.js';
+import { validate } from '#src/middleware/validationResult.js'
+
+export const loginValidator = [
     body('email')
         .exists().withMessage('Email required')
         .isEmail().withMessage('Insert a valid email address')
@@ -17,12 +18,31 @@ export const authenticateValidator = [
     validate
 ];
 
-export const authHeaderValidator = [
-    header('authorization')
-        .exists().withMessage('Authorization header is required')
-        .isString().withMessage('Authentication header must be a string')
-        .custom((value) => value.startsWith('Bearer '))
-        .withMessage('Token must be Bearer type'),
-    
+export const registerValidator = [
+    body('email')
+        .exists().withMessage('Email required')
+        .isEmail().withMessage('Insert a valid email address')
+        .normalizeEmail(),
+
+    body('password')
+        .exists().withMessage('Password required')
+        .isString().withMessage('Password must be a string')
+        .isLength({ min: PASSWORD_MIN_LENGTH })
+        .withMessage(`Password must be at least ${PASSWORD_MIN_LENGTH} characters long`),
+
+    body('first_name')
+        .exists().withMessage('First name required')
+        .isString().withMessage('First name must be a string')
+        .trim()
+        .notEmpty().withMessage('First name cannot be empty'),
+
+    body('last_name')
+        .exists().withMessage('Last name required')
+        .isString().withMessage('Last name must be a string')
+        .trim()
+        .notEmpty().withMessage('Last name cannot be empty'),
+
+    checkExact([], { message: 'Unknown fields are not allowed' }),
+
     validate
 ];

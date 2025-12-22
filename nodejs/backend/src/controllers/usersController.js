@@ -1,4 +1,4 @@
-import User from '../models/userModel.js';
+import User from '#src/models/userModel.js';
 import { hash } from '@node-rs/argon2';
 
 export const create_user = async function(req, res) {

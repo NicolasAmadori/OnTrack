@@ -3,8 +3,8 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import usersRoutes from "./src/routes/usersRoutes.js";
-import authRoutes from "./src/routes/authRoutes.js";
+import usersRoutes from "#src/routes/usersRoutes.js";
+import authRoutes from "#src/routes/authRoutes.js";
 
 const app = express();
 

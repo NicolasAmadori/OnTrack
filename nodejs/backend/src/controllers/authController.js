@@ -1,8 +1,8 @@
-import User from '../models/userModel.js';
+import User from '#src/models/userModel.js';
 
 import { verify } from '@node-rs/argon2';
 import { SignJWT, jwtVerify } from 'jose';
-import { TOKEN_EXPIRY, JWT_KEY, ISSUER, AUDIENCE } from '../util/constants.js';
+import { TOKEN_EXPIRY, JWT_KEY, ISSUER, AUDIENCE } from '#src/util/constants.js';
 
 export const authenticate = async function(req, res) {
     try {

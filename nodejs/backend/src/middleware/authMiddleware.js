@@ -1,8 +1,8 @@
 import { jwtVerify } from 'jose';
-import { JWT_KEY, ISSUER, AUDIENCE } from '../util/constants.js';
-import User from '../models/userModel.js';
+import { JWT_KEY, ISSUER, AUDIENCE } from '#src/util/constants.js';
+import User from '#src/models/userModel.js';
 
-export const validTokenValidator = async (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') return next(); // Verifica se il metodo è OPTIONS (preflight)
 
     try {
