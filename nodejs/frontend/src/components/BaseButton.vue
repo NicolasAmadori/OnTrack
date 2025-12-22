@@ -1,7 +1,7 @@
 <template>
   <button
     :type="type"
-    :class="['btn', `btn-${variant}`]"
+    :class="['btn mt-4 py-4 drop-shadow-lg', `btn-${variant}`]"
     :disabled="disabled || loading"
   >
     <span 
@@ -39,15 +39,15 @@ defineProps({
 
 <style scoped>
 .btn {
-  transition: all 0.2s ease-in-out !important;
   font-weight: 600 !important;
+  font-size: x-large;
 }
 .btn:hover {
   box-shadow: none !important;
 }
 .btn-primary {
   background-color: var(--bright) !important;
-  color: var(--white) !important;
+  color: var(--dark) !important;
   border: none !important;
 }
 .btn-primary:hover {
@@ -55,5 +55,6 @@ defineProps({
 }
 .btn-primary:focus {
   background-color: var(--lessbright) !important;
+  filter: drop-shadow(0 0 #0000)
 }
 </style>

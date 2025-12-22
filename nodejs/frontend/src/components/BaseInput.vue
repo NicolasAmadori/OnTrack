@@ -1,10 +1,10 @@
 <template>
-  <div class="row">
+  <div class="row mb-2">
     <input
       :id="id"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
-      class="form-control"
+      class="form-control py-4"
       v-bind="$attrs"
     />
   </div>
@@ -42,5 +42,6 @@ defineProps({
   color: var(--black);
   border: none;
   box-shadow: none;
+  font-size: larger;
 }
 </style>

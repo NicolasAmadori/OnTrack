@@ -113,10 +113,6 @@
   color: var(--black);
 }
 
-a {
-  color: var(--black) !important;
-}
-
 .bright {
   color: var(--bright);
 }

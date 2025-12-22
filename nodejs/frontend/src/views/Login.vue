@@ -6,7 +6,7 @@
     <h1>OnTrack</h1>
   </div>
   <LoginSignUpLink activePage="login" />
-  <div class="row">
+  <div class="row mx-2">
     <form @submit.prevent="submitForm">
       <BaseInput
         id="email"
