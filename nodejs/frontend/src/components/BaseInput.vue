@@ -31,6 +31,7 @@ defineProps({
 }
 .form-control:focus {
   background-color: var(--lighter);
+  box-shadow: none;
 }
 .form-control:focus::placeholder {
   opacity: 0;
@@ -39,5 +40,7 @@ defineProps({
 .form-control {
   background-color: var(--lighter);
   color: var(--black);
+  border: none;
+  box-shadow: none;
 }
 </style>
