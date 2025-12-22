@@ -1,9 +1,14 @@
-FROM node:22
+# Use a lightweight Node.js base image
+FROM node:22-alpine
 
 WORKDIR /app
-COPY . .
 
-RUN npm install
+
+COPY ./package*.json /app
+
+RUN npm ci
+
+COPY . .
 
 EXPOSE 5173
 
