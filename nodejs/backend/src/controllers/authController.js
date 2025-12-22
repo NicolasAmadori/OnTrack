@@ -7,8 +7,6 @@ import { TOKEN_EXPIRY, JWT_KEY, ISSUER, AUDIENCE } from '../util/constants.js';
 export const authenticate = async function(req, res) {
     try {
         const { email, password } = req.body;
-
-        const token = {};
         const user = await User.findOne({ email: email }).exec();
 
         if (!user || !await verify(user.password, password)) {
@@ -20,10 +18,11 @@ export const authenticate = async function(req, res) {
                 }]
             });
         }
-        const userWithoutPassword = user.toObject();
-        delete userWithoutPassword.password;
 
-        token.id = userWithoutPassword._id.toString();
+        const userId = user.toObject()._id.toString();
+        const token = {
+            id: userId
+        };
 
         const jwt_signed_token = await new SignJWT(token) //Token encoding
             .setProtectedHeader({ alg: 'HS256' })
@@ -35,7 +34,7 @@ export const authenticate = async function(req, res) {
         return res.status(200).json({
             success: true,
             token: jwt_signed_token,
-            id: userWithoutPassword._id.toString()
+            id: userId
         });
     } catch (error) {
         return res.status(500).json({
