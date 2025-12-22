@@ -3,10 +3,12 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import Components from 'unplugin-vue-components/vite'
 import {BootstrapVueNextResolver} from 'bootstrap-vue-next'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
     plugins: [
         vue(),
+        tailwindcss(),
         Components({
           resolvers: [BootstrapVueNextResolver()],
         }),
