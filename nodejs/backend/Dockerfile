@@ -9,9 +9,11 @@ RUN	mkdir -p ${WORKINGDIR} && chmod 666 ${WORKINGDIR}
 #npm caching
 COPY ./package*.json ${WORKINGDIR}/
 
-RUN npm install
+RUN npm ci
 
 COPY . ${WORKINGDIR}/
+
+EXPOSE 3000
 
 # Start the application
 CMD ["node", "index.js"]

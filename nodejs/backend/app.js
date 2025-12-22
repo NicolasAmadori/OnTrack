@@ -3,6 +3,9 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import usersRoutes from "#src/routes/usersRoutes.js";
+import authRoutes from "#src/routes/authRoutes.js";
+
 const app = express();
 
 const corsOptions = {
@@ -20,5 +23,8 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 global.appRoot = path.resolve(__dirname);
+
+app.use('/api/users', usersRoutes);
+app.use('/api/auth', authRoutes);
 
 export default app;
