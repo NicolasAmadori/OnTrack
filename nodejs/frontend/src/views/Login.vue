@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
   <BaseBanner title="OnTrack" imageType="station"/>
   <LoginSignUpLink activePage="login" />
