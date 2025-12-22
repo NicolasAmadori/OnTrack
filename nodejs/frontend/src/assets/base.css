@@ -107,9 +107,14 @@
   font-family: "IBM Plex Mono", monospace;
   font-weight: 400;
   font-style: normal;
-}
-
-body {
   background-color: var(--white);
   color: var(--black);
+}
+
+a {
+  color: var(--black) !important;
+}
+
+.bright {
+  color: var(--bright);
 }
