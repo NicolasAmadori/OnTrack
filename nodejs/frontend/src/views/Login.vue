@@ -2,9 +2,7 @@
 </script>
 
 <template>
-  <div class="row">
-    <h1>OnTrack</h1>
-  </div>
+  <BaseBanner title="OnTrack" imageType="station"/>
   <LoginSignUpLink activePage="login" />
   <div class="row mx-2">
     <form @submit.prevent="submitForm">
