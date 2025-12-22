@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, header } from 'express-validator';
 import { PASSWORD_MIN_LENGTH } from '../util/constants.js';
 import { validate } from './util.js'
 
@@ -17,11 +17,12 @@ export const authenticateValidator = [
     validate
 ];
 
-export const validateTokenValidator = [
-    body('authToken')
-        .exists().withMessage('Authentication token required')
-        .notEmpty().withMessage('Authentication token can\'t be empty')
-        .isString().withMessage('Authentication token must be a string'),
-
+export const authHeaderValidator = [
+    header('authorization')
+        .exists().withMessage('Authorization header is required')
+        .isString().withMessage('Authentication header must be a string')
+        .custom((value) => value.startsWith('Bearer '))
+        .withMessage('Token must be Bearer type'),
+    
     validate
 ];

@@ -12,7 +12,13 @@ export const authenticate = async function(req, res) {
         const user = await User.findOne({ email: email }).exec();
 
         if (!user || !await verify(user.password, password)) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({
+                success: false,
+                errors: [{
+                    field: "",
+                    message: "Invalid credentials"
+                }]
+            });
         }
         const userWithoutPassword = user.toObject();
         delete userWithoutPassword.password;
@@ -27,41 +33,24 @@ export const authenticate = async function(req, res) {
             .setExpirationTime(TOKEN_EXPIRY)
             .sign(JWT_KEY);
         return res.status(200).json({
-            "token": jwt_signed_token,
-            "id": userWithoutPassword._id.toString()
+            success: true,
+            token: jwt_signed_token,
+            id: userWithoutPassword._id.toString()
         });
     } catch (error) {
-        return res.status(500).json({ message: 'Error during authentication: ' + error.message });
+        return res.status(500).json({
+            success: false,
+            errors: [{
+                field: "",
+                message: `Error during authentication: ${error.message}`
+            }]
+        });
     }
 }
 
 export const validateToken = async function(req, res) {
-    try {
-        const { authToken } = req.body;
-
-        const { payload } = await jwtVerify(authToken, JWT_KEY, {
-            issuer: ISSUER,
-            audience: AUDIENCE
-        });
-
-        if (!payload?.id) {
-            return res.status(400).json({ message: 'Invalid authentication token: User ID missing' });
-        }
-
-        const userExists = await User.exists({ _id: payload.id });
-        if (!userExists) {
-            return res.status(401).json({ message: 'Invalid authentication token: User not existing' });
-        }
-
-        return res.status(200).json({ message: "Token is valid" });
-    } catch (error) {
-        if (error.name === 'JWTClaimValidationFailed' ||
-            error.name === 'JWTExpired' ||
-            error.name === 'JWSSignatureVerificationFailed'
-        ) {
-            return res.status(401).json({ message: 'Invalid or expired authentication token' });
-        }
-
-        return res.status(500).json({ message: 'Error during authentication token validation: ' + error.message });
-    }
+    //Endpoint protected by authentication middleware
+    return res.status(200).json({
+        success: true
+    });
 };

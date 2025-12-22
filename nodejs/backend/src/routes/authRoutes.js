@@ -2,8 +2,12 @@ import { Router } from 'express';
 
 import {
     authenticateValidator,
-    validateTokenValidator
+    authHeaderValidator
 } from "../validators/authValidators.js";
+
+import {
+    validTokenValidator
+} from "../validators/tokenValidators.js";
 
 import {
     authenticate,
@@ -13,6 +17,6 @@ import {
 const router = Router();
 
 router.post('/', authenticateValidator, authenticate);
-router.post('/validate', validateTokenValidator, validateToken);
+router.post('/validate', authHeaderValidator, validTokenValidator, validateToken);
 
 export default router;
