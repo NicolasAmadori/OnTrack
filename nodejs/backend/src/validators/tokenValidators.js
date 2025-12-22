@@ -62,3 +62,16 @@ export const validTokenValidator = async (req, res, next) => {
         });
     }
 };
+
+export const requireAdmin = (req, res, next) => {
+    if (!req.user || !req.user.is_admin) {
+        return res.status(403).json({
+            success: false,
+            errors: [{
+                field: "",
+                message: 'Access forbidden: Admins only'
+            }]
+        });
+    }
+    next();
+};
