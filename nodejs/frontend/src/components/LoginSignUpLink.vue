@@ -1,5 +1,5 @@
 <template>
-  <div class="row mx-4 mt-3 mb-2 link-row">
+  <div class="row mx-4 mb-2 link-row">
     <div class="col">
       <div v-if="activePage === 'login'" class="bright fw-bold">
         Login

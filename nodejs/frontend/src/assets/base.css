@@ -116,3 +116,7 @@
 .bright {
   color: var(--bright);
 }
+
+.dark {
+  color: var(--dark);
+}
