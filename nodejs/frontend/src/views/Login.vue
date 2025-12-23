@@ -15,6 +15,7 @@
         v-model="form.password"
         type="password"
         placeholder="Password"
+        :minlength="password_min_length"
         required
       />
       <BaseButton type="submit" variant="primary" :loading="isSubmitting" class="w-100 mt-3">Login</BaseButton>
@@ -24,10 +25,15 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
+
 import LoginSignUpLink from '@/components/LoginSignUpLink.vue';
 import BaseInput from '@/components/BaseInput.vue'; 
 import BaseButton from '@/components/BaseButton.vue';
+import { login } from '@/api/auth.js';
+import router from '@/router';
+import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
 
+const password_min_length = PASSWORD_MIN_LENGTH;
 const form = reactive({
   email: '',
   password: ''
@@ -39,11 +45,8 @@ const submitForm = async () => {
   isSubmitting.value = true;
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log('Form submitted with:', form);
-
-    alert('TODO: call backend API and redirect on success');
-
+    await login(form.email, form.password);
+    router.push({ path: '/home' });
   } catch (error) {
     console.error(error);
   } finally {
