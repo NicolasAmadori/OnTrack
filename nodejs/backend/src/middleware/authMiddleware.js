@@ -75,3 +75,22 @@ export const requireAdmin = (req, res, next) => {
     }
     next();
 };
+
+export const requireAdminOrSelf = (req, res, next) => {
+    if (req.method === 'OPTIONS') return next();
+    
+    const userIdFromToken = req.user.id;
+    const userIdToAccess = req.params.userId;
+
+    const isAdmin = req.user.is_admin === true;
+    const isSameUser = userIdFromToken === userIdToAccess;
+
+    if (!isAdmin && !isSameUser) {
+        return res.status(403).json({ success:false, errors: [{
+            field: "",
+            message: 'Access forbidden: You can not access this user'
+        }] });
+    }
+
+    next();
+};

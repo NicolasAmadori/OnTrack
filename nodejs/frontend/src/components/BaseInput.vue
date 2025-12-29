@@ -17,8 +17,7 @@ defineProps({
     default: ''
   },
   id: {
-    type: String,
-    required: false
+    type: String
   }
 })
 </script>

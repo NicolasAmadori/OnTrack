@@ -1,6 +1,7 @@
 <template>
-  <div class="banner d-flex justify-content-end align-items-end" :style="bannerStyle">
-    <h1 class="banner-title my-3 mx-5">{{ title }}</h1>
+  <div class="banner d-flex flex-column align-items-end justify-content-between px-5 mb-3" :style="bannerStyle">
+    <h1 class="banner-title my-3">{{ title }}</h1>
+    <h3 class="banner-subtitle align-self-end">{{ subtitle }}</h3>
   </div>
 </template>
 
@@ -20,6 +21,10 @@ imageType: {
     type: String,
     default: 'station', 
     validator: (value) => ['station', 'tickets', 'passenger', 'onboard'].includes(value)
+},
+subtitle: {
+    type: String,
+    default: '',
 }
 });
 
@@ -54,6 +59,12 @@ const bannerStyle = computed(() => {
     color: var(--white);
     margin-bottom: 0 !important;
     font-size: 2rem;
+    background-color: transparent;
+}
+
+.banner-subtitle {
+    color: var(--bright);
+    font-size: 1.5rem;
     background-color: transparent;
 }
 </style>
