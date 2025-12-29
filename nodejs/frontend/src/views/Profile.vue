@@ -108,7 +108,8 @@ const submitForm = async () => {
       oldpassword: form.old_password || undefined,
       password: form.password || undefined
     });
-    
+
+    await fetchUser();
 
   } catch (error) {
     console.error(error);
