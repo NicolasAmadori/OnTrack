@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/util/constants.js';
+import { checkResponseSuccess } from './util';
 
 export async function isTokenValid(authToken) {
     const response = await fetch(`${API_BASE_URL}/auth/validate`, {
@@ -19,14 +20,7 @@ export async function login(email, password) {
     });
 
     const data = await response.json();
-
-    if (!response.ok || !data.success) {
-        let errorMessage = ""
-        data.errors.forEach(({ field, message }) => {
-            errorMessage = errorMessage + `Error in ${field}: ${message}\n`
-        });
-        throw new Error(errorMessage || 'Unknown error');
-    }
+    checkResponseSuccess(response, data);
 
     localStorage.setItem('authToken', data.token);
     localStorage.setItem('id', data.id);
@@ -41,12 +35,5 @@ export async function register(email, first_name, last_name, password, confirm_p
     });
 
     const data = await response.json();
-
-    if (!response.ok || !data.success) {
-        let errorMessage = ""
-        data.errors.forEach(({ field, message }) => {
-            errorMessage = errorMessage + `Error in ${field}: ${message}\n`
-        });
-        throw new Error(errorMessage || 'Unknown error');
-    }
+    checkResponseSuccess(response, data);
 }

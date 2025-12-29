@@ -1,5 +1,5 @@
 <template>
-  <BaseBanner title="Profile" imageType="passenger" subtitle="mariorossi@email.com" /> 
+  <BaseBanner title="Profile" imageType="passenger" :subtitle="email" /> 
   <div class="row mx-2">
     <form @submit.prevent="submitForm">
       <div class="row fs-4 dark">Personal Info</div>
@@ -42,19 +42,33 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import BaseInput from '@/components/BaseInput.vue'; 
 import BaseButton from '@/components/BaseButton.vue';
 
 const form = reactive({
-  first_name: 'Mario',
-  last_name: 'Rossi',
+  first_name: '',
+  last_name: '',
   old_password: '',
   password: '',
   confirm_password: ''
 });
 
 const isSubmitting = ref(false);
+let email = ''
+
+const fetchUser = async () => {
+  try {
+    const user = await getUser(localStorage.getItem('authToken'), localStorage.getItem('id'));
+    email = user.email;
+    form.first_name = user.first_name;
+    form.last_name = user.last_name;
+  } catch (error) {
+    alert('Error fetching user data: ' + error.message);
+  }
+};
+
+//onMounted(fetchUser);
 
 const submitForm = async () => {
   isSubmitting.value = true;
