@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import app from './app.js';
+import populateDatabase from "#src/util/populateDatabase.js";
 
 const PORT = process.env.PORT || 3000;
 const DB_URI = process.env.DB_URI || 'mongodb://localhost:27017/db-ot';
@@ -10,6 +11,8 @@ const connectWithRetry = (retries = 5, delay = 3000) => {
     })
         .then(async () => {
             console.log('MongoDB Connected');
+
+            await populateDatabase();
 
             app.listen(PORT, () => {
                 console.log('Node API server started on port ' + PORT + '!');

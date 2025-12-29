@@ -19,9 +19,8 @@ export const authenticate = async function(req, res) {
             });
         }
 
-        const userId = user.toObject()._id.toString();
         const token = {
-            id: userId
+            id: user.toObject()._id.toString()
         };
 
         const jwt_signed_token = await new SignJWT(token) //Token encoding
@@ -34,7 +33,8 @@ export const authenticate = async function(req, res) {
         return res.status(200).json({
             success: true,
             token: jwt_signed_token,
-            id: userId
+            id: user.toObject()._id.toString(),
+            is_admin: user.toObject().is_admin
         });
     } catch (error) {
         return res.status(500).json({
