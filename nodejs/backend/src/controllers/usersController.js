@@ -1,5 +1,5 @@
 import User from '#src/models/userModel.js';
-import { hash } from '@node-rs/argon2';
+import { hash, verify } from '@node-rs/argon2';
 
 export const create_user = async function(req, res) {
     try {
@@ -35,5 +35,67 @@ export const create_user = async function(req, res) {
                 message: error.message
             }]
         });
+    }
+}
+
+export const update_user = async function(req, res) {
+    try {
+        const id = req.params.userId;
+        const user = req.body;
+        const updatedUser = {};
+
+        updatedUser.first_name = user.first_name;
+        updatedUser.last_name = user.last_name;
+        if (user.oldpassword && user.password) {
+            const oldPasswordHash = (await User.findById(id).select('password').exec()).toObject().password;
+            if (!await verify(oldPasswordHash, user.oldpassword)) {
+                return res.status(401).json({ success: false, errors: [{
+                field: "",
+                message: "Old password is incorrect"
+            }] });
+            }
+            updatedUser.password = await hash(user.password);
+        }
+        
+        if (Object.keys(updatedUser).length !== 0) {
+
+            const result = await User.updateOne({ _id: id }, updatedUser);
+            if (!result || result.matchedCount === 0) {
+                return res.status(404).json({ success: false, errors: [{
+                    field: "",
+                    message: "User not found"
+                }] });
+            }
+
+            if (result.modifiedCount === 0) {
+                return res.status(200).json({ success: true, message: "No changes were made" });
+            }
+
+            return res.status(200).json({ success: true, message: "User updated successfully" });
+        }
+    } catch (error) {
+        return res.status(500).json({ success: false, errors: [{
+            field: "",
+            message: error.message
+        }] });
+    }
+}
+
+export const get_user = async function(req, res) {
+    try {
+        const id = req.params.userId;
+        const user = await User.findOne({ _id: id }, "-password").exec();
+        if (!user) {
+            return res.status(404).json({ success: false, errors: [{
+                field: "",
+                message: "User not found"
+            }] });
+        }
+        return res.status(200).json({ success: true, user });
+    } catch (error) {
+        return res.status(500).json({ success: false, errors: [{
+            field: "",
+            message: error.message
+        }] });
     }
 }

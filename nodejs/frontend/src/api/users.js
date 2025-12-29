@@ -19,7 +19,7 @@ export async function getUser(authToken, id) {
     const data = await response.json();
     checkResponseSuccess(response, data);
 
-    return data;
+    return data.user;
 }
 
 export async function updateUser(authToken, id, data) {
