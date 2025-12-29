@@ -11,7 +11,7 @@ const routes = [
     { path: '/login', name: "Login", component: Login },
     { path: '/signup', name: "Signup", component: Signup },
     { path: '/home', name: "Home", component: Home, meta: { requiresAuth: true } },
-    { path: '/profile', name: "Profile", component: Profile},
+    { path: '/profile', name: "Profile", component: Profile, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
