@@ -56,6 +56,8 @@ import { reactive, ref } from 'vue';
 import LoginSignUpLink from '@/components/LoginSignUpLink.vue';
 import BaseInput from '@/components/BaseInput.vue'; 
 import BaseButton from '@/components/BaseButton.vue';
+import BaseToast from '@/components/BaseToast.vue';
+import BaseBanner from '@/components/BaseBanner.vue';
 import { login, register } from '@/api/auth.js';
 import router from '@/router';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
