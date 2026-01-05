@@ -1,6 +1,9 @@
 <template>
   <div class="banner d-flex flex-column align-items-end justify-content-between px-5 mb-3" :style="bannerStyle">
     <h1 class="banner-title my-3">{{ title }}</h1>
+    <div class="w-100">
+      <slot></slot>
+    </div>
     <h3 class="banner-subtitle align-self-end">{{ subtitle }}</h3>
   </div>
 </template>
