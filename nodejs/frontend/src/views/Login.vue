@@ -20,6 +20,11 @@
       />
       <BaseButton type="submit" variant="primary" :loading="isSubmitting" class="w-100 mt-3">Login</BaseButton>
     </form>
+    <BaseToast
+      v-model="submitError"
+      type="error"
+      :message="submitError"
+    />
   </div>
 </template>
 
@@ -40,6 +45,7 @@ const form = reactive({
 });
 
 const isSubmitting = ref(false);
+const submitError = ref(null);
 
 const submitForm = async () => {
   isSubmitting.value = true;
@@ -48,9 +54,8 @@ const submitForm = async () => {
     await login(form.email, form.password);
     router.push({ path: '/home' });
   } catch (error) {
-    console.error(error);
+    submitError.value = error.message;
   } finally {
-    form.email = '';
     form.password = '';
     isSubmitting.value = false;
   }
