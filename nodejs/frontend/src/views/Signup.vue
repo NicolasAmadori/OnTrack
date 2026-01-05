@@ -42,6 +42,11 @@
       />
       <BaseButton type="submit" variant="primary" :loading="isSubmitting" class="w-100 mt-3">Sign Up</BaseButton>
     </form>
+    <BaseToast
+      v-model="submitError"
+      type="error"
+      :message="submitError"
+    />
   </div>
 </template>
 
@@ -65,13 +70,14 @@ const form = reactive({
 });
 
 const isSubmitting = ref(false);
+const submitError = ref(null);
 
 const submitForm = async () => {
   isSubmitting.value = true;
 
   try {
     if ( form.password !== form.confirmpassword ) {
-      alert('Passwords do not match');
+      submitError.value = 'Passwords do not match';
       return;
     }
 
@@ -80,11 +86,8 @@ const submitForm = async () => {
     router.push({ path: '/home' });
 
   } catch (error) {
-    console.error(error);
+    submitError.value = error.message;
   } finally {
-    form.email = '';
-    form.name = '';
-    form.surname = '';
     form.password = '';
     form.confirmpassword = '';
     isSubmitting.value = false;

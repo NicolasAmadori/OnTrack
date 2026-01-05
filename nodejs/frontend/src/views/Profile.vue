@@ -41,6 +41,16 @@
       />
       <BaseButton type="submit" variant="primary" :loading="isSubmitting" :disabled="!hasChanges" class="w-100 mt-3">Update Profile</BaseButton>
     </form>
+    <BaseToast
+      v-model="submitSuccess"
+      type="success"
+      message="Profile updated successfully!"
+    />
+    <BaseToast
+      v-model="submitError"
+      type="error"
+      :message="submitError"
+    />
   </div>
 </template>
 
@@ -50,6 +60,7 @@ import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { getUser, updateUser } from '../api/users';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
+import BaseToast from '../components/BaseToast.vue';
 
 const form = reactive({
   first_name: '',
@@ -70,6 +81,8 @@ const hasChanges = computed(() =>
   form.confirm_password !== ''
 );
 const isSubmitting = ref(false);
+const submitSuccess = ref(false);
+const submitError = ref(null);
 let email = ''
 
 const fetchUser = async () => {
@@ -81,7 +94,7 @@ const fetchUser = async () => {
     originalUser.first_name = user.first_name;
     originalUser.last_name = user.last_name;
   } catch (error) {
-    alert('Error fetching user data: ' + error.message);
+    submitError.value = 'Error fetching user data: ' + error.message;
   }
 };
 
@@ -93,12 +106,12 @@ const submitForm = async () => {
   try {
     if ((form.password || form.confirm_password || form.old_password)
         && !(form.password && form.confirm_password && form.old_password)) {
-      alert('To change your password, please fill in all password fields.');
+      submitError.value = 'To change your password, please fill in all password fields.';
       return;
     }
     
     if (form.password !== form.confirm_password) {
-      alert('New password and confirmation do not match.');
+      submitError.value = 'New password and confirmation do not match.';
       return;
     }
 
@@ -110,13 +123,17 @@ const submitForm = async () => {
     });
 
     await fetchUser();
+    submitSuccess.value = true;
 
   } catch (error) {
-    console.error(error);
+    submitError.value = error.message;
   } finally {
     form.old_password = '';
     form.password = '';
     form.confirm_password = '';
+    form.first_name = originalUser.first_name;
+    form.last_name = originalUser.last_name;
+    hasChanges.value = false;
     isSubmitting.value = false;
   }
 }
