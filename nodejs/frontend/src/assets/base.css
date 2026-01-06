@@ -1,116 +1,66 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 :root {
+  --dark: #123441;
+  --darker: #0D2832;
+  --lessdark: #134D57;
   --bright: #F9744D;
-  --lessbright: #e45d33;
-  --brighter: #fa8865;
+  --light: #E2D8D0;
   --white: #EFEFEF;
   --black: #07151B;
-  --dark: #123441;
-  --lessdark: #134D57;
-  --darker: #0D2832;
-  --light: #E2D8D0;
-  --lesslight: #CEC4BC;
-  --lighter: #EAE5E1;
   --disabled: #C2C2C2;
+  --red: #DE373A;
+  --lesslight: #CEC4BC;
   --gray: #878787;
+  --lighter: #EAE5E1;
+  --lessbright: #e45d33;
+  --brighter: #fa8865;
   --lightgray: #CFCFCF;
-  --red: #E42B0B;
+
   --orange: #F0900A;
   --yellow: #F0CD0A;
   --green: #37A13A;
 }
 
-.ibm-plex-mono-thin {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 100;
-  font-style: normal;
+@theme {
+  /* Colors */
+  --color-dark: var(--dark);
+  --color-darker: var(--darker);
+  --color-lessdark: var(--lessdark);
+  --color-bright: var(--bright);
+  --color-lessbright: var(--lessbright);
+  --color-brighter: var(--brighter);
+  --color-light: var(--light);
+  --color-lighter: var(--lighter);
+  --color-lesslight: var(--lesslight);
+  --color-white: var(--white);
+  --color-black: var(--black);
+  --color-disabled: var(--disabled);
+  --color-red: var(--red);
+  --color-gray: var(--gray);
+  --color-lightgray: var(--lightgray);
+  --color-orange: var(--orange);
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+
+  /* Fonts */
+  --font-mono: "IBM Plex Mono", monospace;
 }
 
-.ibm-plex-mono-extralight {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 200;
-  font-style: normal;
-}
 
-.ibm-plex-mono-light {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 300;
-  font-style: normal;
-}
+@layer base {
+  * {
+    @apply font-mono font-normal;
+  }
 
-.ibm-plex-mono-regular {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.ibm-plex-mono-medium {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.ibm-plex-mono-semibold {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.ibm-plex-mono-bold {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.ibm-plex-mono-thin-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 100;
-  font-style: italic;
-}
-
-.ibm-plex-mono-extralight-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 200;
-  font-style: italic;
-}
-
-.ibm-plex-mono-light-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 300;
-  font-style: italic;
-}
-
-.ibm-plex-mono-regular-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.ibm-plex-mono-medium-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 500;
-  font-style: italic;
-}
-
-.ibm-plex-mono-semibold-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 600;
-  font-style: italic;
-}
-
-.ibm-plex-mono-bold-italic {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 700;
-  font-style: italic;
-}
-
-* {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 400;
-  font-style: normal;
-  background-color: var(--white);
-  color: var(--black);
+  body {
+    background-color: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 .bright {

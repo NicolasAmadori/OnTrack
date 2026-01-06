@@ -25,6 +25,10 @@ imageType: {
 subtitle: {
     type: String,
     default: '',
+},
+admin: {
+  type: Boolean,
+  default: false
 }
 });
 
@@ -37,10 +41,13 @@ const images = {
 
 const bannerStyle = computed(() => {
   const selectedImage = images[props.imageType] || images.station;
-  
+  const gradientColor = props.admin
+      ? 'rgba(249, 116, 77, 0.8)'
+      : 'rgba(19, 77, 87, 0.8)';
+
   return {
     backgroundImage: `
-      linear-gradient(to bottom, rgba(19, 77, 87, 0.8), rgba(19, 77, 87, 0.8)),
+      linear-gradient(to bottom, ${gradientColor}, ${gradientColor}),
       url(${selectedImage})
     `,
     backgroundSize: 'cover',
