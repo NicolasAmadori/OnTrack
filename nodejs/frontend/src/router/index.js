@@ -9,11 +9,36 @@ import { isTokenValid } from "../api/auth.js";
 
 const routes = [
     { path: '/', redirect: '/home' },
-    { path: '/login', name: "Login", component: Login },
-    { path: '/signup', name: "Signup", component: Signup },
-    { path: '/home', name: "Home", component: Home, meta: { requiresAuth: true } },
-    { path: '/profile', name: "Profile", component: Profile, meta: { requiresAuth: true } },
-    { path: '/admin/user-management', name: "UserManagement", component: UserManagement, meta: { requiresAuth: true } }
+    {
+        path: '/login',
+        name: "Login",
+        component: Login,
+        meta: { requiresAuth: false, showSidebar: false }
+    },
+    {
+        path: '/signup',
+        name: "Signup",
+        component: Signup,
+        meta: { requiresAuth: false, showSidebar: false }
+    },
+    {
+        path: '/home',
+        name: "Home",
+        component: Home,
+        meta: { requiresAuth: true, showSidebar: true }
+    },
+    {
+        path: '/profile',
+        name: "Profile",
+        component: Profile,
+        meta: { requiresAuth: true, showSidebar: true }
+    },
+    {
+        path: '/admin/user-management',
+        name: "UserManagement",
+        component: UserManagement,
+        meta: { requiresAuth: true, showSidebar: true }
+    }
 ];
 
 const router = createRouter({
