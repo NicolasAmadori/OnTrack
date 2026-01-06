@@ -9,12 +9,14 @@
       </button>
     </div>
   </BaseBanner>
+  <BaseSelect iconName="bi-calendar-event-fill" text="Select Date" class="mt-3 mx-2" @click="handleDateSelect"/>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import BaseBanner from '@/components/BaseBanner.vue';
 import BaseInput from '@/components/BaseInput.vue';
+import BaseSelect from '@/components/BaseSelect.vue';
 
 const fromLocation = ref('');
 const toLocation = ref('');
@@ -23,6 +25,8 @@ const swapLocations = () => {
   const temp = fromLocation.value;
   fromLocation.value = toLocation.value;
   toLocation.value = temp;
+};
+const handleDateSelect = () => {
 };
 </script>
 
