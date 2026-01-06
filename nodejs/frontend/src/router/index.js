@@ -1,9 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Login from '@/views/Login.vue';
-import Home from '@/views/Home.vue';
 import Signup from '@/views/Signup.vue';
+
+import Home from '@/views/Home.vue';
 import Profile from '@/views/Profile.vue';
+import MyTrip from '@/views/MyTrip.vue';
+
 import UserManagement from '@/views/admin/UserManagement.vue';
 import { isTokenValid } from "../api/auth.js";
 
@@ -31,6 +34,12 @@ const routes = [
         path: '/profile',
         name: "Profile",
         component: Profile,
+        meta: { requiresAuth: true, showSidebar: true }
+    },
+    {
+        path: '/my-trip',
+        name: "My Trip",
+        component: MyTrip,
         meta: { requiresAuth: true, showSidebar: true }
     },
     {
