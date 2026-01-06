@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue';
 import Home from '@/views/Home.vue';
 import Signup from '@/views/Signup.vue';
 import Profile from '@/views/Profile.vue';
+import UserManagement from '@/views/admin/UserManagement.vue';
 import { isTokenValid } from "../api/auth.js";
 
 const routes = [
@@ -12,6 +13,7 @@ const routes = [
     { path: '/signup', name: "Signup", component: Signup },
     { path: '/home', name: "Home", component: Home, meta: { requiresAuth: true } },
     { path: '/profile', name: "Profile", component: Profile, meta: { requiresAuth: true } },
+    { path: '/admin/user-management', name: "UserManagement", component: UserManagement, meta: { requiresAuth: true } }
 ];
 
 const router = createRouter({
