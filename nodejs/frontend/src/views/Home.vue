@@ -5,7 +5,7 @@
       <BaseInput v-model="toLocation" placeholder="To" />
       
       <button class="btn rounded-circle swap-btn position-absolute top-50 end-0 translate-middle-y me-2 d-flex align-items-center justify-content-center" @click="swapLocations">
-        <i class="bi bi-arrow-down-up bright"></i>
+        <i class="bi bi-arrow-down-up"></i>
       </button>
     </div>
   </BaseBanner>
@@ -46,14 +46,16 @@ const swapLocations = () => {
 }
 
 .swap-btn:active {
-  background-color: var(--darker);
+  background-color: var(--bright) !important;
 }
 
 .swap-btn:active i {
+  color: var(--dark) !important;
   transform: rotate(180deg);
 }
 
 .swap-btn i {
+  color: var(--bright);
   font-size: 1.5rem;
   background-color: transparent;
   transition: transform 0.2s;
