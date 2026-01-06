@@ -47,7 +47,7 @@
       message="Profile updated successfully!"
     />
     <BaseToast
-      v-model="submitError"
+      v-model="showErrorToast"
       type="error"
       :message="submitError"
     />
@@ -82,7 +82,8 @@ const hasChanges = computed(() =>
 );
 const isSubmitting = ref(false);
 const submitSuccess = ref(false);
-const submitError = ref(null);
+const showErrorToast = ref(false);
+const submitError = ref("");
 let email = ''
 
 const fetchUser = async () => {
@@ -95,6 +96,7 @@ const fetchUser = async () => {
     originalUser.last_name = user.last_name;
   } catch (error) {
     submitError.value = 'Error fetching user data: ' + error.message;
+    showErrorToast.value = true;
   }
 };
 
@@ -107,11 +109,13 @@ const submitForm = async () => {
     if ((form.password || form.confirm_password || form.old_password)
         && !(form.password && form.confirm_password && form.old_password)) {
       submitError.value = 'To change your password, please fill in all password fields.';
+      showErrorToast.value = true;
       return;
     }
     
     if (form.password !== form.confirm_password) {
       submitError.value = 'New password and confirmation do not match.';
+      showErrorToast.value = true;
       return;
     }
 
@@ -127,6 +131,7 @@ const submitForm = async () => {
 
   } catch (error) {
     submitError.value = error.message;
+    showErrorToast.value = true;
   } finally {
     form.old_password = '';
     form.password = '';
