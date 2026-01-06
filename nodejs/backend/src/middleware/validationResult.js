@@ -6,8 +6,7 @@ export const validate = (req, res, next) => {
         return res.status(400).json({
             success: false,
             errors: errors.map(err => ({
-                field: err.path,
-                message: err.msg
+                message: `${err.path} ${err.msg}`
             }))
         });
     }
