@@ -41,12 +41,6 @@ const handleLogout = () => {
         </router-link>
       </li>
       <li v-if="isAdmin" class="nav-item mb-2">
-        <router-link to="/admin/reservation-management" class="nav-link d-flex align-items-center gap-2 text-dark" active-class="!bg-bright !text-white">
-          <i class="bi bi-ticket-detailed fs-5"></i>
-          <span>Reservation Management</span>
-        </router-link>
-      </li>
-      <li v-if="isAdmin" class="nav-item mb-2">
         <router-link to="/admin/train-management" class="nav-link d-flex align-items-center gap-2 text-dark" active-class="!bg-bright !text-white">
           <i class="bi bi-train-front-fill fs-5"></i>
           <span>Train Management</span>

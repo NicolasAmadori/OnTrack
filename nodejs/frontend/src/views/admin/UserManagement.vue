@@ -24,6 +24,7 @@
           <UserListItem
               v-for="user in filteredUsers"
               :key="user._id"
+              :id="user._id"
               :email="user.email"
               :is-admin="user.is_admin"
               @toggle-admin="toggleAdmin(user)"
@@ -71,9 +72,7 @@ const loadUsers = async () => {
   }
 };
 
-onMounted(() => {
-  loadUsers();
-});
+onMounted(loadUsers);
 
 /**
  * Filtering logic

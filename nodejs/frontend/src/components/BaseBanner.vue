@@ -1,7 +1,7 @@
 <template>
   <div class="banner d-flex flex-column align-items-end justify-content-between px-5 mb-3" :style="bannerStyle">
-    <h1 class="banner-title my-3">{{ title }}</h1>
-    <h3 class="banner-subtitle align-self-end">{{ subtitle }}</h3>
+    <h1 class="banner-title my-3" :style="titleStyle">{{ title }}</h1>
+    <h3 class="banner-subtitle align-self-end" :style="subtitleStyle" >{{ subtitle }}</h3>
   </div>
 </template>
 
@@ -54,6 +54,18 @@ const bannerStyle = computed(() => {
     backgroundPosition: 'center center'
   };
 });
+
+const titleStyle = computed(() => {
+  return {
+    color: props.admin ? 'var(--black)' : 'var(--white)'
+  };
+});
+
+const subtitleStyle = computed(() => {
+  return {
+    color: props.admin ? 'var(--black)' : 'var(--bright)'
+  };
+});
 </script>
 
 <style scoped>
@@ -70,7 +82,6 @@ const bannerStyle = computed(() => {
 }
 
 .banner-subtitle {
-    color: var(--bright);
     font-size: 1.5rem;
     background-color: transparent;
 }

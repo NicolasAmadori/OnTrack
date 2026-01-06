@@ -8,6 +8,8 @@ import Profile from '@/views/Profile.vue';
 import MyTrip from '@/views/MyTrip.vue';
 
 import UserManagement from '@/views/admin/UserManagement.vue';
+import ReservationManagement from '@/views/admin/ReservationManagement.vue';
+
 import { isTokenValid } from "../api/auth.js";
 
 const routes = [
@@ -47,6 +49,12 @@ const routes = [
         name: "UserManagement",
         component: UserManagement,
         meta: { requiresAuth: true, showSidebar: true }
+    },
+    {
+        path: '/admin/reservation-management/:user_id',
+        name: "ReservationManagement",
+        component: ReservationManagement,
+        meta: { requiresAuth: true, showSidebar: false }
     }
 ];
 

@@ -1,10 +1,10 @@
 <template>
   <div class="user-item-container">
-    <div class="email-section">
+    <router-link :to="`/admin/reservation-management/${id}`" class="email-section">
       <span class="font-mono text-darker text-sm truncate px-3">
         {{ email }}
       </span>
-    </div>
+    </router-link>
 
     <div class="actions-section px-2 px-md-3 gap-2 gap-md-3">
       <button
@@ -31,6 +31,10 @@
 
 <script setup>
 defineProps({
+  id: {
+    type: [String, Number],
+    required: true
+  },
   email: {
     type: String,
     required: true
