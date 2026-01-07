@@ -4,4 +4,5 @@
 
 <script setup>
 
+import BaseBanner from "@/components/BaseBanner.vue";
 </script>

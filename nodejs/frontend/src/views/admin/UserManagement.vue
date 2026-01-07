@@ -24,6 +24,7 @@
           <UserListItem
               v-for="user in filteredUsers"
               :key="user._id"
+              :id="user._id"
               :email="user.email"
               :is-admin="user.is_admin"
               @toggle-admin="toggleAdmin(user)"
@@ -42,10 +43,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getAllUsers } from '@/api/users';
+import { getAllUsers, updateUser, deleteUser } from '@/api/users';
 import SearchBar from '@/components/SearchBar.vue';
 import UserListItem from '@/components/UserListItem.vue';
-import {updateUser, deleteUser} from "../../api/users.js";
+import BaseBanner from "@/components/BaseBanner.vue";
 
 // Store e State
 const userQuery = ref('');
@@ -71,9 +72,7 @@ const loadUsers = async () => {
   }
 };
 
-onMounted(() => {
-  loadUsers();
-});
+onMounted(loadUsers);
 
 /**
  * Filtering logic

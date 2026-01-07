@@ -2,7 +2,7 @@
   <BaseBanner title="Profile" imageType="passenger" :subtitle="email" /> 
   <div class="row mx-2">
     <form @submit.prevent="submitForm">
-      <div class="row fs-4 dark">Personal Info</div>
+      <div class="row fs-4 dark mx-4 xl:mx-40">Personal Info</div>
       <BaseInput
         id="first_name"
         v-model="form.first_name"
@@ -17,7 +17,7 @@
         placeholder="Last Name"
         required
       />
-      <div class="row fs-4 dark">Change Password</div>
+      <div class="row fs-4 dark mx-4 xl:mx-40">Change Password</div>
       <BaseInput
         id="old_password"
         v-model="form.old_password"
@@ -39,7 +39,7 @@
         placeholder="Confirm New Password"
         :minlength="PASSWORD_MIN_LENGTH"
       />
-      <BaseButton type="submit" variant="primary" :loading="isSubmitting" :disabled="!hasChanges" class="w-100 mt-3">Update Profile</BaseButton>
+      <BaseButton type="submit" variant="primary" :loading="isSubmitting" :disabled="!hasChanges">Update Profile</BaseButton>
     </form>
     <BaseToast
       v-model="submitSuccess"
@@ -61,6 +61,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import { getUser, updateUser } from '../api/users';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
 import BaseToast from '../components/BaseToast.vue';
+import BaseBanner from "@/components/BaseBanner.vue";
 
 const form = reactive({
   first_name: '',

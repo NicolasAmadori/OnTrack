@@ -1,93 +1,47 @@
 <template>
-  <div class="user-item-container">
-    <div class="email-section">
-      <span class="font-mono text-darker text-sm truncate px-3">
+  <div class="group relative mb-3 flex h-11.75 items-stretch overflow-hidden rounded-xl bg-transparent shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg mx-4 xl:mx-40  ">
+
+    <router-link
+        :to="`/admin/user-management/${id}`"
+        class="flex flex-1 items-center min-w-0 bg-light px-3"
+    >
+      <span class="truncate font-mono text-sm text-darker">
         {{ email }}
       </span>
-    </div>
+    </router-link>
 
-    <div class="actions-section px-2 px-md-3 gap-2 gap-md-3">
+    <div class="flex items-center bg-[#d6ccc4] px-2 md:px-3 gap-2 md:gap-3">
+
       <button
-          class="action-btn"
+          class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
           @click.stop="$emit('toggle-admin')"
           :title="isAdmin ? 'Remove Admin Rights' : 'Grant Admin Rights'"
       >
         <i
             class="bi text-2xl transition-colors"
-            :class="isAdmin ? 'bi-shield-fill-check text-darker' : 'bi-shield-check text-darker opacity-70 hover:opacity-100'"
+            :class="isAdmin
+            ? 'bi-shield-fill-check text-darker'
+            : 'bi-shield-check text-darker opacity-70 hover:opacity-100'"
         ></i>
       </button>
 
       <button
-          class="action-btn"
+          class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
           @click.stop="$emit('delete')"
           title="Delete User"
       >
-        <i class="bi bi-trash3-fill text-bright text-2xl hover:text-red transition-colors"></i>
+        <i class="bi bi-trash3-fill text-2xl text-bright transition-colors hover:text-red-500"></i>
       </button>
+
     </div>
   </div>
 </template>
 
 <script setup>
 defineProps({
-  email: {
-    type: String,
-    required: true
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false
-  }
+  id: { type: [String, Number], required: true },
+  email: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false }
 })
-
 defineEmits(['delete', 'toggle-admin'])
 </script>
-
-<style scoped>
-.user-item-container {
-  display: flex;
-  width: 100%;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: transform 0.1s ease-in-out, box-shadow 0.2s;
-  background-color: transparent;
-  margin-bottom: 0.75rem;
-  height: 47px;
-}
-
-.user-item-container:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 10px -2px rgba(0, 0, 0, 0.15);
-}
-
-.email-section {
-  flex: 1;
-  background-color: var(--light);
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-.actions-section {
-  background-color: #d6ccc4; /* Tonalità più scura per la barra azioni */
-  display: flex;
-  align-items: center;
-}
-
-.action-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem;
-  transition: transform 0.1s;
-}
-
-.action-btn:active {
-  transform: scale(0.9);
-}
-</style>

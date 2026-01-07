@@ -8,6 +8,8 @@ import Profile from '@/views/Profile.vue';
 import MyTrip from '@/views/MyTrip.vue';
 
 import UserManagement from '@/views/admin/UserManagement.vue';
+import ReservationManagement from '@/views/admin/ReservationManagement.vue';
+
 import { isTokenValid } from "../api/auth.js";
 
 const routes = [
@@ -28,25 +30,31 @@ const routes = [
         path: '/home',
         name: "Home",
         component: Home,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
     },
     {
         path: '/profile',
         name: "Profile",
         component: Profile,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'profile' }
     },
     {
         path: '/my-trip',
         name: "My Trip",
         component: MyTrip,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'my-trip' }
     },
     {
         path: '/admin/user-management',
         name: "UserManagement",
         component: UserManagement,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
+    },
+    {
+        path: '/admin/user-management/:user_id',
+        name: "UserReservations",
+        component: ReservationManagement,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
     }
 ];
 
