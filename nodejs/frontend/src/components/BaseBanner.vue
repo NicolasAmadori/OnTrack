@@ -21,7 +21,7 @@
           class="bg-transparent border-0 transition-transform duration-200 hover:scale-110 cursor-pointer flex items-center"
           title="Go back"
       >
-        <i class="bi bi-chevron-left" :style="smallIconStyle"></i>
+        <i class="bi bi-chevron-left text-2xl" :style="backIconStyle"></i>
         <span class="text-sm font-bold uppercase tracking-tight" :style="textLinkStyle">Back</span>
       </button>
     </div>
@@ -70,12 +70,6 @@ const images = {
 
 const goBack = () => router.back();
 
-const smallIconStyle = computed(() => ({
-  color: props.admin ? 'var(--black)' : 'var(--white)',
-  fontSize: '1.5rem',
-  fontWeight: 'bold'
-}));
-
 const textLinkStyle = computed(() => ({
   color: props.admin ? 'var(--black)' : 'var(--white)',
   marginLeft: '-4px'
@@ -105,5 +99,9 @@ const subtitleStyle = computed(() => ({
 const iconStyle = computed(() => ({
   color: props.admin ? 'var(--black)' : 'var(--white)',
   fontSize: '2.2rem'
+}));
+
+const backIconStyle = computed(() => ({
+  color: props.admin ? 'var(--black)' : 'var(--bright)'
 }));
 </script>
