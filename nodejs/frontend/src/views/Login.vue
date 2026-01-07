@@ -29,6 +29,7 @@
     </form>
     <BaseToast
         v-model="submitError"
+        v-if="submitError"
         type="error"
         :message="submitError"
     />
@@ -54,7 +55,7 @@ const form = reactive({
 });
 
 const isSubmitting = ref(false);
-const submitError = ref(null);
+const submitError = ref("");
 
 const submitForm = async () => {
   isSubmitting.value = true;

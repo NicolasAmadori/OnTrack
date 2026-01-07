@@ -1,24 +1,31 @@
 <template>
   <Transition name="toast">
-    <div 
-      v-if="modelValue" 
-      class="base-toast d-flex align-items-center justify-content-between p-3 rounded shadow-lg"
-      :class="typeClass"
-      role="alert"
-      @mouseenter="pauseTimer"
-      @mouseleave="resumeTimer"
+    <div
+        v-if="modelValue"
+        class="fixed bottom-5 left-1/2 -translate-x-1/2 z-1050 min-w-75 max-w-[90%] flex items-center justify-between p-4 rounded-lg shadow-lg border border-black/10 select-none font-mono"
+        :class="typeClass"
+        role="alert"
+        @mouseenter="pauseTimer"
+        @mouseleave="resumeTimer"
     >
-      <div class="d-flex bi align-items-center gap-3">
-        <i :class="['bi', iconClass, 'fs-4', { darkBg: isDarkBg }]"></i>
-        <span class="toast-message fs-5 fw-medium" :class="{ darkBg: isDarkBg }">{{ message }}</span>
+      <div class="flex items-center gap-3">
+        <i :class="['bi', iconClass, 'text-2xl', { 'text-white': isDarkBg }]"></i>
+        <span class="text-lg font-medium" :class="{ 'text-white': isDarkBg }">
+          {{ message }}
+        </span>
       </div>
-      <button 
-        type="button" 
-        class="btn-close" 
-        :class="{ 'btn-close-white': isDarkBg }"
-        aria-label="Close" 
-        @click="close"
-      ></button>
+
+      <button
+          type="button"
+          class="ml-4 p-1 rounded-md transition-colors hover:bg-black/10 flex items-center justify-center"
+          :class="isDarkBg ? 'text-white/80 hover:text-white' : 'text-black/50 hover:text-black'"
+          aria-label="Close"
+          @click="close"
+      >
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   </Transition>
 </template>
@@ -52,10 +59,10 @@ const isDarkBg = computed(() => ['success', 'error'].includes(props.type));
 
 const typeClass = computed(() => {
   switch (props.type) {
-    case 'success': return 'toast-success';
-    case 'warning': return 'toast-warning';
-    case 'error':   return 'toast-error';
-    case 'info':    default: return 'toast-info';
+    case 'success': return 'bg-green-600';
+    case 'warning': return 'bg-yellow-400';
+    case 'error':   return 'bg-red-600';
+    case 'info':    default: return 'bg-cyan-400';
   }
 });
 
@@ -68,114 +75,37 @@ const iconClass = computed(() => {
   }
 });
 
+/* Timer Logic remains unchanged */
 let timer = null;
 let remainingTime = props.duration;
 let startTime = 0;
 
-const clearTimer = () => {
-  if (timer) {
-    clearTimeout(timer);
-    timer = null;
-  }
-};
-
+const clearTimer = () => { if (timer) clearTimeout(timer); timer = null; };
 const startTimer = () => {
   clearTimer();
   if (props.duration > 0 && remainingTime > 0) {
     startTime = Date.now();
-    timer = setTimeout(() => {
-      close();
-    }, remainingTime);
+    timer = setTimeout(() => close(), remainingTime);
   }
 };
-
 const pauseTimer = () => {
   if (timer) {
     clearTimer();
-    const elapsed = Date.now() - startTime;
-    remainingTime -= elapsed;
+    remainingTime -= (Date.now() - startTime);
   }
 };
-
-const resumeTimer = () => {
-  if (props.modelValue) {
-    startTimer();
-  }
-};
-
+const resumeTimer = () => { if (props.modelValue) startTimer(); };
 const close = () => {
   clearTimer();
-  remainingTime = props.duration; 
+  remainingTime = props.duration;
   emit('update:modelValue', false);
   emit('close');
 };
 
-
 watch(() => props.modelValue, (isOpen) => {
-  if (isOpen) {
-    remainingTime = props.duration; // Reset duration on open
-    startTimer();
-  } else {
-    clearTimer();
-  }
+  if (isOpen) { remainingTime = props.duration; startTimer(); }
+  else clearTimer();
 }, { immediate: true });
 
-onUnmounted(() => {
-  clearTimer();
-});
+onUnmounted(() => clearTimer());
 </script>
-
-<style scoped>
-.base-toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1050;
-  min-width: 300px;
-  max-width: 90%;
-  font-family: "IBM Plex Mono", monospace;
-  border: 1px solid rgba(0,0,0,0.1);
-  user-select: none; 
-}
-
-.toast-message, .bi {
-  background-color: transparent !important;
-}
-
-.darkBg {
-  color: var(--white, #fff) !important;
-}
-
-.toast-success {
-  background-color: #198754; 
-  background-color: var(--green, #198754);
-}
-
-.toast-info {
-  background-color: #0dcaf0;
-}
-
-.toast-warning {
-  background-color: #ffc107;
-  background-color: var(--yellow, #ffc107);
-}
-
-.toast-error {
-  background-color: #dc3545;
-  background-color: var(--red, #dc3545);
-}
-
-/* Transition styles */
-.toast-enter-active,
-.toast-leave-active {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.toast-enter-from,
-.toast-leave-to {
-  opacity: 0;
-  /* Ensure we keep the X centering while animating Y */
-  transform: translate(-50%, 50px); 
-}
-</style>

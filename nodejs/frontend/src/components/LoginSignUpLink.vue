@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-4 mb-2 flex justify-between items-center text-lg">
+  <div class="mx-4 xl:mx-40 gap-50 md:gap-130 mb-2 flex items-center justify-center text-lg">
     <div>
       <div v-if="activePage === 'login'" class="text-bright font-bold">
         Login
