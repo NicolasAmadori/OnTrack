@@ -1,60 +1,28 @@
 <template>
-  <button
-    :type="type"
-    :class="['btn mt-4 py-4 drop-shadow-lg', `btn-${variant}`]"
-    :disabled="disabled || loading"
-  >
-    <span 
-      v-if="loading" 
-      class="spinner-border spinner-border-sm me-2" 
-      role="status" 
-      aria-hidden="true"
+  <div class="mb-2 flex w-full">
+    <button
+        :type="type"
+        :class="[
+      'mt-4 py-4 shadow-lg font-semibold text-2xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed w-full rounded-xl mx-2 xl:mx-40',
+      variant === 'primary' ? 'bg-bright text-dark hover:bg-brighter focus:bg-lessbright' : ''
+    ]"
+        :disabled="disabled || loading"
+    >
+    <span
+        v-if="loading"
+        class="inline-block w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin"
+        role="status"
     ></span>
-
-    <slot />
-    
-  </button>
+      <slot />
+    </button>
+  </div>
 </template>
 
 <script setup>
 defineProps({
-  type: {
-    type: String,
-    default: 'button'
-  },
-  variant: {
-    type: String,
-    default: 'primary'
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
+  type: { type: String, default: 'button' },
+  variant: { type: String, default: 'primary' },
+  loading: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false },
 })
 </script>
-
-<style scoped>
-.btn {
-  font-weight: 600 !important;
-  font-size: x-large;
-}
-.btn:hover {
-  box-shadow: none !important;
-}
-.btn-primary {
-  background-color: var(--bright) !important;
-  color: var(--dark) !important;
-  border: none !important;
-}
-.btn-primary:hover {
-  background-color: var(--brighter) !important;
-}
-.btn-primary:focus {
-  background-color: var(--lessbright) !important;
-  filter: drop-shadow(0 0 #0000)
-}
-</style>

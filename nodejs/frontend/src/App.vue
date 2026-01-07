@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import {provide, ref, watch} from 'vue';
 import { useRoute } from 'vue-router';
 import Sidebar from '@/components/Sidebar.vue';
 
@@ -10,6 +10,11 @@ const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };
 
+provide('sidebarControl', {
+  isSidebarOpen,
+  toggleSidebar
+});
+
 watch(
     () => route.fullPath,
     () => {
@@ -19,70 +24,25 @@ watch(
 </script>
 
 <template>
-  <button
-      v-if="route.meta.showSidebar && (isSidebarOpen === false)"
-      @click.stop="toggleSidebar"
-      class="btn-hamburger d-md-none position-fixed m-2 bg-transparent border-0 p-2"
-  >
-    <i class="bi bi-list !text-bright text-4xl font-bold"></i>
-  </button>
+  <div class="flex w-full min-h-screen relative">
 
-  <div class="d-flex w-100 min-vh-100 position-relative">
     <div
         v-if="isSidebarOpen"
         @click="isSidebarOpen = false"
-        class="sidebar-overlay d-md-none"
+        class="fixed inset-0 bg-black/50 z-1040 md:hidden"
     ></div>
 
     <aside
         v-if="route.meta.showSidebar"
-        class="sidebar-wrapper"
-        :class="{ 'mobile-open': isSidebarOpen }"
+        class="w-70 bg-[#212529] z-1050 transition-transform duration-300 ease-in-out
+               fixed inset-y-0 left-0 -translate-x-full md:relative md:translate-x-0"
+        :class="{ 'translate-x-0': isSidebarOpen }"
     >
       <Sidebar />
     </aside>
 
-    <main class="flex-grow-1 bg-white">
+    <main class="grow bg-white">
       <router-view />
     </main>
   </div>
 </template>
-
-<style scoped>
-.btn-hamburger {
-  z-index: 2000;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1040;
-}
-
-.sidebar-wrapper {
-  width: 280px;
-  background-color: #212529;
-  z-index: 1050;
-  transition: transform 0.3s ease;
-}
-
-@media (max-width: 767.98px) {
-  .sidebar-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    transform: translateX(-100%);
-  }
-
-  .sidebar-wrapper.mobile-open {
-    transform: translateX(0);
-  }
-}
-</style>

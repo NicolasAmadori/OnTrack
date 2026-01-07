@@ -43,10 +43,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getAllUsers } from '@/api/users';
+import { getAllUsers, updateUser, deleteUser } from '@/api/users';
 import SearchBar from '@/components/SearchBar.vue';
 import UserListItem from '@/components/UserListItem.vue';
-import {updateUser, deleteUser} from "../../api/users.js";
+import BaseBanner from "@/components/BaseBanner.vue";
 
 // Store e State
 const userQuery = ref('');

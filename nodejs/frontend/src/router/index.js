@@ -30,31 +30,31 @@ const routes = [
         path: '/home',
         name: "Home",
         component: Home,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
     },
     {
         path: '/profile',
         name: "Profile",
         component: Profile,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'profile' }
     },
     {
         path: '/my-trip',
         name: "My Trip",
         component: MyTrip,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'my-trip' }
     },
     {
         path: '/admin/user-management',
         name: "UserManagement",
         component: UserManagement,
-        meta: { requiresAuth: true, showSidebar: true }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
     },
     {
-        path: '/admin/reservation-management/:user_id',
-        name: "ReservationManagement",
+        path: '/admin/user-management/:user_id',
+        name: "UserReservations",
         component: ReservationManagement,
-        meta: { requiresAuth: true, showSidebar: false }
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
     }
 ];
 

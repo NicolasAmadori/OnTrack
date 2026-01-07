@@ -1,18 +1,18 @@
 <template>
-  <div class="custom-input-container" v-bind="containerAttrs">
-    <div class="input-group-container">
+  <div class="mx-4 xl:mx-40" v-bind="containerAttrs">
+    <div class="flex bg-lighter rounded-xl overflow-hidden h-15 border border-black/5">
       <input
           :id="id"
           :value="modelValue"
           type="text"
           @input="$emit('update:modelValue', $event.target.value)"
           @keyup.enter="$emit('search')"
-          class="custom-input font-mono font-light placeholder:font-mono placeholder:font-light"
+          class="flex-1 bg-transparent text-black px-5 text-[1.1rem] outline-none min-w-0 font-mono font-light placeholder:font-mono placeholder:font-light placeholder:text-lessdark placeholder:transition-opacity placeholder:duration-200 focus:placeholder:opacity-0"
           placeholder="Cerca..."
           v-bind="inputAttrs"
       />
       <button
-          class="btn-search bg-lesslight hover:bg-lessbright px-4"
+          class="flex items-center justify-center shrink-0 bg-lesslight hover:bg-lessbright px-4 cursor-pointer transition-all duration-200 ease-in-out active:scale-95"
           type="button"
           @click="$emit('search')"
           aria-label="Esegui ricerca"
@@ -44,48 +44,3 @@ const inputAttrs = computed(() => {
 <script>
 export default { inheritAttrs: false }
 </script>
-
-<style scoped>
-.input-group-container {
-  display: flex;
-  background-color: var(--lighter);
-  border-radius: 0.375rem;
-  overflow: hidden;
-  height: 60px;
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-.custom-input {
-  flex: 1;
-  background-color: transparent;
-  color: var(--black);
-  border: none;
-  padding: 0 1.25rem;
-  font-size: 1.1rem;
-  outline: none;
-  min-width: 0;
-}
-
-.custom-input::placeholder {
-  color: var(--lessdark);
-  transition: opacity 0.2s;
-}
-
-.custom-input:focus::placeholder {
-  opacity: 0;
-}
-
-.btn-search {
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease-in-out;
-  flex-shrink: 0;
-}
-
-.btn-search:active {
-  transform: scale(0.95);
-}
-</style>

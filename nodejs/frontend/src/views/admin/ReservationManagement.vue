@@ -1,13 +1,5 @@
 <template>
-  <button
-      @click="goBack"
-      class="position-fixed top-0 start-0 m-2 bg-transparent border-0 p-2"
-      style="z-index: 1050;"
-      title="Go back"
-  >
-    <i class="bi bi-arrow-left-circle-fill text-dark text-4xl shadow-sm" style="font-size: 2.5rem;"></i>
-  </button>
-  <BaseBanner title="Reservation Management" imageType="tickets" :subtitle="displaySubtitle" admin/>
+  <BaseBanner title="Reservation Management" imageType="tickets" :subtitle="displaySubtitle" admin goBackIcon/>
 
   <div class="container-fluid mt-4">
     <div class="row mt-4 justify-content-center">
@@ -24,22 +16,18 @@
 
 <script setup>
 import {ref, computed, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 import { getUser } from '@/api/users.js';
+import BaseBanner from "@/components/BaseBanner.vue";
 
 // Store e State
-const router = useRouter();
 const route = useRoute();
 const user_id = computed(() => route.params.user_id);
 const user = ref(null);
 const reservations = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
-
-const goBack = () => {
-  router.back();
-};
 
 const displaySubtitle = computed(() => {
   return user.value?.email || "";

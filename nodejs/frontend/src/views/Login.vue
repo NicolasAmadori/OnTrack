@@ -1,29 +1,36 @@
 <template>
   <BaseBanner title="OnTrack" imageType="station"/>
   <LoginSignUpLink activePage="login" />
-  <div class="row mx-2">
-    <form @submit.prevent="submitForm">
+  <div class="flex flex-col mx-2">
+    <form @submit.prevent="submitForm" class="flex flex-col">
       <BaseInput
-        id="email"
-        v-model="form.email"
-        type="email"
-        placeholder="Email"
-        required
+          id="email"
+          v-model="form.email"
+          type="email"
+          placeholder="Email"
+          required
       />
       <BaseInput
-        id="password"
-        v-model="form.password"
-        type="password"
-        placeholder="Password"
-        :minlength="password_min_length"
-        required
+          id="password"
+          v-model="form.password"
+          type="password"
+          placeholder="Password"
+          :minlength="password_min_length"
+          required
       />
-      <BaseButton type="submit" variant="primary" :loading="isSubmitting" class="w-100 mt-3">Login</BaseButton>
+      <BaseButton
+          type="submit"
+          variant="primary"
+          :loading="isSubmitting"
+          class="w-full mt-3"
+      >
+        Login
+      </BaseButton>
     </form>
     <BaseToast
-      v-model="submitError"
-      type="error"
-      :message="submitError"
+        v-model="submitError"
+        type="error"
+        :message="submitError"
     />
   </div>
 </template>
@@ -32,7 +39,7 @@
 import { reactive, ref } from 'vue';
 
 import LoginSignUpLink from '@/components/LoginSignUpLink.vue';
-import BaseInput from '@/components/BaseInput.vue'; 
+import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import BaseToast from '@/components/BaseToast.vue';
 import BaseBanner from '@/components/BaseBanner.vue';
