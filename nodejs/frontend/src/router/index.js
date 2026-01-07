@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
 
 import Home from '@/views/Home.vue';
+import Results from '@/views/Results.vue';
 import Profile from '@/views/Profile.vue';
 import MyTrip from '@/views/MyTrip.vue';
 
@@ -30,6 +31,12 @@ const routes = [
         path: '/home',
         name: "Home",
         component: Home,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
+    },
+    {
+        path: '/results',
+        name: "Results",
+        component: Results,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
     },
     {
