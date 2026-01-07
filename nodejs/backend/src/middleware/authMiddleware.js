@@ -18,7 +18,6 @@ export const verifyToken = async (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 errors: [{
-                    field: "",
                     message: "Invalid authentication token: User ID missing"
                 }]
             });
@@ -29,8 +28,7 @@ export const verifyToken = async (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 errors: [{
-                    field: "Authentication Token",
-                    message: "Invalid authentication token: User not existing"
+                    message: "Authentication Token: Invalid authentication token: User not existing"
                 }]
             });
         }
@@ -47,7 +45,6 @@ export const verifyToken = async (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 errors: [{
-                    field: "",
                     message: "Invalid or expired authentication token"
                 }]
             });
@@ -56,7 +53,6 @@ export const verifyToken = async (req, res, next) => {
         return res.status(500).json({
             success: false,
             errors: [{
-                field: "",
                 message: `Error during authentication token validation: ${err.message}`
             }]
         });
@@ -68,7 +64,6 @@ export const requireAdmin = (req, res, next) => {
         return res.status(403).json({
             success: false,
             errors: [{
-                field: "",
                 message: 'Access forbidden: Admins only'
             }]
         });
@@ -87,7 +82,6 @@ export const requireAdminOrSelf = (req, res, next) => {
 
     if (!isAdmin && !isSameUser) {
         return res.status(403).json({ success:false, errors: [{
-            field: "",
             message: 'Access forbidden: You can not access this user'
         }] });
     }

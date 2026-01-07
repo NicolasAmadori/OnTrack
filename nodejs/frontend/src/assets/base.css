@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
 :root {
+  --dark: #123441;
+  --darker: #0D2832;
+  --lessdark: #134D57;
   --bright: #F9744D;
-  --lessbright: #e45d33;
-  --brighter: #fa8865;
+  --light: #E2D8D0;
   --white: #EFEFEF;
   --black: #07151B;
-  --dark: #123441;
-  --lessdark: #134D57;
-  --darker: #0D2832;
-  --light: #E2D8D0;
-  --lesslight: #CEC4BC;
-  --lighter: #EAE5E1;
   --disabled: #C2C2C2;
+  --red: #DE373A;
+  --lesslight: #CEC4BC;
   --gray: #878787;
+  --lighter: #EAE5E1;
+  --lessbright: #e45d33;
+  --brighter: #fa8865;
   --lightgray: #CFCFCF;
-  --red: #E42B0B;
+
   --orange: #F0900A;
   --yellow: #F0CD0A;
   --green: #37A13A;

@@ -13,7 +13,6 @@ export const authenticate = async function(req, res) {
             return res.status(401).json({
                 success: false,
                 errors: [{
-                    field: "",
                     message: "Invalid credentials"
                 }]
             });
@@ -40,7 +39,6 @@ export const authenticate = async function(req, res) {
         return res.status(500).json({
             success: false,
             errors: [{
-                field: "",
                 message: `Error during authentication: ${error.message}`
             }]
         });

@@ -1,17 +1,61 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Login from '@/views/Login.vue';
-import Home from '@/views/Home.vue';
 import Signup from '@/views/Signup.vue';
+
+import Home from '@/views/Home.vue';
 import Profile from '@/views/Profile.vue';
+import MyTrip from '@/views/MyTrip.vue';
+
+import UserManagement from '@/views/admin/UserManagement.vue';
+import ReservationManagement from '@/views/admin/ReservationManagement.vue';
+
 import { isTokenValid } from "../api/auth.js";
 
 const routes = [
     { path: '/', redirect: '/home' },
-    { path: '/login', name: "Login", component: Login },
-    { path: '/signup', name: "Signup", component: Signup },
-    { path: '/home', name: "Home", component: Home, meta: { requiresAuth: true } },
-    { path: '/profile', name: "Profile", component: Profile, meta: { requiresAuth: true } },
+    {
+        path: '/login',
+        name: "Login",
+        component: Login,
+        meta: { requiresAuth: false, showSidebar: false }
+    },
+    {
+        path: '/signup',
+        name: "Signup",
+        component: Signup,
+        meta: { requiresAuth: false, showSidebar: false }
+    },
+    {
+        path: '/home',
+        name: "Home",
+        component: Home,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
+    },
+    {
+        path: '/profile',
+        name: "Profile",
+        component: Profile,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'profile' }
+    },
+    {
+        path: '/my-trip',
+        name: "My Trip",
+        component: MyTrip,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'my-trip' }
+    },
+    {
+        path: '/admin/user-management',
+        name: "UserManagement",
+        component: UserManagement,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
+    },
+    {
+        path: '/admin/user-management/:user_id',
+        name: "UserReservations",
+        component: ReservationManagement,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
+    }
 ];
 
 const router = createRouter({

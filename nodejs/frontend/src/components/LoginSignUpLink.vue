@@ -1,19 +1,19 @@
 <template>
-  <div class="row mx-4 mb-2 link-row">
-    <div class="col">
-      <div v-if="activePage === 'login'" class="bright fw-bold">
+  <div class="mx-4 xl:mx-40 gap-50 md:gap-130 mb-2 flex items-center justify-center text-lg">
+    <div>
+      <div v-if="activePage === 'login'" class="text-bright font-bold">
         Login
       </div>
-      <a v-else href="/login">
+      <a v-else href="/login" class="text-black hover:text-lessbright transition-colors duration-200">
         Login
       </a>
     </div>
 
-    <div class="col text-end">
-      <div v-if="activePage === 'signup'" class="bright fw-bold">
+    <div>
+      <div v-if="activePage === 'signup'" class="text-bright font-bold">
         Sign Up
       </div>
-      <a v-else href="/signup">
+      <a v-else href="/signup" class="text-black hover:text-lessbright transition-colors duration-200">
         Sign Up
       </a>
     </div>
@@ -29,18 +29,3 @@ defineProps({
   }
 })
 </script>
-
-<style scoped>
-.link-row {
-  font-size: larger;
-}
-
-a {
-  color: var(--black) !important;
-}
-
-a:hover {
-  color: var(--lessbright) !important;
-  transition: color 0.2s;
-}
-</style>
