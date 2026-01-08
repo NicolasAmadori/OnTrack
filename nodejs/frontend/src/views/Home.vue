@@ -15,7 +15,7 @@
   <BaseSelect 
     iconName="bi-calendar-event-fill" 
     :text="formattedDate" 
-    class="mt-3 mx-2" 
+    class="mt-5 mx-2" 
     @click="handleDateSelect"
   />
   <DateTimePopup 
@@ -31,6 +31,13 @@
     @select="numPassengers = $event"
     class="mt-3 mx-2"
   />
+  <BaseButton 
+    variant="primary" 
+    class="mt-4 mx-2" 
+    @click=""
+  >
+    Search Trains
+  </BaseButton>
 </template>
 
 <script setup>
@@ -39,6 +46,7 @@ import BaseBanner from '@/components/BaseBanner.vue';
 import BaseInput from '@/components/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect.vue';
 import DateTimePopup from '@/components/DateTimePopup.vue';
+import BaseButton from '../components/BaseButton.vue';
 
 const fromLocation = ref('');
 const toLocation = ref('');
