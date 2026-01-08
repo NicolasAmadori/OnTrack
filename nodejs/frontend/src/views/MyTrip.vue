@@ -1,5 +1,5 @@
 <template>
-  <BaseBanner title="My Trip" imageType="passenger" />
+  <BaseBanner title="My Trip" imageType="onboard" />
 </template>
 
 <script setup>

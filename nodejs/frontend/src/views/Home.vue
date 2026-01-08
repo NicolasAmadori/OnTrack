@@ -1,11 +1,14 @@
 <template>
   <BaseBanner title="OnTrack" imageType="station">
-    <div class="position-relative w-100 p-3 bg-transparent">
-      <BaseInput v-model="fromLocation" placeholder="From" />
+    <div class="relative w-full p-3 bg-transparent z-1000">
+      <BaseInput v-model="fromLocation" placeholder="From" class="mb-2" />
       <BaseInput v-model="toLocation" placeholder="To" />
       
-      <button class="btn rounded-circle swap-btn position-absolute top-50 end-0 translate-middle-y me-2 d-flex align-items-center justify-content-center" @click="swapLocations">
-        <i class="bi bi-arrow-down-up"></i>
+      <button 
+        class="absolute top-1/2 right-2 xl:right-40 -translate-y-1/2 w-[50px] h-[50px] rounded-full bg-dark border-none transition-transform duration-200 z-20 flex items-center justify-center group hover:scale-110 hover:bg-lessdark active:bg-bright" 
+        @click="swapLocations"
+      >
+        <i class="bi bi-arrow-down-up text-2xl text-bright transition-transform duration-200 group-active:text-dark group-active:rotate-180"></i>
       </button>
     </div>
   </BaseBanner>
@@ -29,39 +32,3 @@ const swapLocations = () => {
 const handleDateSelect = () => {
 };
 </script>
-
-<style scoped>
-.force-bg-transparent {
-  background-color: transparent !important;
-}
-
-.swap-btn {
-  background-color: var(--dark);
-  width: 50px;
-  height: 50px;
-  border: none;
-  transition: transform 0.2s;
-  z-index: 10;
-}
-
-.swap-btn:hover {
-  transform: scale(1.1);
-  background-color: var(--lessdark);
-}
-
-.swap-btn:active {
-  background-color: var(--bright) !important;
-}
-
-.swap-btn:active i {
-  color: var(--dark) !important;
-  transform: rotate(180deg);
-}
-
-.swap-btn i {
-  color: var(--bright);
-  font-size: 1.5rem;
-  background-color: transparent;
-  transition: transform 0.2s;
-}
-</style>
