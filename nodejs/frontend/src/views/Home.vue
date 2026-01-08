@@ -12,17 +12,41 @@
       </button>
     </div>
   </BaseBanner>
-  <BaseSelect iconName="bi-calendar-event-fill" text="Select Date" class="mt-3 mx-2" @click="handleDateSelect"/>
+  <BaseSelect 
+    iconName="bi-calendar-event-fill" 
+    :text="formattedDate" 
+    class="mt-3 mx-2" 
+    @click="handleDateSelect"
+  />
+  <DateTimePopup 
+    v-if="showDatePopup"
+    v-model="selectedDate"
+    @close="showDatePopup = false"
+  />
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import BaseBanner from '@/components/BaseBanner.vue';
 import BaseInput from '@/components/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect.vue';
+import DateTimePopup from '@/components/DateTimePopup.vue';
 
 const fromLocation = ref('');
 const toLocation = ref('');
+
+const selectedDate = ref(new Date());
+const showDatePopup = ref(false);
+
+const formattedDate = computed(() => {
+  return selectedDate.value.toLocaleString('en-US', {
+    weekday: 'short', 
+    month: 'short', 
+    day: 'numeric', 
+    hour: '2-digit', 
+    minute: '2-digit'
+  });
+});
 
 const swapLocations = () => {
   const temp = fromLocation.value;
@@ -30,5 +54,6 @@ const swapLocations = () => {
   toLocation.value = temp;
 };
 const handleDateSelect = () => {
+    showDatePopup.value = true;
 };
 </script>

@@ -12,7 +12,7 @@
                 </h2>
                 <button 
                     @click="$emit('close')"
-                    class="text-dark hover:text-lessdark focus:outline-none transition-colors"
+                    class="text-dark hover:text-bright focus:outline-none transition-colors"
                     aria-label="Close"
                 >
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
