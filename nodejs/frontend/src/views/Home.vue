@@ -1,6 +1,6 @@
 <template>
   <BaseBanner title="OnTrack" imageType="station">
-    <div class="relative w-full p-3 bg-transparent z-1000">
+    <div class="relative w-full p-2 bg-transparent z-1000">
       <BaseInput v-model="fromLocation" placeholder="From" class="mb-2" />
       <BaseInput v-model="toLocation" placeholder="To" />
       
@@ -23,6 +23,14 @@
     v-model="selectedDate"
     @close="showDatePopup = false"
   />
+  <BaseSelect
+    iconName="bi-people-fill"
+    :text="numPassengers + ' Passenger' + (numPassengers > 1 ? 's' : '')"
+    :options="[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+    v-model="numPassengers"
+    @select="numPassengers = $event"
+    class="mt-3 mx-2"
+  />
 </template>
 
 <script setup>
@@ -38,12 +46,14 @@ const toLocation = ref('');
 const selectedDate = ref(new Date());
 const showDatePopup = ref(false);
 
+const numPassengers = ref(1);
+
 const formattedDate = computed(() => {
-  return selectedDate.value.toLocaleString('en-US', {
-    weekday: 'short', 
-    month: 'short', 
-    day: 'numeric', 
-    hour: '2-digit', 
+  return selectedDate.value.toLocaleString('en-UK', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
     minute: '2-digit'
   });
 });
