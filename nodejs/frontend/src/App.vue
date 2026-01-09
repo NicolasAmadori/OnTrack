@@ -35,7 +35,8 @@ watch(
     <aside
         v-if="route.meta.showSidebar"
         class="w-70 bg-[#212529] z-1050 transition-transform duration-300 ease-in-out
-               fixed inset-y-0 left-0 -translate-x-full md:relative md:translate-x-0"
+               fixed inset-y-0 left-0 -translate-x-full
+               md:sticky md:top-0 md:h-screen md:translate-x-0"
         :class="{ 'translate-x-0': isSidebarOpen }"
     >
       <Sidebar />

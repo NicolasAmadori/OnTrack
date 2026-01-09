@@ -5,12 +5,12 @@
         :to="`/admin/user-management/${id}`"
         class="flex flex-1 items-center min-w-0 bg-light px-3"
     >
-      <span class="truncate font-mono text-sm text-darker">
+      <span class="truncate font-mono text-sm text-black">
         {{ email }}
       </span>
     </router-link>
 
-    <div class="flex items-center bg-[#d6ccc4] px-2 md:px-3 gap-2 md:gap-3">
+    <div class="flex items-center bg-lesslight px-2 md:px-3 gap-2 md:gap-3">
 
       <button
           class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
