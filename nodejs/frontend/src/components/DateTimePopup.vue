@@ -76,12 +76,12 @@
       </div>
 
        <div class="flex justify-center mt-2">
-         <button 
+         <BaseButton 
            @click="confirmSelection"
-           class="w-full py-3 bg-dark text-white rounded-xl font-bold shadow-lg hover:bg-lessdark active:bg-bright transition-all duration-200 flex items-center justify-center gap-2"
+           variant="secondary"
          >
            Confirm Date
-         </button>
+         </BaseButton>
        </div>
     </div>
   </BasePopup>
@@ -90,6 +90,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import BasePopup from '@/components/BasePopup.vue';
+import BaseButton from '@/components/BaseButton.vue';
 
 const props = defineProps({
   modelValue: {

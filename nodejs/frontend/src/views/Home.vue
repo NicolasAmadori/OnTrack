@@ -33,7 +33,7 @@
   />
   <BaseButton 
     variant="primary" 
-    class="mt-4 mx-2" 
+    class="mt-4"
     @click=""
   >
     Search Trains
