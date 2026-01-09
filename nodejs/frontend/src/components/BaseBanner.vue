@@ -26,15 +26,18 @@
       </button>
     </div>
 
-    <h1
-        class="text-2xl md:text-3xl my-3 bg-transparent text-right break-words max-w-[70%] sm:max-w-[80%] md:max-w-full z-0"
-        :style="titleStyle"
-    >
-      {{ title }}
-    </h1>
-    <h3 class="text-2xl self-end bg-transparent text-right" :style="subtitleStyle">
-      {{ subtitle }}
-    </h3>
+    <div class="flex flex-col items-end w-full z-0">
+      <h1
+          class="text-2xl md:text-3xl my-3 bg-transparent text-right break-words max-w-[70%] sm:max-w-[80%] md:max-w-full"
+          :style="titleStyle"
+      >
+        {{ title }}
+      </h1>
+      <h3 class="text-2xl self-end bg-transparent text-right" :style="subtitleStyle">
+        {{ subtitle }}
+      </h3>
+    </div>
+    <slot></slot>
   </div>
 </template>
 
