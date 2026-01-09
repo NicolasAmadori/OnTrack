@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 
 import usersRoutes from "#src/routes/usersRoutes.js";
 import authRoutes from "#src/routes/authRoutes.js";
+import stationsRoutes from "#src/routes/stationsRoute.js";
 
 const app = express();
 
@@ -26,5 +27,6 @@ global.appRoot = path.resolve(__dirname);
 
 app.use('/api/users', usersRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/stations', stationsRoutes);
 
 export default app;
