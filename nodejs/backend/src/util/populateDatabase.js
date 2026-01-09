@@ -1,5 +1,6 @@
 import User from '../models/userModel.js';
 import Reservation from '../models/reservationModel.js';
+import Solution from '../models/solutionModel.js';
 
 const users = [
     {
@@ -40,14 +41,14 @@ const reservations = [
                     {
                         seat: "1A",
                         train_id: "FR3940",
-                        departure_time: new Date("2025-06-01T08:00:00Z"),
-                        arrival_time: new Date("2025-06-01T09:30:00Z"),
+                        departure_time: new Date("2026-01-09T08:00:00Z"),
+                        arrival_time: new Date("2026-01-09T09:30:00Z"),
                     },
                     {
                         seat: "1B",
                         train_id: "FR3942",
-                        departure_time: new Date("2025-06-01T09:45:00Z"),
-                        arrival_time: new Date("2025-06-01T11:00:00Z"),
+                        departure_time: new Date("2026-01-09T09:45:00Z"),
+                        arrival_time: new Date("2026-01-09T11:00:00Z"),
                     }
                 ],
             }
@@ -65,8 +66,8 @@ const reservations = [
                     {
                         seat: "2A",
                         train_id: "FR9400",
-                        departure_time: new Date("2025-06-02T09:30:00Z"),
-                        arrival_time: new Date("2025-06-02T10:30:00Z"),
+                        departure_time: new Date("2026-01-09T09:30:00Z"),
+                        arrival_time: new Date("2026-01-09T10:30:00Z"),
                     }
                 ]
             },
@@ -77,15 +78,83 @@ const reservations = [
                     {
                         seat: "2B",
                         train_id: "FR9400",
-                        departure_time: new Date("2025-06-02T09:30:00Z"),
-                        arrival_time: new Date("2025-06-02T10:30:00Z"),
+                        departure_time: new Date("2026-01-09T09:30:00Z"),
+                        arrival_time: new Date("2026-01-09T10:30:00Z"),
                     }
                 ]
             }
             
         ]
     }
-  ];
+];
+
+const solutions = [
+    {
+        solution_id: "SOL001",
+        origin: "Roma",
+        destination: "Milano",
+        departure_time: new Date("2026-01-09T08:00:00Z"),
+        arrival_time: new Date("2026-01-09T11:00:00Z"),
+        duration: "3h",
+        status: "Confirmed",
+        price_currency: "€",
+        price_amount: 49.99,
+        nodes: [
+            {
+                origin: "Roma",
+                origin_id: "S0527",
+                destination: "Bologna Centrale",
+                destination_id: "S0529",
+                departure_time: new Date("2026-01-09T08:00:00Z"),
+                arrival_time: new Date("2026-01-09T09:30:00Z"),
+                train: {
+                    train_id: "FR3940",
+                    denomination: "Frecciarossa",
+                    code: "3940"
+                }
+            },
+            {
+                origin: "Bologna Centrale",
+                origin_id: "S0529",
+                destination: "Milano",
+                destination_id: "S0531",
+                departure_time: new Date("2026-01-09T09:45:00Z"),
+                arrival_time: new Date("2026-01-09T11:00:00Z"),
+                train: {
+                    train_id: "FR3942",
+                    denomination: "Frecciarossa",
+                    code: "3942"
+                }
+            }
+        ]
+    },
+    {
+        solution_id: "SOL002",
+        origin: "Napoli",
+        destination: "Roma",
+        departure_time: new Date("2026-01-09T09:30:00Z"),
+        arrival_time: new Date("2026-01-09T12:00:00Z"),
+        duration: "2h 30m",
+        status: "Pending",
+        price_currency: "€",
+        price_amount: 29.50,
+        nodes: [
+            {
+                origin: "Napoli",
+                origin_id: "S0540",
+                destination: "Roma",
+                destination_id: "S0527",
+                departure_time: new Date("2026-01-09T09:30:00Z"),
+                arrival_time: new Date("2026-01-09T10:30:00Z"),
+                train: {
+                    train_id: "FR9400",
+                    denomination: "Frecciarossa",
+                    code: "9400"
+                }
+            }
+        ]
+    },
+];
 
 const createUsers = async () => {
     try {
@@ -93,6 +162,21 @@ const createUsers = async () => {
             User.updateOne(
                 { email: user.email },
                 { $set: user },
+                { upsert: true }
+            )
+        );
+        await Promise.all(operations);
+    } catch (error) {
+        throw error;
+    }
+};
+
+const createSolutions = async () => {
+    try {
+        const operations = solutions.map(s =>
+            Solution.updateOne(
+                { solution_id: s.solution_id },
+                { $set: s },
                 { upsert: true }
             )
         );
@@ -122,6 +206,7 @@ const createReservations = async () => {
 const populateDatabase = async () => {
     try {
         await createUsers();
+        await createSolutions();
         const reservations = await createReservations();
 
         const nicolas = await User.findOne({ email: "nicolas.amadori@mail.com" });
