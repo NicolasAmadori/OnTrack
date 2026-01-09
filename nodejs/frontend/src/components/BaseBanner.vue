@@ -44,10 +44,10 @@
 </template>
 
 <script setup>
-import bannerStation from '@/assets/images/banner_station.png';
-import bannerTickets from '@/assets/images/banner_tickets.png';
-import bannerPassenger from '@/assets/images/banner_passenger.png';
-import bannerOnboard from '@/assets/images/banner_onboard.png';
+import bannerStation from '@/assets/images/banners/station.png';
+import bannerTickets from '@/assets/images/banners/tickets.png';
+import bannerPassenger from '@/assets/images/banners/passenger.png';
+import bannerOnboard from '@/assets/images/banners/onboard.png';
 import { computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
