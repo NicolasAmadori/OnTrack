@@ -1,6 +1,6 @@
 <template>
   <BaseBanner title="Profile" imageType="passenger" :subtitle="email" /> 
-  <div class="row mx-2">
+  <div class="row">
     <form @submit.prevent="submitForm">
       <div class="row fs-4 dark mx-4 xl:mx-40">Personal Info</div>
       <BaseInput
