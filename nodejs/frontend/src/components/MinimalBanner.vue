@@ -1,7 +1,6 @@
 <template>
   <div
-      class="h-[30vh] w-full flex flex-col px-6 md:px-3 mb-3 relative py-4"
-      :style="bannerStyle"
+      class="h-[15vh] w-full flex flex-col px-6 md:px-3 mb-3 relative py-4 bg-lessdark"
   >
     <div class="flex items-center justify-between w-full h-12 z-10">
 
@@ -23,7 +22,7 @@
             title="Go back"
         >
           <i class="bi bi-chevron-left text-2xl leading-none" :style="backIconStyle"></i>
-          <span class="text-sm font-bold uppercase tracking-tight" :style="textLinkStyle">Back</span>
+          <span class="text-md font-bold uppercase tracking-tight" :style="textLinkStyle">Back</span>
         </button>
       </div>
 
@@ -40,15 +39,10 @@
         {{ subtitle }}
       </h3>
     </div>
-    <slot></slot>
   </div>
 </template>
 
 <script setup>
-import bannerStation from '@/assets/images/banners/station.png';
-import bannerTickets from '@/assets/images/banners/tickets.png';
-import bannerPassenger from '@/assets/images/banners/passenger.png';
-import bannerOnboard from '@/assets/images/banners/onboard.png';
 import { computed, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -57,37 +51,11 @@ const router = useRouter();
 
 const props = defineProps({
   title: { type: String, default: 'OnTrack' },
-  imageType: {
-    type: String,
-    default: 'station',
-    validator: (value) => ['station', 'tickets', 'passenger', 'onboard'].includes(value)
-  },
   subtitle: { type: String, default: '' },
-  admin: { type: Boolean, default: false },
   goBackIcon: { type: Boolean, default: false }
 });
 
-const images = {
-  station: bannerStation,
-  tickets: bannerTickets,
-  passenger: bannerPassenger,
-  onboard: bannerOnboard
-};
-
 const goBack = () => router.back();
-
-const bannerStyle = computed(() => {
-  const selectedImage = images[props.imageType] || images.station;
-  const gradientColor = props.admin
-      ? 'rgba(249, 116, 77, 0.8)'
-      : 'rgba(19, 77, 87, 0.8)';
-
-  return {
-    backgroundImage: `linear-gradient(to bottom, ${gradientColor}, ${gradientColor}), url(${selectedImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center center'
-  };
-});
 
 const titleStyle = computed(() => ({
   color: props.admin ? 'var(--black)' : 'var(--white)'
