@@ -32,7 +32,7 @@ const users = [
 const reservations = [
     {
         solution_id: "SOL001",
-        email: "nicolas.amadori@mail.com",
+        email: "riccardo.mazzi@mail.com",
         passengers: [
             {
                 first_name: "Nicolas",
@@ -211,8 +211,8 @@ const populateDatabase = async () => {
 
         const nicolas = await User.findOne({ email: "nicolas.amadori@mail.com" });
         const riccardo = await User.findOne({ email: "riccardo.mazzi@mail.com" });
-        nicolas.reservations = [reservations.find(r => r.email === "nicolas.amadori@mail.com")._id];
-        riccardo.reservations = [reservations.find(r => r.email === "riccardo.mazzi@mail.com")._id];
+        // nicolas.reservations = reservations.filter(r => r.email === "nicolas.amadori@mail.com").map(r => r._id);
+        riccardo.reservations = reservations.filter(r => r.email === "riccardo.mazzi@mail.com").map(r => r._id);
         await nicolas.save();
         await riccardo.save();
     } catch (error) {

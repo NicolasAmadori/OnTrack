@@ -15,7 +15,7 @@
           <template v-for="(logoKey, index) in logos" :key="logoKey">
 
             <img
-                :src="LOGO_MAP[logoKey]"
+                :src="getTrainLogo(logoKey)"
                 :alt="logoKey"
                 class="h-5 w-auto object-contain"
             />
@@ -39,22 +39,7 @@
 
 <script setup>
 import {computed} from "vue";
-
-import ferrovieLogo from '@/assets/images/logos/ferrovie_dello_stato_italiane.png';
-import frecciarossaLogo from '@/assets/images/logos/frecciarossa.png';
-import intercityLogo from '@/assets/images/logos/intercity.png';
-import italoLogo from '@/assets/images/logos/italo.png';
-import regionaleLogo from '@/assets/images/logos/regionale.png';
-import regionaleVeloceLogo from '@/assets/images/logos/regionale_veloce.png';
-
-const LOGO_MAP = {
-  ferrovie: ferrovieLogo,
-  frecciarossa: frecciarossaLogo,
-  intercity: intercityLogo,
-  italo: italoLogo,
-  regionale: regionaleLogo,
-  regionaleVeloce: regionaleVeloceLogo
-};
+import { getTrainLogo } from "@/util/trainLogos";
 
 const props = defineProps({
   id: { type: [String, Number], required: true },

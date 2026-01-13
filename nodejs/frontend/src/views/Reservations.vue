@@ -10,7 +10,7 @@
                 :key="reservation._id" 
                 class="p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
             >
-            <h3 class="text-xl font-bold mb-2">Reservation {{ reservation }}</h3>
+                <ReservationCard :reservation="reservation" />
             </div>
         </div>
     </div>
@@ -19,6 +19,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import BaseBanner from "@/components/BaseBanner.vue";
+import ReservationCard from "@/components/ReservationCard.vue";
 import { getUserReservations } from '../api/reservations';
 
 const reservations = ref([]);
