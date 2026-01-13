@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/utils/constants.js';
+import { API_BASE_URL } from '@/util/constants.js';
 import { checkResponseSuccess } from "./util";
 
 export async function get_stations(authToken, name) {

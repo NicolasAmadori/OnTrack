@@ -4,11 +4,20 @@
 <template>
   <BaseBanner title="OnTrack" imageType="station">
     <div class="relative w-full p-2 bg-transparent z-1000">
-      <BaseInput v-model="fromLocation" placeholder="From" class="mb-2" />
-      <BaseInput v-model="toLocation" placeholder="To" />
+      <StationInput
+          ref="fromInputComponent"
+          v-model="fromLocation"
+          placeholder="From"
+          class="mb-2"
+      />
+      <StationInput
+          ref="toInputComponent"
+          v-model="toLocation"
+          placeholder="To"
+      />
 
       <button
-        class="absolute top-1/2 right-2 xl:right-40 -translate-y-1/2 w-[50px] h-[50px] rounded-full bg-dark border-none transition-transform duration-200 z-20 flex items-center justify-center group hover:scale-110 hover:bg-lessdark active:bg-bright"
+        class="absolute top-20.75 -right-1.75 xl:right-36.25 -translate-y-1/2 w-12.5 h-12.5 rounded-full bg-dark border-none transition-transform duration-200 z-20 flex items-center justify-center group hover:scale-110 hover:bg-lessdark active:bg-bright"
         @click="swapLocations"
       >
         <i class="bi bi-arrow-down-up text-2xl text-bright transition-transform duration-200 group-active:text-dark group-active:rotate-180"></i>
@@ -50,9 +59,13 @@ import BaseInput from '@/components/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect.vue';
 import DateTimePopup from '@/components/DateTimePopup.vue';
 import BaseButton from '../components/BaseButton.vue';
+import StationInput from "@/components/StationInput.vue";
 
 const fromLocation = ref('');
 const toLocation = ref('');
+
+const fromInputComponent = ref(null);
+const toInputComponent = ref(null);
 
 const selectedDate = ref(new Date());
 const showDatePopup = ref(false);
@@ -70,9 +83,17 @@ const formattedDate = computed(() => {
 });
 
 const swapLocations = () => {
-  const temp = fromLocation.value;
+  const tempId = fromLocation.value;
   fromLocation.value = toLocation.value;
-  toLocation.value = temp;
+  toLocation.value = tempId;
+
+  if (fromInputComponent.value && toInputComponent.value) {
+    const fromText = fromInputComponent.value.query;
+    const toText = toInputComponent.value.query;
+
+    fromInputComponent.value.setDisplayValue(toText);
+    toInputComponent.value.setDisplayValue(fromText);
+  }
 };
 const handleDateSelect = () => {
     showDatePopup.value = true;
