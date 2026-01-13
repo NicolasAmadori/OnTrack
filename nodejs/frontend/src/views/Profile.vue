@@ -51,7 +51,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import { getUser, updateUser } from '../api/users';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
 import BaseBanner from "@/components/BaseBanner.vue";
-import { errorMessages } from '@/api/util.js';
+import { createErrors } from '@/api/util.js';
 
 const form = reactive({
   first_name: '',
@@ -91,12 +91,12 @@ const submitForm = async () => {
   try {
     if ((form.password || form.confirm_password || form.old_password)
         && !(form.password && form.confirm_password && form.old_password)) {
-          errorMessages.value = ['To change your password, please fill in all password fields.'];
+          createErrors(['To change your password, please fill in all password fields.']);
       return;
     }
     
     if (form.password !== form.confirm_password) {
-      errorMessages.value = ['New password and confirmation do not match.'];
+      createErrors(['New password and confirmation do not match.']);
       return;
     }
 
@@ -110,7 +110,7 @@ const submitForm = async () => {
     await fetchUser();
 
   } catch (error) {
-    errorMessages.value = [error.message];
+    createErrors([error.message]);
   } finally {
     form.old_password = '';
     form.password = '';

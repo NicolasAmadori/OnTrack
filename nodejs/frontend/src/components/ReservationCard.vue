@@ -1,7 +1,7 @@
 <template>
-  <div class="rounded-xl flex flex-col mb-4 overflow-hidden transition-all duration-500" :class="expanded ? '' : 'shadow-md'">
+  <div class="rounded-xl flex flex-col mb-4 overflow-hidden transition-all duration-300" :class="expanded ? '' : 'shadow-md'">
     <div
-      class="group bg-lesslight p-4 rounded-t-xl cursor-pointer relative"
+      class="group bg-lesslight p-4 rounded-t-xl cursor-pointer relative hover:opacity-90"
       @click="toggleExpand"
     >
       <div

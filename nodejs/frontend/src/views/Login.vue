@@ -40,7 +40,7 @@ import BaseBanner from '@/components/BaseBanner.vue';
 import { login } from '@/api/auth.js';
 import router from '@/router';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
-import { errorMessages } from '@/api/util.js';
+import { createErrors } from '@/api/util.js';
 
 const password_min_length = PASSWORD_MIN_LENGTH;
 const form = reactive({
@@ -57,7 +57,7 @@ const submitForm = async () => {
     await login(form.email, form.password);
     router.push({ path: '/home' });
   } catch (error) {
-    errorMessages.value = [error.message];
+    createErrors([error.message]);
   } finally {
     form.password = '';
     isSubmitting.value = false;

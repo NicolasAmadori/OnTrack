@@ -56,11 +56,12 @@ watch(
     />
     <BaseToast
       v-for="(error, index) in errorMessages"
-      :key="index"
+      :key="error.id"
       :model-value="true"
       @update:model-value="errorMessages.splice(index, 1)"
       type="error"
-      :message="error"
+      :message="error.text"
+      :style="{ bottom: `calc(1rem + ${index * 4.5}rem)` }"
     />
   </div>
 </template>
