@@ -46,7 +46,7 @@
   <BaseButton
     variant="primary"
     class="mt-4"
-    @click=""
+    @click="handleSearch"
   >
     Search Trains
   </BaseButton>
@@ -54,12 +54,15 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from "vue-router";
 import BaseBanner from '@/components/BaseBanner.vue';
 import BaseInput from '@/components/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect.vue';
 import DateTimePopup from '@/components/DateTimePopup.vue';
 import BaseButton from '../components/BaseButton.vue';
 import StationInput from "@/components/StationInput.vue";
+
+const router = useRouter();
 
 const fromLocation = ref('');
 const toLocation = ref('');
@@ -98,4 +101,22 @@ const swapLocations = () => {
 const handleDateSelect = () => {
     showDatePopup.value = true;
 };
+
+const handleSearch = () => {
+  if (!fromLocation.value || !toLocation.value) {
+    alert("Please select both stations");
+    return;
+  }
+  router.push({
+    name: 'Results',
+    query: {
+      from: fromLocation.value,
+      fromName: fromInputComponent.value?.query,
+      to: toLocation.value,
+      toName: toInputComponent.value?.query,
+      date: selectedDate.value.toISOString(),
+      passengers: numPassengers.value
+    }
+  });
+}
 </script>
