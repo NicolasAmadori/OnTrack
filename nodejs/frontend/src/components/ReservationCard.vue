@@ -75,7 +75,7 @@
                         <span class="font-bold">{{ formatTime(node.departure_time) }}</span> → <span class="font-bold">{{ formatTime(node.arrival_time) }}</span>
                     </span>
                     <span class="text-dark font-mono font-medium">{{ node.train.train_id }}</span>
-                    <img :src="getTrainLogo(node.train.denomination)" class="h-5 w-auto object-contain" alt="Train Logo" />
+                    <img :src="getTrainLogo(node.train.logo_id)" class="h-5 w-auto object-contain" alt="Train Logo" />
                 </div>
                 <div class="text-black text-lg lg:text-xl">
                     {{ node.origin }} - {{ node.destination }}
@@ -117,7 +117,7 @@ const trainLogos = computed(() => {
     if(props.reservation.nodes && Array.isArray(props.reservation.nodes)) {
         props.reservation.nodes.forEach(node => {
             if(node.train) {
-                logos.push(getTrainLogo(node.train.denomination));
+                logos.push(getTrainLogo(node.train.logo_id));
             }
         });
     }

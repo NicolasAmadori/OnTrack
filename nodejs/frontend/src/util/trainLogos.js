@@ -1,30 +1,25 @@
-import ferrovieLogo from '@/assets/images/logos/ferrovie_dello_stato_italiane.png';
-import frecciarossaLogo from '@/assets/images/logos/frecciarossa.png';
-import intercityLogo from '@/assets/images/logos/intercity.png';
+import fallbackLogo from '@/assets/images/logos/fallback.png';
+import frecciarossaLogo from '@/assets/images/logos/FR.png';
+import intercityLogo from '@/assets/images/logos/IC.png';
 import italoLogo from '@/assets/images/logos/italo.png';
-import regionaleLogo from '@/assets/images/logos/regionale.png';
-import regionaleVeloceLogo from '@/assets/images/logos/regionale_veloce.png';
-
-const normalizeDenomination = (denom) => {
-    if (!denom) return 'ferrovie';
-    const d = denom.toLowerCase().replace(/\s+/g, '');
-    if (d.includes('frecciarossa')) return 'frecciarossa';
-    if (d.includes('intercity')) return 'intercity';
-    if (d.includes('italo')) return 'italo';
-    if (d === 'regionale') return 'regionale';
-    if (d.includes('regionaleveloce') || d.includes('regionale veloce')) return 'regionaleVeloce';
-    return 'ferrovie';
-};
+import regionaleLogo from '@/assets/images/logos/REnoTI.png';
+import regionaleVeloceTTPER from '@/assets/images/logos/RVnoTI.png';
+import regionaleVeloceLogo from '@/assets/images/logos/RV.png';
+import intercityNotteLogo from '@/assets/images/logos/NI.png';
+import frecciarossa1000Logo from '@/assets/images/logos/FR1000.png';
 
 const LOGO_MAP = {
-  ferrovie: ferrovieLogo,
-  frecciarossa: frecciarossaLogo,
-  intercity: intercityLogo,
-  italo: italoLogo,
-  regionale: regionaleLogo,
-  regionaleVeloce: regionaleVeloceLogo
+    fallback: fallbackLogo,
+    FR: frecciarossaLogo,
+    IC: intercityLogo,
+    unknown: italoLogo,
+    REnoTI: regionaleLogo,
+    RVnoTI: regionaleVeloceTTPER,
+    RV: regionaleVeloceLogo,
+    NI: intercityNotteLogo,
+    FR1000: frecciarossa1000Logo
 };
 
-export const getTrainLogo = (denomination) => {
-    return LOGO_MAP[normalizeDenomination(denomination)];
+export const getTrainLogo = (logoId) => {
+    return LOGO_MAP[logoId] || LOGO_MAP.fallback;
 };

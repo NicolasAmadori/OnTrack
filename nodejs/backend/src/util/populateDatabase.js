@@ -109,7 +109,7 @@ const solutions = [
                 arrival_time: new Date("2026-01-09T09:30:00Z"),
                 train: {
                     train_id: "FR3940",
-                    denomination: "Frecciarossa",
+                    logo_id: "FR",
                     code: "3940"
                 }
             },
@@ -122,7 +122,7 @@ const solutions = [
                 arrival_time: new Date("2026-01-09T11:00:00Z"),
                 train: {
                     train_id: "FR3942",
-                    denomination: "Frecciarossa",
+                    logo_id: "FR",
                     code: "3942"
                 }
             }
@@ -148,7 +148,7 @@ const solutions = [
                 arrival_time: new Date("2026-01-09T12:00:00Z"),
                 train: {
                     train_id: "FR9400",
-                    denomination: "Frecciarossa",
+                    logo_id: "FR",
                     code: "9400"
                 }
             }
