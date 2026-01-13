@@ -21,3 +21,21 @@ export async function getUserReservations(authToken, id) {
 
     return data.reservations;
 }
+
+export async function deleteReservation(authToken, reservationId) {
+    if (authToken === null) {
+        throw new Error("User not authenticated");
+    }
+    if (reservationId === null) {
+        throw new Error("Reservation ID not found");
+    }
+    const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+        },
+    });
+    const data = await response.json();
+    checkResponseSuccess(response, data);
+}

@@ -10,7 +10,7 @@
                 :key="reservation._id" 
                 class="p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
             >
-                <ReservationCard :reservation="reservation" />
+                <ReservationCard :reservation="reservation" @delete="delReservation(reservation._id)"/>
             </div>
         </div>
     </div>
@@ -20,7 +20,7 @@
 import { onMounted, ref } from 'vue';
 import BaseBanner from "@/components/BaseBanner.vue";
 import ReservationCard from "@/components/ReservationCard.vue";
-import { getUserReservations } from '../api/reservations';
+import { getUserReservations, deleteReservation } from '../api/reservations';
 
 const reservations = ref([]);
 
@@ -29,6 +29,15 @@ const fetchReservations = async () => {
         reservations.value = await getUserReservations(localStorage.getItem('authToken'), localStorage.getItem('id'));
     } catch (error) {
         console.error('Error fetching reservations:', error);
+    }
+};
+
+const delReservation = async (reservationId) => {
+    reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
+    try {
+        await deleteReservation(localStorage.getItem('authToken'), reservationId);
+    } catch (error) {
+        console.error('Error deleting reservation:', error);
     }
 };
 

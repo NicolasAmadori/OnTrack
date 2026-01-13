@@ -19,7 +19,14 @@ export const get_user_reservations = async function(req, res) {
         const resSol = await Promise.all(reservations.map(async(r) => {
             const s = await Solution.findOne({ solution_id: r.solution_id }).lean().exec();
             const rObj = r.toObject ? r.toObject() : r;
-            const combined =  { ...rObj, ...s };
+            
+            const { _id: solutionDbId, ...solutionData } = s || {};
+
+            const combined = { 
+                ...rObj, 
+                ...solutionData,
+                solution_id: solutionDbId
+            };
             return combined;
         }));
 
@@ -35,5 +42,22 @@ export const get_user_reservations = async function(req, res) {
                 message: err.message
             }]
         });
+    }
+}
+
+export const delete_reservation = async function(req, res) {
+    try {
+        const id = req.params.reservationId;
+        const reservation = await Reservation.findOneAndDelete({ _id: id }, null);
+
+        if (!reservation) {
+            return res.status(404).json({ success: false, errors: [{ message: "Reservation not found" }] });
+        }
+
+        await User.updateOne({ reservations: id }, { $pull: { reservations: id } });
+
+        return res.status(200).json({ success: true, message: 'Reservation deleted successfully' });
+    } catch (error) {
+        return res.status(500).json({ success: false, errors: [{ message: error.message }] });
     }
 }
