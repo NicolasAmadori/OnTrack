@@ -86,7 +86,7 @@
 
       <button 
         class="absolute bottom-4 right-4 text-dark hover:text-bright border-none bg-transparent cursor-pointer p-0 z-10"
-        @click.stop="deleteReservation"
+        @click.stop="$emit('delete', reservation._id)"
         title="Delete reservation"
       >
         <i class="bi bi-trash3-fill text-2xl"></i>
@@ -99,6 +99,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { getTrainLogo } from '@/util/trainLogos';
+import { formatTime } from '@/util/dateTime';
 
 const props = defineProps({
   reservation: {
@@ -127,31 +128,17 @@ const toggleExpand = () => {
     expanded.value = !expanded.value;
 };
 
-const deleteReservation = () => {
-    emit('delete', props.reservation._id);
-};
-
-const formatTime = (dateStr) => {
-    if (!dateStr) return '';
-    try {
-        const d = new Date(dateStr);
-        return d.toLocaleTimeString('en-UK', { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
-        return dateStr;
-    }
-};
-
 const calculateSwapDuration = (startStr, endStr) => {
     try {
         const start = new Date(startStr);
         const end = new Date(endStr);
         const diffMs = end - start;
         if (diffMs < 0) return '0m';
-        
+
         const diffMins = Math.floor(diffMs / 60000);
         const hours = Math.floor(diffMins / 60);
         const mins = diffMins % 60;
-        
+
         if (hours > 0) return `${hours}h ${mins}m`;
         return `${mins}m`;
     } catch (e) {

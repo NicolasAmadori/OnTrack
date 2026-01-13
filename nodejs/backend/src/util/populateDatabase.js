@@ -145,7 +145,7 @@ const solutions = [
                 destination: "Roma",
                 destination_id: "S0527",
                 departure_time: new Date("2026-01-09T09:30:00Z"),
-                arrival_time: new Date("2026-01-09T10:30:00Z"),
+                arrival_time: new Date("2026-01-09T12:00:00Z"),
                 train: {
                     train_id: "FR9400",
                     denomination: "Frecciarossa",
