@@ -1,4 +1,6 @@
 import User from '../models/userModel.js';
+import Reservation from '../models/reservationModel.js';
+import Solution from '../models/solutionModel.js';
 
 const users = [
     {
@@ -27,6 +29,133 @@ const users = [
     },
 ];
 
+const reservations = [
+    {
+        solution_id: "SOL001",
+        email: "riccardo.mazzi@mail.com",
+        passengers: [
+            {
+                first_name: "Nicolas",
+                last_name: "Amadori",
+                seats: [
+                    {
+                        seat: "1A",
+                        train_id: "FR3940",
+                        departure_time: new Date("2026-01-09T08:00:00Z"),
+                        arrival_time: new Date("2026-01-09T09:30:00Z"),
+                    },
+                    {
+                        seat: "1B",
+                        train_id: "FR3942",
+                        departure_time: new Date("2026-01-09T09:45:00Z"),
+                        arrival_time: new Date("2026-01-09T11:00:00Z"),
+                    }
+                ],
+            }
+        ]
+        
+    },
+    {
+        solution_id: "SOL002",
+        email: "riccardo.mazzi@mail.com",
+        passengers: [
+            {
+                first_name: "Riccardo",
+                last_name: "Mazzi",
+                seats: [
+                    {
+                        seat: "2A",
+                        train_id: "FR9400",
+                        departure_time: new Date("2026-01-09T09:30:00Z"),
+                        arrival_time: new Date("2026-01-09T10:30:00Z"),
+                    }
+                ]
+            },
+            {
+                first_name: "Mario",
+                last_name: "Rossi",
+                seats: [
+                    {
+                        seat: "2B",
+                        train_id: "FR9400",
+                        departure_time: new Date("2026-01-09T09:30:00Z"),
+                        arrival_time: new Date("2026-01-09T10:30:00Z"),
+                    }
+                ]
+            }
+            
+        ]
+    }
+];
+
+const solutions = [
+    {
+        solution_id: "SOL001",
+        origin: "Roma",
+        destination: "Milano",
+        departure_time: new Date("2026-01-09T08:00:00Z"),
+        arrival_time: new Date("2026-01-09T11:00:00Z"),
+        duration: "3h",
+        status: "Confirmed",
+        price_currency: "€",
+        price_amount: 49.99,
+        nodes: [
+            {
+                origin: "Roma",
+                origin_id: "S0527",
+                destination: "Bologna Centrale",
+                destination_id: "S0529",
+                departure_time: new Date("2026-01-09T08:00:00Z"),
+                arrival_time: new Date("2026-01-09T09:30:00Z"),
+                train: {
+                    train_id: "FR3940",
+                    logo_id: "FR",
+                    code: "3940"
+                }
+            },
+            {
+                origin: "Bologna Centrale",
+                origin_id: "S0529",
+                destination: "Milano",
+                destination_id: "S0531",
+                departure_time: new Date("2026-01-09T09:45:00Z"),
+                arrival_time: new Date("2026-01-09T11:00:00Z"),
+                train: {
+                    train_id: "FR3942",
+                    logo_id: "FR",
+                    code: "3942"
+                }
+            }
+        ]
+    },
+    {
+        solution_id: "SOL002",
+        origin: "Napoli",
+        destination: "Roma",
+        departure_time: new Date("2026-01-09T09:30:00Z"),
+        arrival_time: new Date("2026-01-09T12:00:00Z"),
+        duration: "2h 30m",
+        status: "Pending",
+        price_currency: "€",
+        price_amount: 29.50,
+        nodes: [
+            {
+                origin: "Napoli",
+                origin_id: "S0540",
+                destination: "Roma",
+                destination_id: "S0527",
+                departure_time: new Date("2026-01-09T09:30:00Z"),
+                arrival_time: new Date("2026-01-09T12:00:00Z"),
+                train: {
+                    train_id: "FR9400",
+                    logo_id: "FR",
+                    code: "9400"
+                }
+            }
+        ]
+    },
+];
+
 const createUsers = async () => {
     try {
         const operations = users.map(user =>
@@ -36,18 +165,58 @@ const createUsers = async () => {
                 { upsert: true }
             )
         );
-
         await Promise.all(operations);
     } catch (error) {
         throw error;
     }
 };
 
+const createSolutions = async () => {
+    try {
+        const operations = solutions.map(s =>
+            Solution.updateOne(
+                { solution_id: s.solution_id },
+                { $set: s },
+                { upsert: true }
+            )
+        );
+        await Promise.all(operations);
+    } catch (error) {
+        throw error;
+    }
+};
+
+const createReservations = async () => {
+    try {
+        const operations = reservations.map(r => 
+            Reservation.updateOne(
+                { solution_id: r.solution_id, email: r.email },
+                { $set: r },
+                { upsert: true }
+            )
+        );
+        await Promise.all(operations);
+        return await Reservation.find();
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 const populateDatabase = async () => {
     try {
         await createUsers();
+        await createSolutions();
+        const reservations = await createReservations();
+
+        const nicolas = await User.findOne({ email: "nicolas.amadori@mail.com" });
+        const riccardo = await User.findOne({ email: "riccardo.mazzi@mail.com" });
+        // nicolas.reservations = reservations.filter(r => r.email === "nicolas.amadori@mail.com").map(r => r._id);
+        riccardo.reservations = reservations.filter(r => r.email === "riccardo.mazzi@mail.com").map(r => r._id);
+        await nicolas.save();
+        await riccardo.save();
     } catch (error) {
-        console.error('Errore fatale nel seeding del database:', error);
+        console.error('Fatal Error in database seeding:', error);
     }
 };
 

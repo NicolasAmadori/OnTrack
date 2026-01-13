@@ -7,6 +7,7 @@ import usersRoutes from "#src/routes/usersRoutes.js";
 import authRoutes from "#src/routes/authRoutes.js";
 import stationsRoutes from "#src/routes/stationsRoute.js";
 import solutionsRoutes from "#src/routes/solutionsRoutes.js";
+import reservationsRoutes from "#src/routes/reservationsRoutes.js";
 
 const app = express();
 
@@ -30,5 +31,6 @@ app.use('/api/users', usersRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/stations', stationsRoutes);
 app.use('/api/solutions', solutionsRoutes);
+app.use('/api/reservations', reservationsRoutes);
 
 export default app;

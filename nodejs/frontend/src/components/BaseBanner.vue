@@ -28,7 +28,7 @@
       </div>
 
       <h1
-          class="text-3xl bg-transparent text-right wrap-break-word max-w-[60%] m-0 leading-none"
+            class="text-3xl bg-transparent text-right max-w-[60%] m-0 leading-none break-normal"
           :style="titleStyle"
       >
         {{ title }}

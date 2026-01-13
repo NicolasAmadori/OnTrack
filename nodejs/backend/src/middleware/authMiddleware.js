@@ -88,3 +88,23 @@ export const requireAdminOrSelf = (req, res, next) => {
 
     next();
 };
+
+export const requireAdminOrReservationOwner = async (req, res, next) => {
+  try {
+    const userIdFromToken = req.user.id;
+    const reservationId = req.params.reservationId;
+
+    const user = await User.findById(userIdFromToken).exec();
+
+    const isAdmin = req.user.is_admin === true;
+    const hasReservation = user.reservations.some(reservation => reservation.toString() === reservationId);
+
+    if (!isAdmin && !hasReservation) {
+      return res.status(403).json({ message: 'Access forbidden: You can not access this reservation' });
+    }
+
+    next();
+  } catch (err) {
+    return res.status(500).json({ message: 'Error during authorization: ' + err.message });
+  }
+};
