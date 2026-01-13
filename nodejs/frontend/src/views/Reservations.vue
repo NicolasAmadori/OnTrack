@@ -7,13 +7,18 @@
         <div v-else class="space-y-6">
             <div 
                 v-for="reservation in reservations" 
-                :key="reservation._id" 
-                class="p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+                :key="reservation._id"
             >
-                <ReservationCard :reservation="reservation" @delete="delReservation(reservation._id)"/>
+                <ReservationCard :reservation="reservation" @delete="reservationToDelete = reservation"/>
             </div>
         </div>
     </div>
+    <ConfirmationPopup v-if="reservationToDelete" 
+        :title="'Delete Reservation'" 
+        :question="'Are you sure you want to delete this reservation? This action cannot be undone.'" 
+        @confirm="delReservation(reservationToDelete._id)" 
+        @cancel="reservationToDelete = null"
+    />
 </template>
 
 <script setup>
@@ -21,8 +26,10 @@ import { onMounted, ref } from 'vue';
 import BaseBanner from "@/components/BaseBanner.vue";
 import ReservationCard from "@/components/ReservationCard.vue";
 import { getUserReservations, deleteReservation } from '../api/reservations';
+import ConfirmationPopup from '../components/ConfirmationPopup.vue';
 
 const reservations = ref([]);
+const reservationToDelete = ref(null);
 
 const fetchReservations = async () => {
     try {
@@ -33,6 +40,7 @@ const fetchReservations = async () => {
 };
 
 const delReservation = async (reservationId) => {
+    reservationToDelete.value = null;
     reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
     try {
         await deleteReservation(localStorage.getItem('authToken'), reservationId);

@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl flex flex-col mb-4 overflow-hidden shadow-md transition-all duration-500">
+  <div class="rounded-xl flex flex-col mb-4 overflow-hidden transition-all duration-500" :class="expanded ? '' : 'shadow-md'">
     <div
       class="group bg-lesslight p-4 rounded-t-xl cursor-pointer relative"
       @click="toggleExpand"
@@ -12,28 +12,28 @@
       </div>
 
       <div class="flex justify-between items-center mb-1">
-        <span class="text-dark font-mono text-lg">
+        <span class="text-dark font-mono text-lg lg:text-xl">
           {{ new Date(reservation.departure_time).toLocaleDateString('en-UK') }}
         </span>
       </div>
 
       <div class="flex justify-between items-center mb-1">
-        <span class="text-darker text-lg">
+        <span class="text-darker text-xl lg:text-2xl">
           From <b class="font-bold">{{ reservation.origin }}</b>
         </span>
-        <span class="text-darker font-mono font-bold text-xl">
+        <span class="text-darker font-mono font-bold text-xl lg:text-2xl">
           {{ reservation.price_currency }}{{ reservation.price_amount.toFixed(2) }}
         </span>
       </div>
 
       <div class="flex justify-between items-center">
-        <span class="text-darker text-lg">
+        <span class="text-darker text-xl lg:text-2xl">
           To <b class="font-bold">{{ reservation.destination }}</b>
         </span>
         <div class="flex items-center gap-2">
-          <span class="text-darker font-mono">{{ reservation.duration }}</span>
+          <span class="text-darker font-mono text-lg lg:text-xl">{{ reservation.duration }}</span>
           <i
-            class="bi text-xl transition-transform duration-200 group-hover:text-bright text-darker"
+            class="bi text-2xl transition-transform duration-200 group-hover:text-bright text-darker"
             :class="expanded ? 'bi-chevron-up' : 'bi-chevron-down'"
           ></i>
         </div>
@@ -44,17 +44,17 @@
       
       <div v-if="!expanded" class="p-4 pr-12">
         <div class="flex flex-col">
-            <div class="font-mono text-xl font-bold text-black">
+            <div class="font-mono text-xl lg:text-2xl font-bold text-black">
                 {{ formatTime(reservation.departure_time) }} → {{ formatTime(reservation.arrival_time) }}
             </div>
             <div class="flex">
-              <template v-for="(logo, index) in uniqueTrainLogos" :key="index">
+              <template v-for="(logo, index) in trainLogos" :key="index">
                  <img
                     :src="logo"
-                    class="h-6 w-auto object-contain"
+                    class="h-6 w-auto object-contain "
                     alt="Train Logo"
                 />
-                <span v-if="index < uniqueTrainLogos.length - 1" class="mx-2 text-black text-[15px] font-bold">
+                <span v-if="index < trainLogos.length - 1" class="mx-2 text-black text-[15px] font-bold">
                   /
                 </span>
               </template>
@@ -71,13 +71,13 @@
 
             <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-3 flex-wrap">
-                    <span class="font-mono text-lg text-black">
+                    <span class="font-mono text-xl lg:text-2xl text-black">
                         <span class="font-bold">{{ formatTime(node.departure_time) }}</span> → <span class="font-bold">{{ formatTime(node.arrival_time) }}</span>
                     </span>
                     <span class="text-dark font-mono font-medium">{{ node.train.train_id }}</span>
                     <img :src="getTrainLogo(node.train.denomination)" class="h-5 w-auto object-contain" alt="Train Logo" />
                 </div>
-                <div class="text-black">
+                <div class="text-black text-lg lg:text-xl">
                     {{ node.origin }} - {{ node.destination }}
                 </div>
             </div>
@@ -111,7 +111,7 @@ const emit = defineEmits(['delete']);
 
 const expanded = ref(false);
 
-const uniqueTrainLogos = computed(() => {
+const trainLogos = computed(() => {
     const logos = [];
     if(props.reservation.nodes && Array.isArray(props.reservation.nodes)) {
         props.reservation.nodes.forEach(node => {
