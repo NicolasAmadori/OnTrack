@@ -11,7 +11,6 @@
 
       <BaseButton type="submit" variant="primary" :loading="isSubmitting" class="w-full mt-3">Sign Up</BaseButton>
     </form>
-    <BaseToast v-model="submitError" type="error" :message="submitError" />
   </div>
 </template>
 
@@ -21,12 +20,11 @@ import { reactive, ref } from 'vue';
 import LoginSignUpLink from '@/components/LoginSignUpLink.vue';
 import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
-import BaseToast from '@/components/BaseToast.vue';
 import BaseBanner from '@/components/BaseBanner.vue';
 import { login, register } from '@/api/auth.js';
 import router from '@/router';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
-
+import { errorMessages } from '@/api/util.js';
 const password_min_length = PASSWORD_MIN_LENGTH;
 const form = reactive({
   email: '',
@@ -37,14 +35,13 @@ const form = reactive({
 });
 
 const isSubmitting = ref(false);
-const submitError = ref(null);
 
 const submitForm = async () => {
   isSubmitting.value = true;
 
   try {
     if ( form.password !== form.confirmpassword ) {
-      submitError.value = 'Passwords do not match';
+      errorMessages.value = ['Passwords do not match'];
       return;
     }
 
@@ -53,7 +50,7 @@ const submitForm = async () => {
     router.push({ path: '/home' });
 
   } catch (error) {
-    submitError.value = error.message;
+    errorMessages.value = [error.message];
   } finally {
     form.password = '';
     form.confirmpassword = '';

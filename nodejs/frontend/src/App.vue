@@ -2,6 +2,8 @@
 import {provide, ref, watch} from 'vue';
 import { useRoute } from 'vue-router';
 import Sidebar from '@/components/Sidebar.vue';
+import BaseToast from '@/components/BaseToast.vue';
+import { successMessage, errorMessages } from '@/api/util.js';
 
 const route = useRoute();
 const isSidebarOpen = ref(false);
@@ -45,5 +47,20 @@ watch(
     <main class="grow bg-white">
       <router-view />
     </main>
+
+    <BaseToast
+        v-model="successMessage"
+        v-if="successMessage"
+        type="success"
+        :message="successMessage"
+    />
+    <BaseToast
+      v-for="(error, index) in errorMessages"
+      :key="index"
+      :model-value="true"
+      @update:model-value="errorMessages.splice(index, 1)"
+      type="error"
+      :message="error"
+    />
   </div>
 </template>

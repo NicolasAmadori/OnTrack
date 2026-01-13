@@ -1,9 +1,13 @@
+import { ref } from 'vue';
+
 export function checkResponseSuccess(response, data) {
     if (!response.ok || !data.success) {
-        let errorMessage = ""
-        data.errors.forEach(({ message }) => {
-            errorMessage = errorMessage + `Error received: ${message}\n`
-        });
-        throw new Error(errorMessage || 'Unknown error');
+        errorMessages.value = data.errors.map(error => error.message) || ['Unknown error'];
+    }
+    if (response.ok && data.success && data.message) {
+        successMessage.value = data.message;
     }
 }
+
+export const successMessage = ref('');
+export const errorMessages = ref([]);
