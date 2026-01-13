@@ -41,16 +41,6 @@
       />
       <BaseButton type="submit" variant="primary" :loading="isSubmitting" :disabled="!hasChanges">Update Profile</BaseButton>
     </form>
-    <BaseToast
-      v-model="submitSuccess"
-      type="success"
-      message="Profile updated successfully!"
-    />
-    <BaseToast
-      v-model="showErrorToast"
-      type="error"
-      :message="submitError"
-    />
   </div>
 </template>
 
@@ -60,8 +50,8 @@ import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { getUser, updateUser } from '../api/users';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
-import BaseToast from '../components/BaseToast.vue';
 import BaseBanner from "@/components/BaseBanner.vue";
+import { createErrors } from '@/api/util.js';
 
 const form = reactive({
   first_name: '',
@@ -82,23 +72,15 @@ const hasChanges = computed(() =>
   form.confirm_password !== ''
 );
 const isSubmitting = ref(false);
-const submitSuccess = ref(false);
-const showErrorToast = ref(false);
-const submitError = ref("");
 let email = ''
 
 const fetchUser = async () => {
-  try {
-    const user = await getUser(localStorage.getItem('authToken'), localStorage.getItem('id'));
-    email = user.email;
-    form.first_name = user.first_name;
-    form.last_name = user.last_name;
-    originalUser.first_name = user.first_name;
-    originalUser.last_name = user.last_name;
-  } catch (error) {
-    submitError.value = 'Error fetching user data: ' + error.message;
-    showErrorToast.value = true;
-  }
+  const user = await getUser(localStorage.getItem('authToken'), localStorage.getItem('id'));
+  email = user.email;
+  form.first_name = user.first_name;
+  form.last_name = user.last_name;
+  originalUser.first_name = user.first_name;
+  originalUser.last_name = user.last_name;
 };
 
 onMounted(fetchUser);
@@ -109,14 +91,12 @@ const submitForm = async () => {
   try {
     if ((form.password || form.confirm_password || form.old_password)
         && !(form.password && form.confirm_password && form.old_password)) {
-      submitError.value = 'To change your password, please fill in all password fields.';
-      showErrorToast.value = true;
+          createErrors(['To change your password, please fill in all password fields.']);
       return;
     }
     
     if (form.password !== form.confirm_password) {
-      submitError.value = 'New password and confirmation do not match.';
-      showErrorToast.value = true;
+      createErrors(['New password and confirmation do not match.']);
       return;
     }
 
@@ -128,11 +108,9 @@ const submitForm = async () => {
     });
 
     await fetchUser();
-    submitSuccess.value = true;
 
   } catch (error) {
-    submitError.value = error.message;
-    showErrorToast.value = true;
+    createErrors([error.message]);
   } finally {
     form.old_password = '';
     form.password = '';

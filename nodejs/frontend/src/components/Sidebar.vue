@@ -9,6 +9,7 @@ const menuItems = [
   { name: 'Home', path: '/home', icon: 'bi-house-door-fill', metaKey: 'home' },
   { name: 'Profile', path: '/profile', icon: 'bi-person-badge', metaKey: 'profile' },
   { name: 'My Trip', path: '/my-trip', icon: 'bi-luggage-fill', metaKey: 'my-trip' },
+  { name: 'Reservations', path: '/reservations', icon: 'bi-journal-bookmark-fill', metaKey: 'reservations' },
 ];
 
 const adminMenuItems = [

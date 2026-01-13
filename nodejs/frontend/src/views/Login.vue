@@ -27,12 +27,6 @@
         Login
       </BaseButton>
     </form>
-    <BaseToast
-        v-model="submitError"
-        v-if="submitError"
-        type="error"
-        :message="submitError"
-    />
   </div>
 </template>
 
@@ -42,11 +36,11 @@ import { reactive, ref } from 'vue';
 import LoginSignUpLink from '@/components/LoginSignUpLink.vue';
 import BaseInput from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
-import BaseToast from '@/components/BaseToast.vue';
 import BaseBanner from '@/components/BaseBanner.vue';
 import { login } from '@/api/auth.js';
 import router from '@/router';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
+import { createErrors } from '@/api/util.js';
 
 const password_min_length = PASSWORD_MIN_LENGTH;
 const form = reactive({
@@ -55,7 +49,6 @@ const form = reactive({
 });
 
 const isSubmitting = ref(false);
-const submitError = ref("");
 
 const submitForm = async () => {
   isSubmitting.value = true;
@@ -64,7 +57,7 @@ const submitForm = async () => {
     await login(form.email, form.password);
     router.push({ path: '/home' });
   } catch (error) {
-    submitError.value = error.message;
+    createErrors([error.message]);
   } finally {
     form.password = '';
     isSubmitting.value = false;

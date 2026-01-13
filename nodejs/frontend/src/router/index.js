@@ -7,6 +7,7 @@ import Home from '@/views/Home.vue';
 import Results from '@/views/Results.vue';
 import Profile from '@/views/Profile.vue';
 import MyTrip from '@/views/MyTrip.vue';
+import Reservations from '../views/Reservations.vue';
 
 import UserManagement from '@/views/admin/UserManagement.vue';
 import ReservationManagement from '@/views/admin/ReservationManagement.vue';
@@ -50,6 +51,12 @@ const routes = [
         name: "My Trip",
         component: MyTrip,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'my-trip' }
+    },
+    {
+        path: '/reservations',
+        name: "Reservations",
+        component: Reservations,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'reservations' }
     },
     {
         path: '/admin/user-management',
