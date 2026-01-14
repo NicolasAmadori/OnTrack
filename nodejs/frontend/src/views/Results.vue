@@ -37,6 +37,7 @@ import { useRoute } from 'vue-router';
 import MinimalBanner from "@/components/MinimalBanner.vue";
 import ResultListItem from "@/components/ResultListItem.vue";
 import { searchSolution } from "@/api/solutions.js";
+import { formatDate, formatTime } from "@/util/dateTime.js";
 
 const route = useRoute();
 const results = ref([]);
@@ -47,16 +48,6 @@ const routeSubtitle = computed(() => {
   const to = route.query.toName || 'Destination';
   return `${from} → ${to}`;
 });
-
-const formatTime = (dateStr) => {
-  if (!dateStr) return '';
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleTimeString('en-UK', { hour: '2-digit', minute: '2-digit' });
-  } catch (e) {
-    return dateStr;
-  }
-};
 
 const fetchResults = async () => {
   loading.value = true;
@@ -70,7 +61,6 @@ const fetchResults = async () => {
         route.query.date,
         route.query.passengers
     );
-    console.log(data);
     const amounts = data
         .map(res => res.solution)
         .filter(sol => sol.status === "SALEABLE" && sol.price)
@@ -83,12 +73,7 @@ const fetchResults = async () => {
         .filter(sol => sol.status === "SALEABLE")
         .map(sol => ({
           id: sol.id,
-          date: new Date(sol.departureTime).toLocaleDateString('en-GB', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }),
+          date: formatDate(sol.departureTime),
           startingTime: formatTime(sol.departureTime),
           arrivalTime: formatTime(sol.arrivalTime),
           price: sol.price ? sol.price.amount.toFixed(2) + sol.price.currency : 'N/A',
@@ -97,7 +82,6 @@ const fetchResults = async () => {
           highlighted: sol.price && sol.price.amount === minPrice,
           logos: sol.trains.map(t => t.logoId)
         }));
-    console.log(results.value);
   } catch (error) {
     console.error("Errore nel recupero treni:", error);
   } finally {

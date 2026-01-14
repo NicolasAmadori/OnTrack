@@ -7,3 +7,18 @@ export const formatTime = (dateStr) => {
         return dateStr;
     }
 };
+
+export const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-GB', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } catch (e) {
+        return dateStr;
+    }
+}
