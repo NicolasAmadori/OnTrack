@@ -41,12 +41,12 @@ const fetchReservations = async () => {
 
 const delReservation = async (reservationId) => {
     reservationToDelete.value = null;
-    reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
     try {
         await deleteReservation(localStorage.getItem('authToken'), reservationId);
     } catch (error) {
         console.error('Error deleting reservation:', error);
     }
+    reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
 };
 
 onMounted(fetchReservations);

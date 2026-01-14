@@ -44,7 +44,7 @@
         </button>
       </div>
 
-      <div class="flex items-center justify-center gap-4 py-4 border-t border-gray-100">
+      <div v-if="!dateOnly" class="flex items-center justify-center gap-4 py-4 border-t border-gray-100">
         <div class="flex flex-col items-center">
             <label class="text-xs text-gray-400 font-bold mb-1 tracking-wider">LEAVING AT</label>
             <div class="flex items-center p-3 bg-light rounded-xl shadow-inner gap-4">
@@ -96,6 +96,10 @@ const props = defineProps({
   modelValue: {
     type: Date,
     default: () => new Date()
+  },
+  dateOnly: {
+    type: Boolean,
+    default: false
   }
 });
 

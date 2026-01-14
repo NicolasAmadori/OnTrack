@@ -11,6 +11,7 @@ import Reservations from '../views/Reservations.vue';
 
 import UserManagement from '@/views/admin/UserManagement.vue';
 import ReservationManagement from '@/views/admin/ReservationManagement.vue';
+import TrainManagement from '@/views/admin/TrainManagement.vue';
 
 import { isTokenValid } from "../api/auth.js";
 
@@ -69,6 +70,12 @@ const routes = [
         name: "UserReservations",
         component: ReservationManagement,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
+    },
+    {
+        path: '/admin/train-management',
+        name: "TrainManagement",
+        component: TrainManagement,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'train-management' }
     }
 ];
 
