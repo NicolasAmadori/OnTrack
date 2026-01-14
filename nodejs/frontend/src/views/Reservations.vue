@@ -9,7 +9,18 @@
                 v-for="reservation in reservations" 
                 :key="reservation._id"
             >
-                <ReservationCard :reservation="reservation" @delete="reservationToDelete = reservation"/>
+                <ReservationCard
+                    :departure_time="reservation.departure_time"
+                    :arrival_time="reservation.arrival_time"
+                    :origin="reservation.origin"
+                    :destination="reservation.destination"
+                    :duration="reservation.duration"
+                    :price_amount="reservation.price_amount"
+                    :price_currency="reservation.price_currency"
+                    :nodes="reservation.nodes"
+                    :num_passengers="reservation.passengers.length"
+                    :reservation_id="reservation._id"
+                    @delete="reservationToDelete = reservation"/>
             </div>
         </div>
     </div>
