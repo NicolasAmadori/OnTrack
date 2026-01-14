@@ -48,6 +48,7 @@ import TrainListItem from "@/components/TrainListItem.vue";
 import DateTimePopup from "@/components/DateTimePopup.vue";
 import ConfirmationPopup from '../../components/ConfirmationPopup.vue';
 import { formatDate } from "@/util/dateTime";
+import { get_trains } from '@/api/trains';
 
 const showDatePopup = ref(false);
 const selectedDate = ref(new Date());
@@ -57,7 +58,12 @@ const trainToDelete = ref(null);
 
 const formattedDate = computed(() => formatDate(selectedDate.value));
 
-const updateTrains = () => {
+const updateTrains = async () => {
+    try {
+        trains.value = await get_trains(localStorage.getItem('authToken'), selectedDate.value, searchQuery.value);
+    } catch (error) {
+        console.error('Error fetching trains:', error);
+    }
 }
 
 onMounted(() => {
