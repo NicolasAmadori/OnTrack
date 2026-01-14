@@ -55,6 +55,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from "vue-router";
+import { DateTime } from 'luxon'
 import BaseBanner from '@/components/BaseBanner.vue';
 import BaseInput from '@/components/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect.vue';
@@ -114,7 +115,7 @@ const handleSearch = () => {
       fromName: fromInputComponent.value?.query,
       to: toLocation.value,
       toName: toInputComponent.value?.query,
-      date: selectedDate.value.toISOString(),
+      date: DateTime.fromJSDate(selectedDate.value).toISO(),
       passengers: numPassengers.value
     }
   });
