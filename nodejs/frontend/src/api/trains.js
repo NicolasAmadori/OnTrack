@@ -19,3 +19,23 @@ export async function get_trains(authToken, date = new Date(), searchQuery = '')
 
     return data.trains;
 }
+
+export async function delete_train(authToken, trainId) {
+    if (authToken == null) {
+        throw new Error('Authentication token is required');
+    }
+    if (trainId == null) {
+        throw new Error('Train ID is required');
+    }
+
+    const response = await fetch(`${API_BASE_URL}/trains/${trainId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+        },
+    });
+
+    const data = await response.json();
+    checkResponseSuccess(response, data);
+}

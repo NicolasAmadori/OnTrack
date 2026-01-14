@@ -15,6 +15,7 @@
                 :key="train._id"
                 :code="train.code"
                 :logo_id="train.logo_id"
+                :cancelled="train.cancelled"
                 @delete="trainToDelete = train" 
             />
             <div v-if="trains.length === 0" class="text-center text-gray-400 font-mono mt-4 text-lg">
@@ -31,8 +32,8 @@
     />
     <ConfirmationPopup 
         v-if="trainToDelete"
-        title="Delete Train"
-        question="Are you sure you want to delete this train? This action cannot be undone." 
+        :title="trainToDelete.cancelled ? 'Restore Train' : 'Cancel Train'"
+        :question="trainToDelete.cancelled ? 'Are you sure you want to restore this train?' : 'Are you sure you want to cancel this train?'" 
         @confirm="delTrain(trainToDelete._id)" 
         @cancel="trainToDelete = null"
     />
@@ -48,7 +49,7 @@ import TrainListItem from "@/components/TrainListItem.vue";
 import DateTimePopup from "@/components/DateTimePopup.vue";
 import ConfirmationPopup from '../../components/ConfirmationPopup.vue';
 import { formatDate } from "@/util/dateTime";
-import { get_trains } from '@/api/trains';
+import { get_trains, delete_train } from '@/api/trains';
 
 const showDatePopup = ref(false);
 const selectedDate = ref(new Date());
@@ -77,10 +78,11 @@ watch([selectedDate, searchQuery], () => {
 const delTrain = async (trainId) => {
     trainToDelete.value = null;
     try {
+        await delete_train(localStorage.getItem('authToken'), trainId);
     } catch (error) {
         console.error('Error deleting train:', error);
     }
-    trains.value = trains.value.filter(train => train._id !== trainId);
+    updateTrains();
 };
 
 </script>

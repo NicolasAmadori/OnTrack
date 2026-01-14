@@ -11,23 +11,23 @@
                 @click="$emit('cancel')" 
                 class="px-4 py-2 bg-bright text-dark rounded hover:bg-lessbright transition-colors"
             >
-                Cancel
+                Go Back
             </button>
         </div>
     </BasePopup>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import BasePopup from './BasePopup.vue';
 
-defineProps<{
+defineProps({
     title: {
         type: String,
         default: 'Confirmation Dialog'
-    };
+    },
     question: {
         type: String,
         required: true
     }
-}>();
+});
 </script>

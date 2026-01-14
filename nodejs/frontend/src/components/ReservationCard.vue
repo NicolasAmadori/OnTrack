@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl flex flex-col mb-4 overflow-hidden transition-all duration-300" :class="expanded ? '' : 'shadow-md'">
+  <div class="rounded-xl flex flex-col mb-4 overflow-hidden transition-all duration-300" :class="[{ 'shadow-md': !expanded }, disabled ? 'opacity-50' : '']">
     <div
       class="group bg-lesslight p-4 rounded-t-xl cursor-pointer relative hover:opacity-90"
       @click="toggleExpand"
@@ -39,6 +39,9 @@
         </div>
       </div>
     </div>
+    <div v-if="disabled" class="bg-red text-white text-center font-bold py-1">
+      TRAIN CANCELLED
+    </div>
 
     <div class="bg-light relative rounded-b-xl flex flex-col transition-all duration-300">
       
@@ -69,7 +72,7 @@
               <span class="text-sm font-mono">{{ calculateSwapDuration(reservation.nodes[index-1].arrival_time, node.departure_time) }}</span>
             </div>
 
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1" :class="node.train.cancelled ? 'line-through' : ''">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="font-mono text-xl lg:text-2xl text-black">
                         <span class="font-bold">{{ formatTime(node.departure_time) }}</span> → <span class="font-bold">{{ formatTime(node.arrival_time) }}</span>
@@ -111,6 +114,7 @@ const props = defineProps({
 const emit = defineEmits(['delete']);
 
 const expanded = ref(false);
+const disabled = computed(() => props.reservation.nodes.find(node => node.train.cancelled));
 
 const trainLogos = computed(() => {
     const logos = [];
