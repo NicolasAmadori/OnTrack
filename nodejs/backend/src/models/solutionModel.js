@@ -16,11 +16,7 @@ var SolutionSchema = new Schema({
         destination: { type: String, required: true },
         departure_time: { type: Date, required: true },
         arrival_time: { type: Date, required: true },
-        train: {
-            train_id: { type: String, required: true },
-            denomination: { type: String, required: true },
-            code: { type: String, required: true },
-        }
+        train: { type: Schema.Types.ObjectId, ref: 'Train', required: true },
     }]
 });
 

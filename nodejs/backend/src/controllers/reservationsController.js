@@ -1,13 +1,14 @@
 import User from '#src/models/userModel.js';
 import Reservation from '#src/models/reservationModel.js';
 import Solution from '#src/models/solutionModel.js';
+import Train from '#src/models/trainModel.js';
 
 export const get_user_reservations = async function(req, res) {
      try {
         const userId = req.params.userId;
         const user = await User.findOne({ _id: userId }, "-password").exec();
         if (!user) {
-            return res.status(404).json({ success: false, errors: [{ message: "User not found" + user }] });
+            return res.status(404).json({ success: false, errors: [{ message: "User with id " + userId + " not found" }] });
         }
 
         const reservationsId = user.reservations;
@@ -17,10 +18,14 @@ export const get_user_reservations = async function(req, res) {
             .exec();
 
         const resSol = await Promise.all(reservations.map(async(r) => {
-            const s = await Solution.findOne({ solution_id: r.solution_id }).lean().exec();
+            const solTrain = await Solution.findOne({ solution_id: r.solution_id })
+                .populate('nodes.train')
+                .lean()
+                .exec();
+
             const rObj = r.toObject ? r.toObject() : r;
-            
-            const { _id: solutionDbId, ...solutionData } = s || {};
+
+            const { _id: solutionDbId, ...solutionData } = solTrain || {};
 
             const combined = { 
                 ...rObj, 

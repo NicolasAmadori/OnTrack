@@ -1,6 +1,7 @@
-import User from '../models/userModel.js';
-import Reservation from '../models/reservationModel.js';
-import Solution from '../models/solutionModel.js';
+import User from '#src/models/userModel.js';
+import Reservation from '#src/models/reservationModel.js';
+import Solution from '#src/models/solutionModel.js';
+import Train from '#src/models/trainModel.js';
 
 const users = [
     {
@@ -40,13 +41,15 @@ const reservations = [
                 seats: [
                     {
                         seat: "1A",
-                        train_id: "FR3940",
+                        train: "69667b56b0b90d2b71e06991",
+                        train_acronym: "FR3940",
                         departure_time: new Date("2026-01-09T08:00:00Z"),
                         arrival_time: new Date("2026-01-09T09:30:00Z"),
                     },
                     {
                         seat: "1B",
-                        train_id: "FR3942",
+                        train: "69667b56b0b90d2b71e06992",
+                        train_acronym: "FR3942",
                         departure_time: new Date("2026-01-09T09:45:00Z"),
                         arrival_time: new Date("2026-01-09T11:00:00Z"),
                     }
@@ -65,7 +68,8 @@ const reservations = [
                 seats: [
                     {
                         seat: "2A",
-                        train_id: "FR9400",
+                        train: "69667b56b0b90d2b71e06993",
+                        train_acronym: "FR9400",
                         departure_time: new Date("2026-01-09T09:30:00Z"),
                         arrival_time: new Date("2026-01-09T10:30:00Z"),
                     }
@@ -77,7 +81,8 @@ const reservations = [
                 seats: [
                     {
                         seat: "2B",
-                        train_id: "FR9400",
+                        train: "69667b56b0b90d2b71e06993",
+                        train_acronym: "FR9400",
                         departure_time: new Date("2026-01-09T09:30:00Z"),
                         arrival_time: new Date("2026-01-09T10:30:00Z"),
                     }
@@ -87,6 +92,30 @@ const reservations = [
         ]
     }
 ];
+
+const trains = [
+    {
+        _id: "69667b56b0b90d2b71e06991",
+        acronym: "FR3940",
+        date: new Date("2026-01-09"),
+        denomination: "Frecciarossa",
+        delay: 67
+    },
+    {
+        _id: "69667b56b0b90d2b71e06992",
+        acronym: "FR3942",
+        date: new Date("2026-01-09"),
+        denomination: "Frecciarossa",
+        delay: 15
+    },
+    {
+        _id: "69667b56b0b90d2b71e06993",
+        acronym: "FR9400",
+        date: new Date("2026-01-09"),
+        denomination: "Frecciarossa",
+        delay: 5
+    }
+]
 
 const solutions = [
     {
@@ -107,11 +136,7 @@ const solutions = [
                 destination_id: "S0529",
                 departure_time: new Date("2026-01-09T08:00:00Z"),
                 arrival_time: new Date("2026-01-09T09:30:00Z"),
-                train: {
-                    train_id: "FR3940",
-                    denomination: "Frecciarossa",
-                    code: "3940"
-                }
+                train: "69667b56b0b90d2b71e06991"
             },
             {
                 origin: "Bologna Centrale",
@@ -120,11 +145,7 @@ const solutions = [
                 destination_id: "S0531",
                 departure_time: new Date("2026-01-09T09:45:00Z"),
                 arrival_time: new Date("2026-01-09T11:00:00Z"),
-                train: {
-                    train_id: "FR3942",
-                    denomination: "Frecciarossa",
-                    code: "3942"
-                }
+                train: "69667b56b0b90d2b71e06992",
             }
         ]
     },
@@ -146,11 +167,7 @@ const solutions = [
                 destination_id: "S0527",
                 departure_time: new Date("2026-01-09T09:30:00Z"),
                 arrival_time: new Date("2026-01-09T12:00:00Z"),
-                train: {
-                    train_id: "FR9400",
-                    denomination: "Frecciarossa",
-                    code: "9400"
-                }
+                train: "69667b56b0b90d2b71e06993",
             }
         ]
     },
@@ -162,6 +179,21 @@ const createUsers = async () => {
             User.updateOne(
                 { email: user.email },
                 { $set: user },
+                { upsert: true }
+            )
+        );
+        await Promise.all(operations);
+    } catch (error) {
+        throw error;
+    }
+};
+
+const createTrains = async () => {
+    try {
+        const operations = trains.map(train =>
+            Train.updateOne(
+                { _id: train._id },
+                { $set: train },
                 { upsert: true }
             )
         );
@@ -206,6 +238,7 @@ const createReservations = async () => {
 const populateDatabase = async () => {
     try {
         await createUsers();
+        await createTrains();
         await createSolutions();
         const reservations = await createReservations();
 

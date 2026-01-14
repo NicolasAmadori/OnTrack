@@ -9,7 +9,7 @@ var ReservationSchema = new Schema({
         last_name: { type: String, required: true },
         seats: [{
             seat: { type: String, required: true },
-            train_id: { type: String, required: true },
+            train: { type: Schema.Types.ObjectId, ref: 'Train', required: true },
             departure_time: { type: Date, required: true },
             arrival_time: { type: Date, required: true },
         }],
