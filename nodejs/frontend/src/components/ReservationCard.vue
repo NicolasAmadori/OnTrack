@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <div v-if="disabled" class="bg-red text-white text-center font-bold py-1 text-lg tracking-widest">
+    <div v-if="cancelled" class="bg-red text-white text-center font-bold py-1 text-lg tracking-widest">
       TRAIN CANCELLED
     </div>
 
@@ -51,11 +51,11 @@
             <div class="font-mono text-xl lg:text-2xl font-bold text-black">
                 {{ formatTime(departure_time) }} → {{ formatTime(arrival_time) }}
             </div>
-            <div class="flex">
+            <div class="flex content-center items-center">
               <template v-for="(logo, index) in trainLogos" :key="index">
                  <img
                     :src="logo"
-                    class="h-6 w-auto object-contain "
+                    class="h-3 lg:h-4 w-auto object-contain"
                     alt="Train Logo"
                 />
                 <span v-if="index < trainLogos.length - 1" class="mx-2 text-black text-[15px] font-bold">
@@ -78,8 +78,8 @@
                     <span class="font-mono text-xl lg:text-2xl text-black">
                         <span class="font-bold">{{ formatTime(node.departure_time) }}</span> → <span class="font-bold">{{ formatTime(node.arrival_time) }}</span>
                     </span>
-                    <span class="text-dark font-mono font-medium">{{ node.train.code }}</span>
-                    <img :src="getTrainLogo(node.train.logo_id)" class="h-5 w-auto object-contain" alt="Train Logo" />
+                    <span class="text-dark font-mono font-semibold">{{ node.train.code }}</span>
+                    <img :src="getTrainLogo(node.train.logo_id)" class="h-3 lg:h-4 w-auto object-contain" alt="Train Logo" />
                 </div>
                 <div class="text-black text-lg lg:text-xl">
                     {{ node.origin }} - {{ node.destination }}
@@ -134,7 +134,8 @@ const props = defineProps({
 const emit = defineEmits(['delete']);
 
 const expanded = ref(false);
-const disabled = computed(() => props.nodes.find(node => node.train.cancelled));
+const cancelled = computed(() => props.nodes.some(node => node.train.cancelled));
+const disabled = computed(() => cancelled.value || props.arrival_time < new Date().toISOString());
 
 const trainLogos = computed(() => {
     const logos = [];

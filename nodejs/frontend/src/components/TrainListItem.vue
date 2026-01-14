@@ -6,7 +6,7 @@
         <span class="truncate font-mono text-lg text-black font-bold" :class="cancelled ? 'line-through' : ''">
             {{ code }}
         </span>
-        <img :src="getTrainLogo(logo_id)" alt="Logo" class="h-6 w-auto object-contain" />
+        <img :src="getTrainLogo(logo_id)" alt="Logo" class="h-3 lg:h-4 w-auto object-contain" />
     </div>
 
     <div class="flex items-center bg-lesslight px-2 md:px-3 gap-2 md:gap-3">
