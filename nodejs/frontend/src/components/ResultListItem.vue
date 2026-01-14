@@ -54,22 +54,7 @@ const props = defineProps({
   highlighted: { type: Boolean, default: false },
   logos: {
     type: Array,
-    default: () => ['fallback'],
-    validator: (value) => {
-      if (value.length < 1 || value.length > 3) return false;
-      const allowedKeys = [
-        'fallback',
-        'FR',
-        'IC',
-        'unknown',
-        'REnoTI',
-        'RVnoTI',
-        'RV',
-        'NI',
-        'FR1000'
-      ];
-      return value.every(key => allowedKeys.includes(key));
-    }
+    default: () => ['fallback']
   }
 })
 

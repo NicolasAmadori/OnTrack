@@ -63,14 +63,12 @@ const fetchResults = async () => {
     );
     const amounts = data
         .map(res => res.solution)
-        .filter(sol => sol.status === "SALEABLE" && sol.price)
         .map(sol => sol.price.amount);
 
     const minPrice = amounts.length > 0 ? Math.min(...amounts) : null;
 
     results.value = data
         .map(res => res.solution)
-        .filter(sol => sol.status === "SALEABLE")
         .map(sol => ({
           id: sol.id,
           date: formatDate(sol.departureTime),
