@@ -9,7 +9,18 @@
                 v-for="reservation in reservations" 
                 :key="reservation._id"
             >
-                <ReservationCard :reservation="reservation" @delete="reservationToDelete = reservation"/>
+                <ReservationCard
+                    :departure_time="reservation.departure_time"
+                    :arrival_time="reservation.arrival_time"
+                    :origin="reservation.origin"
+                    :destination="reservation.destination"
+                    :duration="reservation.duration"
+                    :price_amount="reservation.price_amount"
+                    :price_currency="reservation.price_currency"
+                    :nodes="reservation.nodes"
+                    :num_passengers="reservation.passengers.length"
+                    :reservation_id="reservation._id"
+                    @delete="reservationToDelete = reservation"/>
             </div>
         </div>
     </div>
@@ -41,12 +52,12 @@ const fetchReservations = async () => {
 
 const delReservation = async (reservationId) => {
     reservationToDelete.value = null;
-    reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
     try {
         await deleteReservation(localStorage.getItem('authToken'), reservationId);
     } catch (error) {
         console.error('Error deleting reservation:', error);
     }
+    reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
 };
 
 onMounted(fetchReservations);

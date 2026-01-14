@@ -9,6 +9,7 @@ var TrainSchema = new Schema({
     denomination: { type: String, required: true },
     date: { type: Date, required: true },
     delay: { type: Number, default: 0 },
+    cancelled: { type: Boolean, default: false },
     bathrooms: [{
         isOccupied: { type: Boolean, default: false },
         queue: { type: [String], default: [] }
