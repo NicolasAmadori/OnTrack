@@ -29,7 +29,10 @@ const handleLogout = () => {
 <template>
   <div class="flex flex-col p-4 bg-gray-100 border-r border-gray-200 h-full min-h-screen">
 
-    <h4 class="mb-6 text-black font-bold px-2 text-xl">OnTrack</h4>
+    <router-link to="/home" class="flex items-center gap-3 mb-6 px-2 no-underline">
+      <img src="/logo.png" alt="Logo" class="h-14 w-auto object-contain" />
+      <h4 class="text-black font-bold text-xl">OnTrack</h4>
+    </router-link>
 
     <ul class="flex flex-col gap-1 grow list-none p-0">
 

@@ -96,23 +96,32 @@ const reservations = [
 const trains = [
     {
         _id: "69667b56b0b90d2b71e06991",
-        acronym: "FR3940",
-        date: new Date("2026-01-09"),
+        code: "FR3940",
+        logo_id: "FR",
+        name: "3940",
+        acronym: "FR",
         denomination: "Frecciarossa",
+        date: new Date("2026-01-09"),
         delay: 67
     },
     {
         _id: "69667b56b0b90d2b71e06992",
-        acronym: "FR3942",
-        date: new Date("2026-01-09"),
+        code: "FR3942",
+        logo_id: "FR",
+        name: "3942",
+        acronym: "FR",
         denomination: "Frecciarossa",
+        date: new Date("2026-01-09"),
         delay: 15
     },
     {
         _id: "69667b56b0b90d2b71e06993",
-        acronym: "FR9400",
-        date: new Date("2026-01-09"),
+        code: "FR9400",
+        logo_id: "FR",
+        name: "9400",
+        acronym: "FR",
         denomination: "Frecciarossa",
+        date: new Date("2026-01-09"),
         delay: 5
     }
 ]
