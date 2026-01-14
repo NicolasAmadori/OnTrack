@@ -1,5 +1,5 @@
 <template>
-  <BasePopup title="Select Date & Time" @close="$emit('close')">
+  <BasePopup :title="title" @close="$emit('close')">
     <div class="flex flex-col gap-4 select-none">
       <div class="flex items-center justify-between mb-2">
         <button 
@@ -102,6 +102,8 @@ const props = defineProps({
     default: false
   }
 });
+
+const title = computed(() => props.dateOnly ? 'Select Date' : 'Select Date & Time');
 
 const emit = defineEmits(['close', 'update:modelValue']);
 
