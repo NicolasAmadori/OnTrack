@@ -69,15 +69,12 @@ onMounted(async () => {
   }
 
   solution.value = await getSolution(localStorage.getItem("authToken"), route.params.solutionId);
-  console.log(Array(solution.value.nodes));
   routeSubtitle.value = solution.value.nodes.map(n => n.train.code).join(" / ");
   trainSeats.value = solution.value.nodes
       .map(n => ({
         "code": n.train.code,
         "occupied": []
       }));
-  console.log(trainSeats);
-
 });
 
 const handleReserve = () => {
