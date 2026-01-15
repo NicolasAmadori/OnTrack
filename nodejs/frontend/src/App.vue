@@ -49,7 +49,7 @@ watch(
     </main>
 
     <BaseToast
-        v-model="successMessage"
+        :model-value="successMessage !== null"
         v-if="successMessage"
         type="success"
         :message="successMessage"

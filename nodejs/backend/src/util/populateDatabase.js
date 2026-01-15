@@ -101,7 +101,7 @@ const trains = [
         name: "3940",
         acronym: "FR",
         denomination: "Frecciarossa",
-        date: new Date("2026-01-09"),
+        date: new Date("2026-01-14"),
         delay: 67
     },
     {
@@ -111,7 +111,7 @@ const trains = [
         name: "3942",
         acronym: "FR",
         denomination: "Frecciarossa",
-        date: new Date("2026-01-09"),
+        date: new Date("2026-01-14"),
         delay: 15
     },
     {
@@ -121,7 +121,7 @@ const trains = [
         name: "9400",
         acronym: "FR",
         denomination: "Frecciarossa",
-        date: new Date("2026-01-09"),
+        date: new Date("2026-01-14"),
         delay: 5
     }
 ]
