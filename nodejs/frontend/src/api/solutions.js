@@ -21,3 +21,21 @@ export async function searchSolution(authToken, fromStationID, toStationID, depa
     checkResponseSuccess(response, data);
     return data.solutions;
 }
+
+export async function getSolution(authToken, solutionId) {
+    if (authToken === null) {
+        throw new Error("Authentication token missing");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/solutions/${solutionId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+        },
+    });
+
+    const data = await response.json();
+    checkResponseSuccess(response, data);
+    return data.solution;
+}

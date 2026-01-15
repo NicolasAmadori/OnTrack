@@ -46,7 +46,7 @@
         </button>
 
         <div class="font-bold text-2xl text-dark">
-          {{ currentTrain.id }}
+          {{ currentTrain.code }}
         </div>
 
         <button
@@ -121,7 +121,7 @@ const selectContainer = ref(null);
 const seatSelectionMap = ref(new Map());
 
 const currentTrain = computed(() => {
-  return props.trains[currentTrainIndex.value] || { id: 'N/A', occupied: [] };
+  return props.trains[currentTrainIndex.value] || { code: 'N/A', occupied: [] };
 });
 
 const displaySelection = computed(() => {
@@ -160,7 +160,7 @@ const handleSeatClick = (colChar, rowNum) => {
   if (isOccupied(colChar, rowNum)) return;
 
   const seatId = getSeatId(colChar, rowNum);
-  seatSelectionMap.value.set(currentTrain.value.id, seatId);
+  seatSelectionMap.value.set(currentTrain.value.code, seatId);
   emit('select', seatSelectionMap.value);
 };
 
@@ -168,7 +168,7 @@ const getSeatClasses = (colChar, rowNum) => {
   const seatId = getSeatId(colChar, rowNum);
   const occupied = isOccupied(colChar, rowNum);
 
-  const isSelected = seatSelectionMap.value.has(currentTrain.value.id) && seatSelectionMap.value.get(currentTrain.value.id) === seatId;
+  const isSelected = seatSelectionMap.value.has(currentTrain.value.code) && seatSelectionMap.value.get(currentTrain.value.code) === seatId;
 
   let style;
   if (isSelected) {

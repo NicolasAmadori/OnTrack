@@ -7,7 +7,7 @@
     <router-link
         :to="{
           name: 'Buy',
-          params: { id: id },
+          params: { solutionId: id },
           state: { passengers: passengers }
         }"
         class="flex flex-1 items-center justify-between min-w-0 bg-light px-5"

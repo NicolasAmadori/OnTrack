@@ -43,7 +43,7 @@ const routes = [
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
     },
     {
-        path: '/buy/:id',
+        path: '/buy/:solutionId',
         name: "Buy",
         component: Buy,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }

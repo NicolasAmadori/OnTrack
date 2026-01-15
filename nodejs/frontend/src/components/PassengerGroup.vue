@@ -14,7 +14,7 @@
       placeholder="Last name"
   />
   <SeatSelect
-      :trains="availableTrains"
+      :trains="trains"
       placeholder="Select your seat"
       @select="handleSelection"
   />
@@ -29,27 +29,19 @@ defineProps({
   title: {
     type: String,
     default: 'Passenger Info'
+  },
+  trains: {
+    type: Array,
+    default: []
   }
 });
 
 const firstName = defineModel('firstName');
 const lastName = defineModel('lastName');
-
-const userSelection = ref(null);
-
-const availableTrains = ref([
-  {
-    id: "FR9600",
-    occupied: [ "A1" ]
-  },
-  {
-    id: "RV7932",
-    occupied: [ "B2", "C5" ]
-  }
-]);
+const selectedSeats = defineModel('selectedSeats');
 
 const handleSelection = (selectionData) => {
-  userSelection.value = selectionData;
+  selectedSeats.value = selectionData;
 };
 
 </script>

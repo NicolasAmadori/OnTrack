@@ -95,3 +95,9 @@ export const addSolutionsToDB = async function(solutions) {
         await Solution.bulkWrite(operations);
     }
 };
+
+export const getSolutionByID = async function(id) {
+    return Solution.findOne({solution_id: id})
+        .populate('nodes.train')
+        .exec();
+}
