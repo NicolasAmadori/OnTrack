@@ -41,17 +41,11 @@ const reservations = [
                 seats: [
                     {
                         seat: "1A",
-                        train: "69667b56b0b90d2b71e06991",
-                        train_acronym: "FR3940",
-                        departure_time: new Date("2026-01-15T08:00:00Z"),
-                        arrival_time: new Date("2026-01-15T09:30:00Z"),
+                        node: "69667b56b0b90d2b71e07991"
                     },
                     {
                         seat: "1B",
-                        train: "69667b56b0b90d2b71e06992",
-                        train_acronym: "FR3942",
-                        departure_time: new Date("2026-01-15T09:45:00Z"),
-                        arrival_time: new Date("2026-01-15T11:00:00Z"),
+                        node: "69667b56b0b90d2b71e07992"
                     }
                 ],
             }
@@ -68,10 +62,7 @@ const reservations = [
                 seats: [
                     {
                         seat: "2A",
-                        train: "69667b56b0b90d2b71e06993",
-                        train_acronym: "FR9400",
-                        departure_time: new Date("2026-01-15T09:30:00Z"),
-                        arrival_time: new Date("2026-01-15T10:30:00Z"),
+                        node: "69667b56b0b90d2b71e07993"
                     }
                 ]
             },
@@ -81,10 +72,7 @@ const reservations = [
                 seats: [
                     {
                         seat: "2B",
-                        train: "69667b56b0b90d2b71e06993",
-                        train_acronym: "FR9400",
-                        departure_time: new Date("2026-01-15T09:30:00Z"),
-                        arrival_time: new Date("2026-01-15T10:30:00Z"),
+                        node: "69667b56b0b90d2b71e07993"
                     }
                 ]
             }
@@ -139,6 +127,7 @@ const solutions = [
         price_amount: 49.99,
         nodes: [
             {
+                _id: "69667b56b0b90d2b71e07991",
                 origin: "Roma",
                 origin_id: "S0527",
                 destination: "Bologna Centrale",
@@ -148,6 +137,7 @@ const solutions = [
                 train: "69667b56b0b90d2b71e06991"
             },
             {
+                _id: "69667b56b0b90d2b71e07992",
                 origin: "Bologna Centrale",
                 origin_id: "S0529",
                 destination: "Milano",
@@ -170,6 +160,7 @@ const solutions = [
         price_amount: 29.50,
         nodes: [
             {
+                _id: "69667b56b0b90d2b71e07993",
                 origin: "Napoli",
                 origin_id: "S0540",
                 destination: "Roma",

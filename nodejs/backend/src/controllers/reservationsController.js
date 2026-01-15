@@ -34,6 +34,8 @@ export const get_user_reservations = async function(req, res) {
         const reservations = await Reservation.find()
             .where('_id')
             .in(reservationsId)
+            .populate('passengers.seats.node')
+            .populate('passengers.seats.node.train')
             .exec();
 
         const resSol = await joinReservationsWithSolutions(reservations);
@@ -71,9 +73,10 @@ export const get_active_reservations_nodes = async function(req, res) {
 
         const activeNodes = allReservations
             .flatMap(r => r.nodes)
-            .filter(n => !n.cancelled && 
-                new Date(n.departure_time).getTime() < cetNow &&
-                new Date(n.arrival_time).getTime() > cetNow);
+            // // TODO: uncomment
+            // .filter(n => !n.cancelled && 
+            //     new Date(n.departure_time).getTime() < cetNow &&
+            //     new Date(n.arrival_time).getTime() > cetNow);
 
         return res.status(200).json({
             success: true,

@@ -11,12 +11,12 @@
       />
     
     <div v-if="selectedNode" class="d-flex flex-column align-items-center mt-4 mb-4 mx-6 xl:mx-46 text-3xl text-dark">
-      <div class="d-flex mb-2">
+      <!-- <div class="d-flex mb-2">
         <i class="bi bi-people-fill mr-2"></i>
         <span class="font-semibold">{{ selectedNode.train.reservedSeats ? selectedNode.train.reservedSeats.length : 0 }}</span>
-      </div>
+      </div> -->
 
-      <div v-if="getTimeDifference(selectedNode.arrival_time) > 0" class="d-flex mb-2">
+      <div  class="d-flex mb-2">
         <i class="bi bi-hourglass-split mr-2"></i>
         <span class="font-semibold">{{ formatDuration(getTimeDifference(selectedNode.arrival_time)) }}</span>
       </div>
@@ -39,7 +39,7 @@ import BaseSelect from "@/components/BaseSelect.vue";
 import { onMounted, ref } from 'vue';
 import { createErrors } from '@/api/util.js';
 import { getActiveReservations } from '@/api/reservations.js';
-import { getDelayClass, formatDuration, getTimeDifference } from "@/util/trip";
+import { getDelayClass, formatDuration, getTimeDifference } from "@/util/dateTime.js";
 
 const activeNodes = ref([]);
 const selectedNode = ref(null);

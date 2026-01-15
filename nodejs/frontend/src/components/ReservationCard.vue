@@ -115,9 +115,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { getTrainLogo } from '@/util/trainLogos';
-import { formatTime } from '@/util/dateTime';
-import { formatDuration } from '@/util/trip';
+import { getTrainLogo } from '@/util/trainLogos.js';
+import { formatTime, formatDuration } from '@/util/dateTime.js';
+
 const props = defineProps({
   departure_time: { type: String, required: true },
   arrival_time: { type: String, required: true },
