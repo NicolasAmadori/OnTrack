@@ -117,7 +117,7 @@
 import { ref, computed } from 'vue';
 import { getTrainLogo } from '@/util/trainLogos';
 import { formatTime } from '@/util/dateTime';
-
+import { formatDuration } from '@/util/trip';
 const props = defineProps({
   departure_time: { type: String, required: true },
   arrival_time: { type: String, required: true },
@@ -160,12 +160,7 @@ const calculateSwapDuration = (startStr, endStr) => {
         const diffMs = end - start;
         if (diffMs < 0) return '0m';
 
-        const diffMins = Math.floor(diffMs / 60000);
-        const hours = Math.floor(diffMins / 60);
-        const mins = diffMins % 60;
-
-        if (hours > 0) return `${hours}h ${mins}m`;
-        return `${mins}m`;
+        return formatDuration(diffMs);
     } catch (e) {
         return '-';
     }

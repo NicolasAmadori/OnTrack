@@ -9,7 +9,7 @@
             </button>
             <button
                 @click="$emit('cancel')" 
-                class="px-4 py-2 bg-bright text-dark rounded hover:bg-lessbright transition-colors"
+                class="px-4 py-2 bg-bright text-dark rounded hover:bg-brighter transition-colors"
             >
                 Go Back
             </button>

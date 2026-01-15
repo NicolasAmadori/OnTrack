@@ -95,7 +95,7 @@ import BaseButton from '@/components/BaseButton.vue';
 const props = defineProps({
   modelValue: {
     type: Date,
-    default: () => new Date()
+    default: () => new Date(new Date().toLocaleString('en-US', { timeZone: 'CET' }))
   },
   dateOnly: {
     type: Boolean,
