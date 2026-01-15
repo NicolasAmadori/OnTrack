@@ -26,6 +26,26 @@
         <span class="font-semibold">{{ formatDuration(selectedNode.train.delay * 60000) }}</span>
       </div>
 
+      <div v-if="selectedNode.train.bathrooms" class="flex flex-col items-center mt-3">
+  
+      <div class="flex flex-col w-fit">
+          
+          <img src="@/assets/images/train.svg" class="lg:h-16 mx-auto"/>
+
+          <div class="flex justify-between w-full px-4">
+            <i 
+              class="bi bi-badge-wc-fill text-6xl" 
+              :class="selectedNode.train.bathrooms[0]?.isOccupied ? 'text-red' : 'text-green'">
+            </i>
+            <i 
+              class="bi bi-badge-wc-fill text-6xl" 
+              :class="selectedNode.train.bathrooms[1]?.isOccupied ? 'text-red' : 'text-green'">
+            </i>
+          </div>
+          
+        </div>
+      </div>
+     
     </div>
   </div>
   <div v-else class="text-center text-disabled mt-10">
