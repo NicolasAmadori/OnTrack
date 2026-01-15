@@ -1,7 +1,6 @@
 <template>
   <MinimalBanner
       title="Results"
-      imageType="passenger"
       :subtitle="routeSubtitle"
       goBackIcon
   />
@@ -27,6 +26,7 @@
         :destination="r.arrivalStation"
         :logos="r.logos"
         :highlighted="r.highlighted"
+        :passengers=passengers
     />
   </template>
 </template>
@@ -42,6 +42,10 @@ import { formatDate, formatTime } from "@/util/dateTime.js";
 const route = useRoute();
 const results = ref([]);
 const loading = ref(false);
+
+const passengers = computed(() => {
+  return Number(route.query.passengers);
+});
 
 const routeSubtitle = computed(() => {
   const from = route.query.fromName || 'Origin';
@@ -78,7 +82,8 @@ const fetchResults = async () => {
           startingStation: sol.origin,
           arrivalStation: sol.destination,
           highlighted: sol.price && sol.price.amount === minPrice,
-          logos: sol.trains.map(t => t.logoId)
+          logos: sol.trains.map(t => t.logoId),
+          rawData: sol
         }));
   } catch (error) {
     console.error("Errore nel recupero treni:", error);
@@ -98,6 +103,7 @@ const groupedResults = computed(() => {
 });
 
 onMounted(() => {
+  passengers.value = history.state.passengers;
   fetchResults();
 });
 

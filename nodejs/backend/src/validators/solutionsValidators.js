@@ -1,4 +1,4 @@
-import { query } from 'express-validator';
+import { query, param } from 'express-validator';
 import { validate } from '#src/middleware/validationResult.js'
 
 export const searchAllSolutionsValidator = [
@@ -17,6 +17,14 @@ export const searchAllSolutionsValidator = [
     query('passengersNumber')
         .exists().withMessage('Number of passengers is required')
         .isInt({ min: 1 }).withMessage('Number of passengers must be at least 1'),
+
+    validate
+];
+
+export const getSolutionValidator = [
+    param('solutionId')
+        .trim()
+        .notEmpty().withMessage('Solution ID is required'),
 
     validate
 ];
