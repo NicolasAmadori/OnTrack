@@ -5,6 +5,7 @@ import Signup from '@/views/Signup.vue';
 
 import Home from '@/views/Home.vue';
 import Results from '@/views/Results.vue';
+import Buy from '@/views/Buy.vue';
 import Profile from '@/views/Profile.vue';
 import MyTrip from '@/views/MyTrip.vue';
 import Reservations from '../views/Reservations.vue';
@@ -38,6 +39,12 @@ const routes = [
         path: '/results',
         name: "Results",
         component: Results,
+        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
+    },
+    {
+        path: '/buy/:id',
+        name: "Buy",
+        component: Buy,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
     },
     {

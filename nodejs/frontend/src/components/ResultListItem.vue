@@ -5,7 +5,11 @@
       {{ origin }} <span class="mx-0.5 text-gray-400">➝</span> {{ destination }}
     </div>
     <router-link
-        :to="`/results/${id}`"
+        :to="{
+          name: 'Buy',
+          params: { id: id },
+          state: { passengers: passengers }
+        }"
         class="flex flex-1 items-center justify-between min-w-0 bg-light px-5"
     >
       <div class="flex flex-col lg:flex-row items-start lg:items-center gap-y-0 lg:gap-y-0 lg:gap-x-6 justify-center mt-2">
@@ -42,7 +46,6 @@
 
 <script setup>
 import {computed} from "vue";
-
 import { getTrainLogo } from '@/util/trainLogos.js';
 
 const props = defineProps({
@@ -55,7 +58,8 @@ const props = defineProps({
   logos: {
     type: Array,
     default: () => ['fallback']
-  }
+  },
+  passengers: { type: Number, required: true, default: 1 }
 })
 
 const divStyle = computed(() => ({

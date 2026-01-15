@@ -115,8 +115,8 @@ const handleSearch = () => {
       fromName: fromInputComponent.value?.query,
       to: toLocation.value,
       toName: toInputComponent.value?.query,
-      date: DateTime.fromJSDate(selectedDate.value).toISO(),
-      passengers: numPassengers.value
+      passengers: numPassengers.value,
+      date: DateTime.fromJSDate(selectedDate.value).toISO()
     }
   });
 }
