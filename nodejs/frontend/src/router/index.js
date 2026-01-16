@@ -68,10 +68,10 @@ const routes = [
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'reservations' }
     },
     {
-        path: '/on-board',
+        path: '/on-board/:trainCode',
         name: "OnBoard",
         component: OnBoard,
-        meta: { requiresAuth: true, showSidebar: false}
+        meta: { requiresAuth: false, showSidebar: false}
     },
     {
         path: '/admin/user-management',
