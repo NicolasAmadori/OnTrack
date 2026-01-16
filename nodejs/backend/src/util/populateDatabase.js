@@ -143,7 +143,7 @@ const solutions = [
                 destination: "Milano",
                 destination_id: "S0531",
                 departure_time: new Date("2026-01-16T09:45:00Z"),
-                arrival_time: new Date("2026-01-16T12:00:00Z"),
+                arrival_time: new Date("2026-01-16T11:00:00Z"),
                 train: "69667b56b0b90d2b71e06992",
             }
         ]

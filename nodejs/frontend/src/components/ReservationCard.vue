@@ -117,6 +117,7 @@
 import { ref, computed } from 'vue';
 import { getTrainLogo } from '@/util/trainLogos.js';
 import { formatTime, formatDuration } from '@/util/dateTime.js';
+import { getTimeDifference } from '@/util/dateTime.js';
 
 const props = defineProps({
   departure_time: { type: String, required: true },
@@ -130,12 +131,11 @@ const props = defineProps({
   num_passengers: { type: Number, default: 1 },
   reservation_id: { type: String }
 });
-
 const emit = defineEmits(['delete']);
 
 const expanded = ref(false);
 const cancelled = computed(() => props.nodes.some(node => node.train.cancelled));
-const disabled = computed(() => cancelled.value || props.arrival_time < new Date().toISOString());
+const disabled = computed(() => cancelled.value || getTimeDifference(props.arrival_time) <= 0);
 
 const trainLogos = computed(() => {
     const logos = [];
