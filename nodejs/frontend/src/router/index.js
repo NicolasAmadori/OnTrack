@@ -8,7 +8,8 @@ import Results from '@/views/Results.vue';
 import Buy from '@/views/Buy.vue';
 import Profile from '@/views/Profile.vue';
 import MyTrip from '@/views/MyTrip.vue';
-import Reservations from '../views/Reservations.vue';
+import Reservations from '@/views/Reservations.vue';
+import OnBoard from '@/views/OnBoard.vue';
 
 import UserManagement from '@/views/admin/UserManagement.vue';
 import ReservationManagement from '@/views/admin/ReservationManagement.vue';
@@ -65,6 +66,12 @@ const routes = [
         name: "Reservations",
         component: Reservations,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'reservations' }
+    },
+    {
+        path: '/on-board',
+        name: "OnBoard",
+        component: OnBoard,
+        meta: { requiresAuth: true, showSidebar: false}
     },
     {
         path: '/admin/user-management',
