@@ -14,6 +14,7 @@ import OnBoard from '@/views/OnBoard.vue';
 import UserManagement from '@/views/admin/UserManagement.vue';
 import ReservationManagement from '@/views/admin/ReservationManagement.vue';
 import TrainManagement from '@/views/admin/TrainManagement.vue';
+import AdminOnBoard from '@/views/admin/AdminOnBoard.vue';
 
 import { isTokenValid } from "../api/auth.js";
 
@@ -90,6 +91,12 @@ const routes = [
         name: "TrainManagement",
         component: TrainManagement,
         meta: { requiresAuth: true, showSidebar: true, activeMenu: 'train-management' }
+    },
+    {
+        path: '/admin/on-board/:trainCode',
+        name: "AdminOnBoard",
+        component: AdminOnBoard,
+        meta: { requiresAuth: true, showSidebar: false}
     }
 ];
 
