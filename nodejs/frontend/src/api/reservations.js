@@ -41,7 +41,7 @@ export async function getActiveReservations(authToken, id) {
     const data = await response.json();
     checkResponseSuccess(response, data);
 
-    return data.nodes;
+    return data;
 }
 
 export async function deleteReservation(authToken, reservationId) {

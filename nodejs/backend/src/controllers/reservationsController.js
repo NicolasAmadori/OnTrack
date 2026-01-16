@@ -73,15 +73,22 @@ export const get_active_reservations_nodes = async function(req, res) {
 
         const activeNodes = allReservations
             .flatMap(r => r.nodes)
-            // // TODO: uncomment
-            // .filter(n => !n.cancelled && 
-            //     new Date(n.departure_time).getTime() < cetNow &&
-            //     new Date(n.arrival_time).getTime() > cetNow);
+            .filter(n => !n.train.cancelled && 
+                new Date(n.departure_time).getTime() < cetNow &&
+                new Date(n.arrival_time).getTime() > cetNow);
+
+        const activeNodeIds = activeNodes.map(n => n._id.toString());
+        const passengers = allReservations
+            .flatMap(r => r.passengers)
+            .filter(p => p.seats.some(s =>  activeNodeIds.includes(s.node._id.toString())));
+        passengers.forEach(p => p.seats = p.seats.filter(s => activeNodeIds.includes(s.node._id.toString())));
+        passengers.forEach(p => p.seats.forEach(s => s.node = activeNodes.find(n => n._id.toString() === s.node._id.toString())));
 
         return res.status(200).json({
             success: true,
             count: activeNodes.length,
-            nodes: activeNodes
+            nodes: activeNodes,
+            passengers: passengers
         });
     } catch (err) {
         return res.status(500).json({

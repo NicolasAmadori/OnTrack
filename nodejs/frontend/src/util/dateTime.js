@@ -12,7 +12,7 @@ export const formatDate = (dateStr) => {
     if (!dateStr) return '';
     try {
         const d = new Date(dateStr);
-        return d.toLocaleDateString('en-GB', {
+        return d.toLocaleDateString('en-UK', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -44,4 +44,12 @@ export const formatDuration = (ms) => {
   const remainingMinutes = minutes % 60;
   if (hours > 0) return `${hours}h ${remainingMinutes}m`;
   return `${minutes}m`;
+};
+
+export const formatDateTimeCompact = (dateStr) => {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const day = date.toLocaleDateString('en-UK', { day: 'numeric', month: 'short' });
+    const time = formatTime(dateStr);
+    return `${day} ${time}`;
 };
