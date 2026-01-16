@@ -13,8 +13,7 @@ var TrainSchema = new Schema({
     bathrooms: [{
         isOccupied: { type: Boolean, default: false },
         queue: { type: [String], default: [] }
-    }],
-    reservedSeats: { type: [String], default: [] }
+    }]
 });
 
 export default mongoose.model('Train', TrainSchema);

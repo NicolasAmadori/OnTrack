@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '@/util/constants.js';
 import { checkResponseSuccess } from "./util";
 
-export async function get_trains(authToken, date = new Date(), searchQuery = '') {
+export async function get_trains(authToken, date = new Date(new Date().toLocaleString('en-US', { timeZone: 'CET' })), searchQuery = '') {
     if (authToken == null) {
         throw new Error('Authentication token is required');
     }

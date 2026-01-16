@@ -115,8 +115,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { getTrainLogo } from '@/util/trainLogos';
-import { formatTime } from '@/util/dateTime';
+import { getTrainLogo } from '@/util/trainLogos.js';
+import { formatTime, formatDuration } from '@/util/dateTime.js';
+import { getTimeDifference } from '@/util/dateTime.js';
 
 const props = defineProps({
   departure_time: { type: String, required: true },
@@ -130,12 +131,11 @@ const props = defineProps({
   num_passengers: { type: Number, default: 1 },
   reservation_id: { type: String }
 });
-
 const emit = defineEmits(['delete']);
 
 const expanded = ref(false);
 const cancelled = computed(() => props.nodes.some(node => node.train.cancelled));
-const disabled = computed(() => cancelled.value || props.arrival_time < new Date().toISOString());
+const disabled = computed(() => cancelled.value || getTimeDifference(props.arrival_time) <= 0);
 
 const trainLogos = computed(() => {
     const logos = [];
@@ -160,12 +160,7 @@ const calculateSwapDuration = (startStr, endStr) => {
         const diffMs = end - start;
         if (diffMs < 0) return '0m';
 
-        const diffMins = Math.floor(diffMs / 60000);
-        const hours = Math.floor(diffMins / 60);
-        const mins = diffMins % 60;
-
-        if (hours > 0) return `${hours}h ${mins}m`;
-        return `${mins}m`;
+        return formatDuration(diffMs);
     } catch (e) {
         return '-';
     }
