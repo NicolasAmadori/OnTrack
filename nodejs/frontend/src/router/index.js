@@ -24,79 +24,79 @@ const routes = [
         path: '/login',
         name: "Login",
         component: Login,
-        meta: { requiresAuth: false, showSidebar: false }
+        meta: { requiresAuth: false, requiresAdmin: false, showSidebar: false }
     },
     {
         path: '/signup',
         name: "Signup",
         component: Signup,
-        meta: { requiresAuth: false, showSidebar: false }
+        meta: { requiresAuth: false, requiresAdmin: false, showSidebar: false }
     },
     {
         path: '/home',
         name: "Home",
         component: Home,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
+        meta: { requiresAuth: true, requiresAdmin: false, showSidebar: true, activeMenu: 'home' }
     },
     {
         path: '/results',
         name: "Results",
         component: Results,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
+        meta: { requiresAuth: true, requiresAdmin: false, showSidebar: true, activeMenu: 'home' }
     },
     {
         path: '/buy/:solutionId',
         name: "Buy",
         component: Buy,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'home' }
+        meta: { requiresAuth: true, requiresAdmin: false, showSidebar: true, activeMenu: 'home' }
     },
     {
         path: '/profile',
         name: "Profile",
         component: Profile,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'profile' }
+        meta: { requiresAuth: true, requiresAdmin: false, showSidebar: true, activeMenu: 'profile' }
     },
     {
         path: '/my-trip',
         name: "My Trip",
         component: MyTrip,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'my-trip' }
+        meta: { requiresAuth: true, requiresAdmin: false, showSidebar: true, activeMenu: 'my-trip' }
     },
     {
         path: '/reservations',
         name: "Reservations",
         component: Reservations,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'reservations' }
+        meta: { requiresAuth: true, requiresAdmin: false, showSidebar: true, activeMenu: 'reservations' }
     },
     {
         path: '/on-board/:trainCode',
         name: "OnBoard",
         component: OnBoard,
-        meta: { requiresAuth: false, showSidebar: false}
+        meta: { requiresAuth: false, requiresAdmin: false, showSidebar: false}
     },
     {
         path: '/admin/user-management',
         name: "UserManagement",
         component: UserManagement,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
+        meta: { requiresAuth: true, requiresAdmin: true, showSidebar: true, activeMenu: 'user-management' }
     },
     {
         path: '/admin/user-management/:user_id',
         name: "UserReservations",
         component: ReservationManagement,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'user-management' }
+        meta: { requiresAuth: true, requiresAdmin: true, showSidebar: true, activeMenu: 'user-management' }
     },
     {
         path: '/admin/train-management',
         name: "TrainManagement",
         component: TrainManagement,
-        meta: { requiresAuth: true, showSidebar: true, activeMenu: 'train-management' }
+        meta: { requiresAuth: true, requiresAdmin: true, showSidebar: true, activeMenu: 'train-management' }
     },
     {
         path: '/admin/on-board/:trainCode',
         name: "AdminOnBoard",
         component: AdminOnBoard,
-        meta: { requiresAuth: true, showSidebar: false}
+        meta: { requiresAuth: true, requiresAdmin: true, showSidebar: false}
     }
 ];
 
@@ -108,10 +108,9 @@ const router = createRouter({
 router.beforeEach(async(to, from, next) => {
     const authToken = localStorage.getItem('authToken');
     const id = localStorage.getItem('id');
-    const is_admin = localStorage.getItem('is_admin');
-    const isTokenAvailable = !!authToken && !!id && !!is_admin;
+    const isAdmin = localStorage.getItem('is_admin') === 'true';
     let isAuthenticated = false;
-    if (isTokenAvailable) {
+    if (authToken && id) {
         try {
             isAuthenticated = await isTokenValid(authToken);
         } catch (error) {
@@ -123,6 +122,8 @@ router.beforeEach(async(to, from, next) => {
     if (to.meta.requiresAuth && !isAuthenticated) {
         localStorage.clear();
         next('/login');
+    } else if (to.meta.requiresAdmin && !isAdmin) {
+        next('/home');
     } else if (isAuthenticated && (to.path === '/login' || to.path === '/signup')) {
         next('/home');
     } else {
