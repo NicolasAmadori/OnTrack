@@ -9,23 +9,29 @@
         
         <div v-if="train">
             <div class="relative z-10 flex flex-col items-center w-full">
-                <h1 class="text-dark font-bold text-[4rem] md:text-[6rem] lg:text-[10rem] leading-none mb-30 sm:ml-20 md:ml-0 ml-50">{{ trainCode }}</h1>
-                <div class="flex items-center gap-4 mb-12" :class="getDelayClass(train.delay)">
-                    <i class="bi bi-clock-fill text-5xl lg:text-8xl md:text-6xl"></i>
-                    <span class="font-bold text-5xl lg:text-8xl md:text-6xl">{{ formatDuration(train.delay * 60000) }}</span>
+                <h1 class="text-dark font-bold text-[4rem] md:text-[6rem] lg:text-[10rem] leading-none mb-30 sm:ml-20 md:ml-0 ml-50"
+                    :class="train.cancelled ? 'line-through text-gray' : ''">{{ trainCode }}</h1>
+                <div v-if="train.cancelled" class="bg-red text-white text-center font-bold py-1 text-2xl w-full">
+                    TRAIN CANCELLED
                 </div>
+                <div v-else>
+                    <div class="flex items-center gap-4 mb-12" :class="getDelayClass(train.delay)">
+                        <i class="bi bi-clock-fill text-5xl lg:text-8xl md:text-6xl"></i>
+                        <span class="font-bold text-5xl lg:text-8xl md:text-6xl">{{ formatDuration(train.delay * 60000) }}</span>
+                    </div>
 
-                <div class="flex flex-col items-center mx-5">
-                    <img :src="trainSvg" class="h-16 md:h-32 lg:h-48 mx-auto" alt="Train Diagram" />
-                    <div class="flex justify-between w-full px-12">
-                    <i 
-                        class="bi bi-badge-wc-fill text-8xl lg:text-9xl transition-colors duration-300" 
-                        :class="train.bathrooms[0]?.isOccupied ? 'text-red' : 'text-green'">
-                    </i>
-                    <i 
-                        class="bi bi-badge-wc-fill text-8xl lg:text-9xl transition-colors duration-300" 
-                        :class="train.bathrooms[1]?.isOccupied ? 'text-red' : 'text-green'">
-                    </i>
+                    <div class="flex flex-col items-center mx-5">
+                        <img :src="trainSvg" class="h-16 md:h-32 lg:h-48 mx-auto" alt="Train Diagram" />
+                        <div class="flex justify-between w-full px-12">
+                        <i 
+                            class="bi bi-badge-wc-fill text-8xl lg:text-9xl transition-colors duration-300" 
+                            :class="train.bathrooms[0]?.isOccupied ? 'text-red' : 'text-green'">
+                        </i>
+                        <i 
+                            class="bi bi-badge-wc-fill text-8xl lg:text-9xl transition-colors duration-300" 
+                            :class="train.bathrooms[1]?.isOccupied ? 'text-red' : 'text-green'">
+                        </i>
+                        </div>
                     </div>
                 </div>
             </div>
