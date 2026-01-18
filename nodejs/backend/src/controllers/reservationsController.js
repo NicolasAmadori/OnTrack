@@ -39,6 +39,10 @@ export const get_user_reservations = async function(req, res) {
             .exec();
 
         const resSol = await joinReservationsWithSolutions(reservations);
+        const allNodes = resSol.flatMap(r => r.nodes);
+        resSol.forEach(r => {
+            r.passengers.forEach(p => p.seats.forEach(s => s.node = allNodes.find(n => n._id.toString() === s.node._id.toString())));
+        });
 
         return res.status(200).json({
             success: true,
