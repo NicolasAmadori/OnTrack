@@ -1,43 +1,46 @@
 <template>
-  <div class="group relative mb-3 flex h-11.75 items-stretch overflow-hidden rounded-xl bg-transparent shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg mx-4 xl:mx-40  ">
-
-    <router-link
+  <BaseListItem class="mb-2" clickable>
+    <template #left>
+      <router-link
         :to="`/admin/user-management/${id}`"
-        class="flex flex-1 items-center min-w-0 bg-light px-3"
-    >
-      <span class="truncate font-mono text-sm text-black">
-        {{ email }}
-      </span>
-    </router-link>
+        class="flex flex-1 items-center min-w-0 h-full"
+      >
+        <span class="truncate font-mono md:text-base text-sm font-medium text-black">
+          {{ email }}
+        </span>
+      </router-link>
+    </template>
 
-    <div class="flex items-center bg-lesslight px-2 md:px-3 gap-2 md:gap-3">
-
+    <template #right>
       <button
-          class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
-          @click.stop="$emit('toggle-admin')"
-          :title="isAdmin ? 'Remove Admin Rights' : 'Grant Admin Rights'"
+        class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
+        @click.stop="$emit('toggle-admin')"
+        :title="isAdmin ? 'Remove Admin Rights' : 'Grant Admin Rights'"
       >
         <i
-            class="bi text-2xl transition-colors"
-            :class="isAdmin
-            ? 'bi-shield-fill-check text-darker'
-            : 'bi-shield-check text-darker opacity-70 hover:opacity-100'"
+          class="bi text-2xl text-darker transition-colors hover:text-bright"
+          :class="
+            isAdmin
+              ? 'bi-shield-fill-check opacity-80'
+              : 'bi-shield-check'
+          "
         ></i>
       </button>
 
       <button
-          class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
-          @click.stop="$emit('delete')"
-          title="Delete User"
+        class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
+        @click.stop="$emit('delete')"
+        title="Delete User"
       >
-        <i class="bi bi-trash3-fill text-2xl text-bright transition-colors hover:text-red-500"></i>
+        <i class="bi bi-trash3-fill text-2xl text-darker transition-colors hover:text-red"></i>
       </button>
-
-    </div>
-  </div>
+    </template>
+  </BaseListItem>
 </template>
 
 <script setup>
+import BaseListItem from '@/components/BaseListItem.vue';
+
 defineProps({
   id: { type: [String, Number], required: true },
   email: { type: String, required: true },

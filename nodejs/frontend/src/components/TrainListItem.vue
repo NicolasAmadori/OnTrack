@@ -1,29 +1,52 @@
 <template>
-  <div class="group relative mb-1 flex h-11.75 items-stretch overflow-hidden rounded-xl bg-transparent transition-all duration-200 mx-4 xl:mx-40"
-       :class="cancelled ? 'opacity-50' : ''">
-    
-    <div class="flex flex-1 items-center min-w-0 bg-light px-3 gap-3">
-        <span class="truncate font-mono text-lg text-black font-bold" :class="cancelled ? 'line-through' : ''">
-            {{ code }}
+  <BaseListItem
+    class="mb-2"
+    :class="cancelled ? 'opacity-50' : ''"
+    left-class="gap-3"
+    clickable
+  >
+    <template #left>
+      <router-link
+          :to="`/admin/on-board/${code}`"
+          class="flex flex-1 items-center min-w-0 h-full gap-3"
+        >
+        <span
+          class="truncate font-mono text-lg text-black font-bold"
+          :class="cancelled ? 'line-through' : ''"
+        >
+          {{ code }}
         </span>
-        <img :src="getTrainLogo(logo_id)" alt="Logo" class="h-3 lg:h-4 w-auto object-contain" />
-    </div>
+        <img
+          :src="getTrainLogo(logo_id)"
+          alt="Logo"
+          class="h-3 lg:h-4 w-auto object-contain"
+        />
+      </router-link>
+    </template>
 
-    <div class="flex items-center bg-lesslight px-2 md:px-3 gap-2 md:gap-3">
+    <template #right>
       <button
-          class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
-          @click.stop="$emit('delete')"
-          :title="cancelled ? 'Restore Train' : 'Cancel Train'"
+        class="flex items-center justify-center p-1 transition-transform active:scale-90 cursor-pointer"
+        @click.stop="$emit('delete')"
+        :title="cancelled ? 'Restore Train' : 'Cancel Train'"
       >
-        <i class="text-2xl transition-colors hover:text-bright" :class="cancelled ? 'bi bi-x-circle-fill text-red hover:text-dark' : 'bi bi-x-circle text-dark'"></i>
+        <i
+          class="text-2xl transition-colors hover:text-red"
+          :class="
+            cancelled
+              ? 'bi bi-x-circle-fill text-red hover:text-dark'
+              : 'bi bi-x-circle text-dark'
+          "
+        ></i>
       </button>
-
-    </div>
-  </div>
+    </template>
+  </BaseListItem>
 </template>
 
 <script setup>
 import { getTrainLogo } from '@/util/trainLogos';
+import BaseListItem from '@/components/BaseListItem.vue';
+import router from '../router';
 
 defineProps({
   code: {
