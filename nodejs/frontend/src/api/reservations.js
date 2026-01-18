@@ -61,3 +61,23 @@ export async function deleteReservation(authToken, reservationId) {
     const data = await response.json();
     checkResponseSuccess(response, data);
 }
+
+export async function createReservation(authToken, userId, reservationBody) {
+    if (authToken === null) {
+        throw new Error("User not authenticated");
+    }
+    if (userId === null) {
+        throw new Error("Id not found");
+    }
+    const response = await fetch(`${API_BASE_URL}/reservations/${userId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(reservationBody),
+    });
+
+    const data = await response.json();
+    checkResponseSuccess(response, data);
+}

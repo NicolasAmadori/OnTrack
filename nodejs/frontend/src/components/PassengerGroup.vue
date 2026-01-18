@@ -21,7 +21,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import BaseInput from '@/components/BaseInput.vue';
 import SeatSelect from "@/components/SeatSelect.vue";
 

@@ -5,6 +5,7 @@ import Train from '#src/models/trainModel.js';
 
 const users = [
     {
+        _id: "69667b56b0b90d2b71e05001",
         email: "admin@mail.com",
         first_name: "Mario",
         last_name: "Rossi",
@@ -13,6 +14,7 @@ const users = [
         registration_date: new Date("2025-12-25T10:00:00Z")
     },
     {
+        _id: "69667b56b0b90d2b71e05002",
         email: "riccardo.mazzi@mail.com",
         first_name: "Riccardo",
         last_name: "Mazzi",
@@ -21,6 +23,7 @@ const users = [
         registration_date: new Date("2025-12-25T10:00:00Z")
     },
     {
+        _id: "69667b56b0b90d2b71e05003",
         email: "nicolas.amadori@mail.com",
         first_name: "Nicolas",
         last_name: "Amadori",
@@ -33,7 +36,7 @@ const users = [
 const reservations = [
     {
         solution_id: "SOL001",
-        email: "riccardo.mazzi@mail.com",
+        user: "69667b56b0b90d2b71e05002",
         passengers: [
             {
                 first_name: "Nicolas",
@@ -54,7 +57,7 @@ const reservations = [
     },
     {
         solution_id: "SOL002",
-        email: "riccardo.mazzi@mail.com",
+        user: "69667b56b0b90d2b71e05002",
         passengers: [
             {
                 first_name: "Riccardo",
@@ -129,9 +132,7 @@ const solutions = [
             {
                 _id: "69667b56b0b90d2b71e07991",
                 origin: "Roma",
-                origin_id: "S0527",
                 destination: "Bologna Centrale",
-                destination_id: "S0529",
                 departure_time: new Date("2026-01-18T08:00:00Z"),
                 arrival_time: new Date("2026-01-18T09:30:00Z"),
                 train: "69667b56b0b90d2b71e06991"
@@ -139,9 +140,7 @@ const solutions = [
             {
                 _id: "69667b56b0b90d2b71e07992",
                 origin: "Bologna Centrale",
-                origin_id: "S0529",
                 destination: "Milano",
-                destination_id: "S0531",
                 departure_time: new Date("2026-01-18T09:45:00Z"),
                 arrival_time: new Date("2026-01-18T11:00:00Z"),
                 train: "69667b56b0b90d2b71e06992",
@@ -162,9 +161,7 @@ const solutions = [
             {
                 _id: "69667b56b0b90d2b71e07993",
                 origin: "Napoli",
-                origin_id: "S0540",
                 destination: "Roma",
-                destination_id: "S0527",
                 departure_time: new Date("2026-01-18T09:30:00Z"),
                 arrival_time: new Date("2026-01-18T12:00:00Z"),
                 train: "69667b56b0b90d2b71e06993",
@@ -222,7 +219,7 @@ const createReservations = async () => {
     try {
         const operations = reservations.map(r => 
             Reservation.updateOne(
-                { solution_id: r.solution_id, email: r.email },
+                { solution_id: r.solution_id, user: r.user },
                 { $set: r },
                 { upsert: true }
             )
@@ -244,8 +241,7 @@ const populateDatabase = async () => {
 
         const nicolas = await User.findOne({ email: "nicolas.amadori@mail.com" });
         const riccardo = await User.findOne({ email: "riccardo.mazzi@mail.com" });
-        // nicolas.reservations = reservations.filter(r => r.email === "nicolas.amadori@mail.com").map(r => r._id);
-        riccardo.reservations = reservations.filter(r => r.email === "riccardo.mazzi@mail.com").map(r => r._id);
+        riccardo.reservations = reservations.filter(r => r.user.toString() === riccardo._id.toString()).map(r => r._id);
         await nicolas.save();
         await riccardo.save();
     } catch (error) {

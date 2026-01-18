@@ -121,3 +121,28 @@ export const delete_reservation = async function(req, res) {
         return res.status(500).json({ success: false, errors: [{ message: error.message }] });
     }
 }
+
+export const create_reservation = async function(req, res) {
+    try {
+        const userId = req.params.userId;
+
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.status(404).json({ success: false, errors: [{ message: "User not found." }]});
+        }
+
+        const reservationData = req.body;
+        const solution = await Solution.findOne({ solution_id: reservationData.solution_id }).exec();
+        if (!solution) {
+            return res.status(404).json({ success: false, errors: [{ message: "Solution with solution_id: " + reservationData.solution_id + " was not found."}]});
+        }
+        const createdReservation = await Reservation.create(reservationData);
+
+        user.reservations.push(createdReservation._id);
+        await user.save();
+
+        return res.status(201).json({ success: true, reservation: createdReservation });
+    } catch (error) {
+        return res.status(500).json({ success: false, errors: [{ message: error.message }]});
+    }
+};
