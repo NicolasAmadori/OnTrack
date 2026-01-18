@@ -20,7 +20,9 @@
                     :nodes="reservation.nodes"
                     :num_passengers="reservation.passengers.length"
                     :reservation_id="reservation._id"
-                    @delete="reservationToDelete = reservation"/>
+                    @delete="reservationToDelete = reservation"
+                    @show-details="showReservationDetails = reservation"
+                    />
             </div>
         </div>
     </div>
@@ -30,17 +32,24 @@
         @confirm="delReservation(reservationToDelete._id)" 
         @cancel="reservationToDelete = null"
     />
+    <ReservationDetailsPopup 
+        v-if="showReservationDetails" 
+        :passengers="showReservationDetails.passengers"
+        @close="showReservationDetails = null"
+    />
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 import BaseBanner from "@/components/BaseBanner.vue";
 import ReservationCard from "@/components/ReservationCard.vue";
-import { getUserReservations, deleteReservation } from '../api/reservations';
-import ConfirmationPopup from '../components/ConfirmationPopup.vue';
+import { getUserReservations, deleteReservation } from '@/api/reservations';
+import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
+import ReservationDetailsPopup from '@/components/ReservationDetailsPopup.vue';
 
 const reservations = ref([]);
 const reservationToDelete = ref(null);
+const showReservationDetails = ref(null);
 
 const fetchReservations = async () => {
     try {
