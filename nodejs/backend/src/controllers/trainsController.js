@@ -72,3 +72,41 @@ export const cancel_restore_train = async function(req, res) {
         });
     }
 }
+
+export const update_train = async function(req, res) {
+    try {
+        const id = req.params.trainId;
+        const train = req.body;
+        const updatedTrain = {};
+
+        if (train.delay) {
+            updatedTrain.delay = train.delay;
+        }
+        if (train.cancelled) {
+            updatedTrain.cancelled = train.cancelled;
+        }
+        if (train.bathrooms) {
+            updatedTrain.bathrooms = train.bathrooms;
+        }
+
+        if (Object.keys(updatedTrain).length !== 0) {
+
+            const result = await Train.updateOne({ _id: id }, updatedTrain);
+            if (!result || result.matchedCount === 0) {
+                return res.status(404).json({ success: false, errors: [{
+                    message: "Train not found"
+                }] });
+            }
+
+            if (result.modifiedCount === 0) {
+                return res.status(200).json({ success: true, message: "No changes were made" });
+            }
+
+            return res.status(200).json({ success: true, message: "Train updated successfully" });
+        }
+    } catch (error) {
+        return res.status(500).json({ success: false, errors: [{
+            message: error.message
+        }] });
+    }
+}

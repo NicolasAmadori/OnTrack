@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { get_train } from '@/api/trains.js';
+import { get_train, update_train } from '@/api/trains.js';
 import onboard from '@/assets/images/banners/onboard.png';
 import trainSvg from '@/assets/images/train.svg';
 import { getDelayClass } from '@/util/dateTime.js';
@@ -66,11 +66,23 @@ const trainCode = computed(() => route.params.trainCode );
 const train = ref(null);
 
 const updateDelay = async () => {
-  // TODO: call api function
+  train.value.delay = Math.min(Math.max(train.value.delay, 0), 9999);
+  await update_train(localStorage.getItem('authToken'), train.value._id, { delay: train.value.delay });
 };
 
 const toggleBathroom = async (index) => {
-  // TODO: call api function
+    if (!train.value.bathrooms) {
+        train.value.bathrooms = [];
+    }
+    if (!train.value.bathrooms[index]) {
+        for (let i = train.value.bathrooms ? train.value.bathrooms.length : 0; i <= index; i++) {
+            train.value.bathrooms = train.value.bathrooms || [];
+            train.value.bathrooms.push({ isOccupied: false, queue: [] });
+        }
+        console.log(train.value.bathrooms);
+    }
+    train.value.bathrooms[index].isOccupied = !train.value.bathrooms[index].isOccupied;
+    await update_train(localStorage.getItem('authToken'), train.value._id, { bathrooms: train.value.bathrooms });
 };
 
 onMounted(async () => {
