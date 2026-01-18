@@ -40,7 +40,7 @@ const handleLogout = () => {
         <router-link
             :to="item.path"
             class="flex items-center gap-3 text-black p-3 rounded-lg transition-all duration-200 hover:bg-black/5"
-            :class="{ 'bg-bright! text-white!': isActive(item.metaKey) }"
+            :class="{ 'bg-dark! text-white!': isActive(item.metaKey) }"
         >
           <i :class="['bi', item.icon, 'text-xl']"></i>
           <span class="font-medium">{{ item.name }}</span>
