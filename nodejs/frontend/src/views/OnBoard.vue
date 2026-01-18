@@ -14,7 +14,7 @@
                 <div v-if="train.cancelled" class="bg-red text-white text-center font-bold py-1 text-2xl w-full">
                     TRAIN CANCELLED
                 </div>
-                <div v-else>
+                <div v-else class="flex flex-col items-center">
                     <div class="flex items-center gap-4 mb-12" :class="getDelayClass(train.delay)">
                         <i class="bi bi-clock-fill text-5xl lg:text-8xl md:text-6xl"></i>
                         <span class="font-bold text-5xl lg:text-8xl md:text-6xl">{{ formatDuration(train.delay * 60000) }}</span>
