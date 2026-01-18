@@ -48,7 +48,6 @@ import SearchBar from '@/components/SearchBar.vue';
 import UserListItem from '@/components/UserListItem.vue';
 import BaseBanner from "@/components/BaseBanner.vue";
 
-// Store e State
 const userQuery = ref('');
 const users = ref([]);
 const filteredUsers = ref([]);

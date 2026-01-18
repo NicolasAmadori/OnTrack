@@ -161,7 +161,8 @@ const handleSeatClick = (colChar, rowNum) => {
 
   const seatId = getSeatId(colChar, rowNum);
   seatSelectionMap.value.set(currentTrain.value.code, seatId);
-  emit('select', seatSelectionMap.value);
+
+  emit('select', new Map(seatSelectionMap.value));
 };
 
 const getSeatClasses = (colChar, rowNum) => {

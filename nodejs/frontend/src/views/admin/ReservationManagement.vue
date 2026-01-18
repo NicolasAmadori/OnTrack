@@ -21,7 +21,6 @@ import { useRoute } from 'vue-router';
 import { getUser } from '@/api/users.js';
 import BaseBanner from "@/components/BaseBanner.vue";
 
-// Store e State
 const route = useRoute();
 const user_id = computed(() => route.params.user_id);
 const user = ref(null);

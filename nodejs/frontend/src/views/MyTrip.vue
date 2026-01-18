@@ -78,7 +78,6 @@ import { getDelayClass, formatDuration, getTimeDifference } from "@/util/dateTim
 const activeNodes = ref([]);
 const selectedNode = ref(null);
 const passengers = computed(() => {
-  console.log('Computing passengers with data:', data, 'and selectedNode:', selectedNode.value);
   if (!data || !data.passengers || !selectedNode.value) return [];
   return data.passengers.filter(p => p.seats.some(s => s.node._id.toString() === selectedNode.value._id.toString()));
 });
