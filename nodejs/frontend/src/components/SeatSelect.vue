@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 const props = defineProps({
   iconName: {
@@ -104,7 +104,7 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: "Select your set",
+    default: "Select your seat",
   },
   trains: {
     type: Array,
@@ -120,13 +120,31 @@ const currentTrainIndex = ref(0);
 const selectContainer = ref(null);
 const seatSelectionMap = ref(new Map());
 
+watch(() => props.trains, (newTrains) => {
+  const newMap = new Map();
+  if (newTrains && newTrains.length > 0) {
+    newTrains.forEach(train => {
+      const existingSelection = seatSelectionMap.value.get(train.code);
+      newMap.set(train.code, existingSelection !== undefined ? existingSelection : null);
+    });
+  }
+  seatSelectionMap.value = newMap;
+}, { immediate: true, deep: true });
+
 const currentTrain = computed(() => {
   return props.trains[currentTrainIndex.value] || { code: 'N/A', occupied: [] };
 });
 
 const displaySelection = computed(() => {
-  if (!seatSelectionMap.value.keys()) return props.placeholder;
-  return Array.from(seatSelectionMap.value.values()).join(" / ");
+  //values filtering to show only selected seats
+  const selectedSeats = Array.from(seatSelectionMap.value.values()).filter(seat => seat !== null);
+
+  if (selectedSeats.length === 0)
+    if (props.trains.length === 1)
+      return props.placeholder;
+    else
+      return props.placeholder + "s";
+  return selectedSeats.join(" / ");
 });
 
 const togglePopup = () => {
@@ -160,7 +178,10 @@ const handleSeatClick = (colChar, rowNum) => {
   if (isOccupied(colChar, rowNum)) return;
 
   const seatId = getSeatId(colChar, rowNum);
-  seatSelectionMap.value.set(currentTrain.value.code, seatId);
+  const trainCode = currentTrain.value.code;
+
+  seatSelectionMap.value.set(trainCode, seatId);
+  seatSelectionMap.value = new Map(seatSelectionMap.value);
 
   emit('select', new Map(seatSelectionMap.value));
 };
@@ -169,7 +190,7 @@ const getSeatClasses = (colChar, rowNum) => {
   const seatId = getSeatId(colChar, rowNum);
   const occupied = isOccupied(colChar, rowNum);
 
-  const isSelected = seatSelectionMap.value.has(currentTrain.value.code) && seatSelectionMap.value.get(currentTrain.value.code) === seatId;
+  const isSelected = seatSelectionMap.value.get(currentTrain.value.code) === seatId;
 
   let style;
   if (isSelected) {
