@@ -15,7 +15,7 @@ export const extractIdFromToken = async (token) => {
 };
 
 export const verifyToken = async (req, res, next) => {
-    if (req.method === 'OPTIONS') return next(); // Verifica se il metodo è OPTIONS (preflight)
+    if (req.method === 'OPTIONS') return next();
 
     try {
         const authHeader = req.headers.authorization;
@@ -23,7 +23,7 @@ export const verifyToken = async (req, res, next) => {
 
         const id = await extractIdFromToken(token);
 
-        if (id) {
+        if (!id) {
             return res.status(400).json({
                 success: false,
                 errors: [{
