@@ -75,7 +75,6 @@ const iconClass = computed(() => {
   }
 });
 
-/* Timer Logic remains unchanged */
 let timer = null;
 let remainingTime = props.duration;
 let startTime = 0;
