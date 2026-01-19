@@ -2,6 +2,18 @@ import { jwtVerify } from 'jose';
 import { JWT_KEY, ISSUER, AUDIENCE } from '#src/util/constants.js';
 import User from '#src/models/userModel.js';
 
+export const extractIdFromToken = async (token) => {
+    try {
+        const { payload } = await jwtVerify(token, JWT_KEY, {
+            issuer: ISSUER,
+            audience: AUDIENCE
+        });
+        return payload?.id || null;
+    } catch (err) {
+        return null;
+    }
+};
+
 export const verifyToken = async (req, res, next) => {
     if (req.method === 'OPTIONS') return next(); // Verifica se il metodo è OPTIONS (preflight)
 
@@ -9,12 +21,9 @@ export const verifyToken = async (req, res, next) => {
         const authHeader = req.headers.authorization;
         const token = authHeader.split(' ')[1];
 
-        const { payload } = await jwtVerify(token, JWT_KEY, {
-            issuer: ISSUER,
-            audience: AUDIENCE
-        });
+        const id = await extractIdFromToken(token);
 
-        if (!payload?.id) {
+        if (id) {
             return res.status(400).json({
                 success: false,
                 errors: [{
@@ -23,7 +32,7 @@ export const verifyToken = async (req, res, next) => {
             });
         }
 
-        const user = await User.findById(payload.id).select('-password').lean().exec();
+        const user = await User.findById(id).select('-password').lean().exec();
         if (!user) {
             return res.status(401).json({
                 success: false,

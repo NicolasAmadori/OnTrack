@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 import usersRoutes from "#src/routes/usersRoutes.js";
 import authRoutes from "#src/routes/authRoutes.js";
@@ -9,8 +11,11 @@ import stationsRoutes from "#src/routes/stationsRoute.js";
 import solutionsRoutes from "#src/routes/solutionsRoutes.js";
 import reservationsRoutes from "#src/routes/reservationsRoutes.js";
 import trainsRoutes from "#src/routes/trainsRoutes.js";
+import { extractIdFromToken } from '#src/middleware/authMiddleware.js';
 
 const app = express();
+const httpServer = createServer(app);
+const onlineUsers = new Map();
 
 const corsOptions = {
     origin: true,
@@ -24,6 +29,41 @@ app.options('*', cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const io = new Server(httpServer, {
+    cors: corsOptions
+});
+
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
+io.on('connection', async (socket) => {
+    const authToken = socket.handshake.query.authToken;
+    const id = await extractIdFromToken(authToken);
+
+    if (id) {
+        if (!onlineUsers.has(id)) {
+            onlineUsers.set(id, new Set());
+        }
+        onlineUsers.get(id).add(socket.id);
+        console.log(`User ${id} mapped on socket ${socket.id}`);
+    }
+
+    socket.on('disconnect', () => {
+        if (id) {
+            const userSockets = onlineUsers.get(id);
+            if (userSockets) {
+                userSockets.delete(socket.id);
+                if (userSockets.size === 0) {
+                    onlineUsers.delete(id);
+                }
+            }
+        }
+    });
+});
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 global.appRoot = path.resolve(__dirname);
@@ -35,4 +75,13 @@ app.use('/api/solutions', solutionsRoutes);
 app.use('/api/reservations', reservationsRoutes);
 app.use('/api/trains', trainsRoutes);
 
-export default app;
+export { app, io};
+export default httpServer;
+
+export function sendNotificationToUser(targetUserId, ev='notification', message) {
+  const socketIds = onlineUsers.get(targetUserId);
+
+  if (socketIds) {
+    socketIds.forEach(socketId => io.to(socketId).emit(ev, message));
+  }
+}
