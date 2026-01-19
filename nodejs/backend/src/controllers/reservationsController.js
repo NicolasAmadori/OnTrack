@@ -2,7 +2,7 @@ import User from '#src/models/userModel.js';
 import Reservation from '#src/models/reservationModel.js';
 import Solution from '#src/models/solutionModel.js';
 
-const joinReservationsWithSolutions = async (reservations) => {
+export const joinReservationsWithSolutions = async (reservations) => {
     return await Promise.all(reservations.map(async(r) => {
         const solTrain = await Solution.findOne({ solution_id: r.solution_id })
             .populate('nodes.train')

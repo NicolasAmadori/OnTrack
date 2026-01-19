@@ -41,15 +41,16 @@
 </template>
 
 <script setup>
-import {ref, onMounted, reactive} from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getSolution } from "@/api/solutions.js";
+import { getSolution, getSolutionOccupiedSeats } from "@/api/solutions.js";
 import MinimalBanner from "@/components/MinimalBanner.vue";
 import BaseButton from '@/components/BaseButton.vue';
 import PassengerGroup from '@/components/PassengerGroup.vue';
 import ReservationCard from '@/components/ReservationCard.vue';
-import {getUser} from "@/api/users.js";
+import { getUser } from "@/api/users.js";
 import { createReservation } from "@/api/reservations.js";
+import {createErrors} from "@/api/util.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -59,47 +60,59 @@ const solution = ref(null);
 const passengersData = ref([]);
 const trainSeats = ref(null);
 const solutionNodes = ref(null);
+const occupiedSeats = ref({});
 
 onMounted(async () => {
   const count = Number(history.state.passengers);
   const user = await getUser(localStorage.getItem('authToken'), localStorage.getItem('id'));
 
-  if (count && count > 0) {
-    const firstPassenger = {
-      firstName: user.first_name,
-      lastName: user.last_name,
-      seats: null
-    };
-
-    const otherPassengers = Array.from({ length: count - 1 }, () => ({
-      firstName: '',
-      lastName: '',
-      seats: null
-    }));
-
-    passengersData.value = [firstPassenger, ...otherPassengers];
-  } else {
-    router.back();
-  }
-
   solution.value = await getSolution(localStorage.getItem("authToken"), route.params.solutionId);
-  console.log(solution.value);
+  occupiedSeats.value = await getSolutionOccupiedSeats(localStorage.getItem("authToken"), solution.value.solution_id);
   routeSubtitle.value = solution.value.nodes.map(n => n.train.code).join(" / ");
   trainSeats.value = solution.value.nodes
       .map(n => ({
         "code": n.train.code,
         "occupied": []
       }));
+  updateSeatsVisualization();
   solutionNodes.value = solution.value.nodes.reduce((map, node) => {
     const trainCode = node.train.code;
     map[trainCode] = node;
     return map;
   }, {});
+
+  if (count && count > 0) {
+    const firstPassenger = {
+      firstName: user.first_name,
+      lastName: user.last_name,
+      seats: new Map(
+          solution.value.nodes.map(n => [n.train.code, null])
+      )
+    };
+
+    const otherPassengers = Array.from({ length: count - 1 }, () => ({
+      firstName: '',
+      lastName: '',
+      seats: new Map(
+          solution.value.nodes.map(n => [n.train.code, null])
+      )
+    }));
+
+    passengersData.value = [firstPassenger, ...otherPassengers];
+  } else {
+    router.back();
+  }
 });
 
 const handleReserve = async () => {
   isSubmitting.value = true;
   try {
+    if(!passengersData.value.every(p =>
+        p.firstName && p.lastName && Array.from(p.seats.values()).every(s => s !== null)
+    )) {
+      throw new Error('Fill all the fields and select a seat for every train');
+    }
+
     const reservationBody = {
       solution_id: solution.value.solution_id,
       user: localStorage.getItem("id"),
@@ -112,22 +125,21 @@ const handleReserve = async () => {
         })) : []
       }))
     };
+
     await createReservation(
         localStorage.getItem("authToken"),
         localStorage.getItem("id"),
         reservationBody
     );
+    router.push('/reservations');
   } catch (error) {
-
+    createErrors([error.message]);
   } finally {
     isSubmitting.value = false;
-    router.push('/reservations')
   }
 };
 
-const handleSeatUpdate = (index, newSeats) => {
-  passengersData.value[index].seats = newSeats;
-
+const updateSeatsVisualization = () => {
   const allOccupiedSeats = {};
   passengersData.value.filter(p => p.seats).forEach(passenger => {
     passenger.seats.forEach((seatId, trainId) => {
@@ -138,9 +150,24 @@ const handleSeatUpdate = (index, newSeats) => {
     });
   });
 
+  Object.entries(occupiedSeats.value).forEach(([trainId, seats]) => {
+    if (!allOccupiedSeats[trainId]) {
+      allOccupiedSeats[trainId] = [];
+    }
+    seats.forEach(seatId => {
+      allOccupiedSeats[trainId].push(seatId);
+    });
+  });
+
   trainSeats.value = trainSeats.value.map(t => ({
     code: t.code,
     occupied: allOccupiedSeats[t.code]
   }));
+};
+
+const handleSeatUpdate = (index, newSeats) => {
+  passengersData.value[index].seats = newSeats;
+
+  updateSeatsVisualization();
 };
 </script>

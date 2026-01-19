@@ -15,7 +15,6 @@
   />
   <SeatSelect
       :trains="trains"
-      placeholder="Select your seat"
       @select="handleSelection"
   />
 </template>

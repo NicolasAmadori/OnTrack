@@ -10,7 +10,6 @@ const router = Router();
 router.get('/', authHeaderValidator, verifyToken, requireAdmin, get_trains);
 router.get('/:trainCode', get_train);
 router.delete('/:trainId', authHeaderValidator, verifyToken, requireAdmin, cancel_restore_train);
-// router.patch("/:userId", authHeaderValidator, updateUserValidator, verifyToken, requireAdminOrSelf, update_user);
 router.patch('/:trainId', authHeaderValidator, updateTrainValidator, verifyToken, requireAdmin, update_train);
 
 export default router;
