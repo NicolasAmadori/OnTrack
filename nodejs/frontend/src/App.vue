@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import Sidebar from '@/components/Sidebar.vue';
 import BaseToast from '@/components/BaseToast.vue';
 import { successMessage, errorMessages } from '@/api/util.js';
+import { connectSocket, disconnectSocket } from '@/router/useSocket.js';
 
 const route = useRoute();
 const isSidebarOpen = ref(false);
@@ -22,6 +23,18 @@ watch(
     () => {
       isSidebarOpen.value = false;
     }
+);
+
+watch(
+  () => localStorage.getItem('authToken'),
+  (token) => {
+    if (token) {
+      connectSocket(token);
+    } else {
+      disconnectSocket();
+    }
+  },
+  { immediate: true }
 );
 </script>
 

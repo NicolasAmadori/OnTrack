@@ -9,9 +9,10 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "@vueuse/core": "^14.1.0",
     "bootstrap-icons": "^1.13.1",
     "luxon": "^3.7.2",
-    "socket.io-client": "^4.8.1",
+    "socket.io-client": "^4.8.3",
     "tailwindcss": "^4.1.18",
     "vue": "^3.5.12",
     "vue-responsiveness": "^0.2.0",
