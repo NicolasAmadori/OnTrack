@@ -94,7 +94,7 @@ const titleStyle = computed(() => ({
 }));
 
 const subtitleStyle = computed(() => ({
-  color: props.admin ? 'var(--black)' : 'var(--bright)'
+  color: props.admin ? 'var(--black)' : 'var(--white)'
 }));
 
 const iconStyle = computed(() => ({

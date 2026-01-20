@@ -36,7 +36,7 @@
           :disabled="isDisabled(date)" focus:outline-none focus:ring-2 focus:ring-bright
           class="h-9 w-9 rounded-full text-sm flex items-center justify-center mx-auto transition-all duration-200 border-2 border-transparent"
           :class="{
-            'bg-bright text-white shadow-md hover:bg-bright!': isSelectedDate(date),
+            'bg-bright shadow-md hover:bg-bright!': isSelectedDate(date),
             'text-bright font-bold border-bright': isToday(date) && !isSelectedDate(date),
             'text-dark hover:bg-light': !isSelectedDate(date) && !isToday(date) && !isDisabled(date),
             'text-disabled cursor-not-allowed hover:bg-transparent': isDisabled(date)

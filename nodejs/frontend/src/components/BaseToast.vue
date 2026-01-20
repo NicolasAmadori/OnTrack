@@ -59,10 +59,10 @@ const isDarkBg = computed(() => ['success', 'error'].includes(props.type));
 
 const typeClass = computed(() => {
   switch (props.type) {
-    case 'success': return 'bg-green-600';
-    case 'warning': return 'bg-yellow-400';
-    case 'error':   return 'bg-red-600';
-    case 'info':    default: return 'bg-cyan-400';
+    case 'success': return 'bg-green';
+    case 'warning': return 'bg-yellow';
+    case 'error':   return 'bg-red';
+    case 'info':    default: return 'bg-cyan';
   }
 });
 

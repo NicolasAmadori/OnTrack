@@ -11,7 +11,7 @@
   --white: #EFEFEF;
   --black: #07151B;
   --disabled: #C2C2C2;
-  --red: #d82023;
+  --red: #c01c1f;
   --lesslight: #CEC4BC;
   --gray: #878787;
   --lighter: #EAE5E1;
@@ -21,7 +21,8 @@
 
   --orange: #e99210;
   --yellow: #dbc605;
-  --green: #37A13A;
+  --green: #257727;
+  --cyan: #96dbdd;
 }
 
 @theme {
@@ -44,6 +45,7 @@
   --color-orange: var(--orange);
   --color-yellow: var(--yellow);
   --color-green: var(--green);
+  --color-cyan: var(--cyan);
 
   /* Fonts */
   --font-mono: "IBM Plex Mono", monospace;
