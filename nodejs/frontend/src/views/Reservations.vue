@@ -46,6 +46,7 @@ import ReservationCard from "@/components/ReservationCard.vue";
 import { getUserReservations, deleteReservation } from '@/api/reservations';
 import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
 import ReservationDetailsPopup from '@/components/ReservationDetailsPopup.vue';
+import { localAuthToken, localId } from "@/util/auth.js";
 
 const reservations = ref([]);
 const reservationToDelete = ref(null);
@@ -53,7 +54,7 @@ const showReservationDetails = ref(null);
 
 const fetchReservations = async () => {
     try {
-        reservations.value = await getUserReservations(localStorage.getItem('authToken'), localStorage.getItem('id'));
+        reservations.value = await getUserReservations(localAuthToken.value, localId.value);
     } catch (error) {
         console.error('Error fetching reservations:', error);
     }
@@ -62,7 +63,7 @@ const fetchReservations = async () => {
 const delReservation = async (reservationId) => {
     reservationToDelete.value = null;
     try {
-        await deleteReservation(localStorage.getItem('authToken'), reservationId);
+        await deleteReservation(localAuthToken.value, reservationId);
     } catch (error) {
         console.error('Error deleting reservation:', error);
     }

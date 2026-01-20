@@ -74,6 +74,7 @@ import { computed, onMounted, ref } from 'vue';
 import { createErrors } from '@/api/util.js';
 import { getActiveReservations } from '@/api/reservations.js';
 import { getDelayClass, formatDuration, getTimeDifference } from "@/util/dateTime.js";
+import { localAuthToken, localId } from "@/util/auth.js";
 
 const activeNodes = ref([]);
 const selectedNode = ref(null);
@@ -86,7 +87,7 @@ let data = null;
 
 const fetchActiveNodes = async () => {
   try {
-    data = await getActiveReservations(localStorage.getItem('authToken'), localStorage.getItem('id'));
+    data = await getActiveReservations(localAuthToken.value, localId.value);
     activeNodes.value = data.nodes;
     if (activeNodes.value.length === 1) {
       selectedNode.value = activeNodes.value[0];

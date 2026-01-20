@@ -6,7 +6,7 @@ import { createErrors } from '@/api/util.js';
 export const socket = ref(null);
 
 export const connectSocket = (token) => {
-  if (socket.value && socket.value.connected) return;
+  if (socket.value) return;
 
   socket.value = io(BASE_URL, {
     query: {
@@ -31,4 +31,14 @@ export const disconnectSocket = () => {
 export const onEvent = (event, callback) => {
   if (!socket.value) return;
   socket.value.on(event, callback);
+};
+
+export const offEvent = (event, callback) => {
+  if (!socket.value) return;
+  socket.value.off(event, callback);
+};
+
+export const emitEvent = (event, data) => {
+  if (!socket.value) return;
+  socket.value.emit(event, data);
 };
