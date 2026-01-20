@@ -103,9 +103,7 @@ export const update_train = async function(req, res) {
                     });
                     bathroom.queue = [];
                 } else {
-                     if (bathroom.queue === undefined) {
-                        bathroom.queue = realTrain.bathrooms[index]?.queue || [];
-                    }
+                     bathroom.queue = realTrain.bathrooms[index]?.queue || [];
                 }
             });
         }

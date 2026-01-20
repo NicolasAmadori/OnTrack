@@ -106,5 +106,12 @@ watch(() => props.modelValue, (isOpen) => {
   else clearTimer();
 }, { immediate: true });
 
+watch(() => props.message, () => {
+  if (props.modelValue) {
+    remainingTime = props.duration;
+    startTimer();
+  }
+});
+
 onUnmounted(() => clearTimer());
 </script>

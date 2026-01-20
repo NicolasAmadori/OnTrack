@@ -41,7 +41,7 @@ watch(
 
 onEvent('notification', (message) => {
   console.log('Received notification:', message);
-  notifications.value.push(message);
+  notifications.value.push({ id: Date.now(), text: message });
 });
 </script>
 
@@ -69,10 +69,10 @@ onEvent('notification', (message) => {
     </main>
 
     <BaseToast
-        :model-value="successMessage !== null"
-        v-if="successMessage"
+        :model-value="!!successMessage"
+        @update:model-value="successMessage = ''"
         type="success"
-        :message="successMessage"
+        :message="successMessage || ' '"
     />
     <BaseToast
       v-for="(error, index) in errorMessages"
@@ -84,12 +84,12 @@ onEvent('notification', (message) => {
       :style="{ bottom: `calc(1rem + ${index * 4.5}rem)` }"
     />
     <BaseToast
-      v-for="(message, index) in notifications"
-      :key="index"
+      v-for="(notification, index) in notifications"
+      :key="notification.id"
       :model-value="true"
       @update:model-value="notifications.splice(index, 1)"
       type="info"
-      :message="message"
+      :message="notification.text"
       :style="{ bottom: `calc(1rem + ${index * 4.5}rem)` }"
     />
   </div>
