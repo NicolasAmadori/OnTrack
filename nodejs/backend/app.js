@@ -12,6 +12,8 @@ import solutionsRoutes from "#src/routes/solutionsRoutes.js";
 import reservationsRoutes from "#src/routes/reservationsRoutes.js";
 import trainsRoutes from "#src/routes/trainsRoutes.js";
 import { extractIdFromToken } from '#src/middleware/authMiddleware.js';
+import { listenToExpirations } from '#src/util/expiredRedisListener.js';
+import { getSelectedSeats, handleSeatLock } from "#src/controllers/redisController.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -47,37 +49,37 @@ io.on('connection', async (socket) => {
             onlineUsers.set(id, new Set());
         }
         onlineUsers.get(id).add(socket.id);
-        console.log(`User ${id} connected. ${onlineUsers.get(id).size} in total`);
     }
 
     socket.on('disconnect', () => {
-        if (id) {
-            const userSockets = onlineUsers.get(id);
-            if (userSockets) {
-                console.log(`User ${socket.id} disconnected. ${userSockets.size - 1} remaining`);
-                userSockets.delete(socket.id);
-                if (userSockets.size === 0) {
-                    onlineUsers.delete(id);
-                }
+        if (!id) return;
+        const userSockets = onlineUsers.get(id);
+        if (userSockets) {
+            userSockets.delete(socket.id);
+            if (userSockets.size === 0) {
+                onlineUsers.delete(id);
             }
         }
     });
 
-    socket.on('join_room', (roomName) => {
+    socket.on('join_room', async (roomName) => {
         socket.join(roomName);
-        console.log(`Socket ${socket.id} joined room ${roomName}`);
+        const seats = await getSelectedSeats(roomName.replace("train_", ""));
+        seats.forEach(s => io.to(socket.id).emit('seat_selected', s));
     });
 
     socket.on('leave_room', (roomName) => {
         socket.leave(roomName);
-        console.log(`Socket ${socket.id} left room ${roomName}`);
     });
 
-    socket.on('seat_lock', (trainsSeats) => {
-       console.log(trainsSeats);
-       trainsSeats.forEach(t => {
+    socket.on('lock_seats', async (data) => {
+        if (!id) return;
 
-       })
+        try {
+            await handleSeatLock(id, data.bookingGroups);
+        } catch (error) {
+            console.error("Socket lock error:", error);
+        }
     });
 });
 
@@ -92,6 +94,10 @@ app.use('/api/stations', stationsRoutes);
 app.use('/api/solutions', solutionsRoutes);
 app.use('/api/reservations', reservationsRoutes);
 app.use('/api/trains', trainsRoutes);
+
+listenToExpirations(io).catch(err => {
+    console.error("Failed to start Redis listener:", err);
+});
 
 export { app, io };
 export default httpServer;

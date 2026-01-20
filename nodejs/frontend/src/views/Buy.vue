@@ -53,18 +53,18 @@ import { createReservation } from "@/api/reservations.js";
 import { createErrors } from "@/api/util.js";
 import { emitEvent, offEvent, onEvent } from "@/router/useSocket.js";
 import { localAuthToken, localId } from "@/util/auth.js";
-import { lockOrRenewSeats } from "@/api/seats.js";
 
-const REFRESH_INTERVAL = 3_000;
+const REFRESH_INTERVAL = 1_000;
 
 const route = useRoute();
 const router = useRouter();
 const isSubmitting = ref(false);
 const solution = ref(null);
 const passengersData = ref([]);
-const occupiedSeats = ref({});
 let refreshIntervalId = null;
-const dynamicallySelectedSeats = ref(null);
+
+const bookedSeats = ref({}); //Seats already booked sourced from the database
+const dynamicallySelectedSeats = ref(null); //seats selected from every clients, not already booked
 
 const routeSubtitle = computed(() => {
   if (!solution.value) return "";
@@ -80,19 +80,16 @@ const trainSeats = computed(() => {
     occupied: []
   }));
 
+  const dynamicallySelectedMap = new Map(dynamicallySelectedSeats.value.map(g => [g.trainCode, g.occupied]));
+
   trains.forEach(train => {
     const occupiedInThisTrain = [];
 
-    if (occupiedSeats.value[train.code]) {
-      occupiedInThisTrain.push(...occupiedSeats.value[train.code]);
+    if (bookedSeats.value[train.code]) {
+      occupiedInThisTrain.push(...bookedSeats.value[train.code]);
     }
 
-    passengersData.value.forEach(p => {
-      const selectedSeat = p.seats.get(train.code);
-      if (selectedSeat) {
-        occupiedInThisTrain.push(selectedSeat);
-      }
-    });
+    occupiedInThisTrain.push(...dynamicallySelectedMap.get(train.code));
 
     train.occupied = occupiedInThisTrain;
   });
@@ -121,7 +118,7 @@ const solutionNodes = computed(() => {
 
 onMounted(async () => {
   solution.value = await getSolution(localAuthToken.value, route.params.solutionId);
-  occupiedSeats.value = await getSolutionOccupiedSeats(localAuthToken.value, solution.value.solution_id);
+  bookedSeats.value = await getSolutionOccupiedSeats(localAuthToken.value, solution.value.solution_id);
 
   dynamicallySelectedSeats.value = solution.value.nodes.map(n => ({
     trainCode: n.train.code,
@@ -139,7 +136,7 @@ onMounted(async () => {
   }
 
   refreshIntervalId = window.setInterval(async () => {
-    await lockOrRenewSeats(localAuthToken.value, getLocallySelectedSeats());
+    emitEvent('lock_seats', { bookingGroups: getLocallySelectedSeats() })
   }, REFRESH_INTERVAL);
 });
 
@@ -178,7 +175,7 @@ const initializePassengersData = async () => {
 
 const handleLocalSeatUpdate = async (index, newSeats) => {
   passengersData.value[index].seats = newSeats;
-  await lockOrRenewSeats(localAuthToken.value, getLocallySelectedSeats());
+  emitEvent('lock_seats', { bookingGroups: getLocallySelectedSeats() })
 };
 
 const getLocallySelectedSeats = () => {
@@ -215,10 +212,8 @@ const handledRedisSeatUpdate = (data) => {
       if (trainDepTime < nodeArrTime && trainArrTime > nodeDepTime) {
         if (data.status === "locked") {
           t.occupied.push(data.seat);
-          console.log("aggiunto: " + data.trainCode + " : " + data.seat);
         } else {
-          t.occupied.delete(data.seat);
-          console.log("rimosso: " + data.trainCode + " : " + data.seat);
+          t.occupied = t.occupied.filter(s => s !== data.seat);
         }
       }
     }

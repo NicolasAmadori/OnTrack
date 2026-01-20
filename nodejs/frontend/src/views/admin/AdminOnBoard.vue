@@ -80,7 +80,6 @@ const toggleBathroom = async (index) => {
             train.value.bathrooms = train.value.bathrooms || [];
             train.value.bathrooms.push({ isOccupied: false, queue: [] });
         }
-        console.log(train.value.bathrooms);
     }
     train.value.bathrooms[index].isOccupied = !train.value.bathrooms[index].isOccupied;
     await update_train(localAuthToken.value, train.value._id, { bathrooms: train.value.bathrooms });
