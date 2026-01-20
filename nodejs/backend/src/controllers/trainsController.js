@@ -1,6 +1,9 @@
 import Train from '#src/models/trainModel.js';
 import User from '#src/models/userModel.js';
+import Reservation from '#src/models/reservationModel.js';
+import Solution from '#src/models/solutionModel.js';
 import { sendNotificationToUser } from '../../app.js';
+
 
 export const get_trains = async function(req, res) {
     try {
@@ -59,6 +62,20 @@ export const cancel_restore_train = async function(req, res) {
         }
 
         train.cancelled = !train.cancelled;
+        const solutions = await Solution.find({ 'nodes.train': train._id }).select('solution_id');
+        const solutionIds = solutions.map(s => s.solution_id);
+        
+        const reservations = await Reservation.find({ solution_id: { $in: solutionIds } });
+
+        reservations.forEach(r => {
+            sendNotificationToUser(r.user.toString(), 'notification', 
+                train.cancelled ? `Your reservation on train ${train.code} has been cancelled due to train cancellation.`
+                 : `Your reservation on train ${train.code} has been restored.`);
+            sendNotificationToUser(r.user.toString(), 'train_update', {
+                    trainId: train._id,
+                    cancelled: train.cancelled
+            });
+        });
         await train.save();
         
         return res.status(200).json({
