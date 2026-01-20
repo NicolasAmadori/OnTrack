@@ -62,6 +62,7 @@ import BaseSelect from '@/components/BaseSelect.vue';
 import DateTimePopup from '@/components/DateTimePopup.vue';
 import BaseButton from '../components/BaseButton.vue';
 import StationInput from "@/components/StationInput.vue";
+import { createErrors } from "@/api/util.js";
 
 const router = useRouter();
 
@@ -105,7 +106,7 @@ const handleDateSelect = () => {
 
 const handleSearch = () => {
   if (!fromLocation.value || !toLocation.value) {
-    alert("Please select both stations");
+    createErrors(["Please select both stations"]);
     return;
   }
   router.push({

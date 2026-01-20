@@ -39,6 +39,14 @@
       </div>
     </div>
   </div>
+
+  <ConfirmationPopup
+    v-if="showConfirmation"
+    title="Confirm Deletion"
+    :question="`Are you sure that your want to delete this user (${userToDelete?.email})?`"
+    @confirm="confirmDelete"
+    @cancel="showConfirmation = false"
+  />
 </template>
 
 <script setup>
@@ -47,17 +55,17 @@ import { getAllUsers, updateUser, deleteUser } from '@/api/users';
 import SearchBar from '@/components/SearchBar.vue';
 import UserListItem from '@/components/UserListItem.vue';
 import BaseBanner from "@/components/BaseBanner.vue";
+import ConfirmationPopup from "@/components/ConfirmationPopup.vue";
 import { localAuthToken } from "@/util/auth.js";
 
+const showConfirmation = ref(false);
+const userToDelete = ref(null);
 const userQuery = ref('');
 const users = ref([]);
 const filteredUsers = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
 
-/**
- * Load users
- */
 const loadUsers = async () => {
   isLoading.value = true;
   error.value = null;
@@ -74,9 +82,6 @@ const loadUsers = async () => {
 
 onMounted(loadUsers);
 
-/**
- * Filtering logic
- */
 const handleSearch = () => {
   if(!userQuery) {
     filteredUsers.value = users.value;
@@ -94,12 +99,22 @@ const toggleAdmin = async (user) => {
     is_admin: !user.is_admin
   });
   loadUsers();
+};(user) => {
+  userToDelete.value = user;
+  showConfirmation.value = true;
 };
 
-const handleDelete = async (user) => {
-  if(confirm(`Are you sure that your want to delete this user (${user.email})?`)) {
-    await deleteUser(localAuthToken.value, user._id);
+const handleDelete = (user) => {
+  userToDelete.value = user;
+  showConfirmation.value = true;
+};
+
+const confirmDelete = async () => {
+  if(userToDelete.value) {
+    await deleteUser(localAuthToken.value, userToDelete.value._id);
     loadUsers();
   }
+  showConfirmation.value = false;
+  userToDelete.value = null;
 };
 </script>
