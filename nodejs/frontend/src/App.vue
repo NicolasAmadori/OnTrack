@@ -4,11 +4,12 @@ import { useRoute } from 'vue-router';
 import Sidebar from '@/components/Sidebar.vue';
 import BaseToast from '@/components/BaseToast.vue';
 import { successMessage, errorMessages } from '@/api/util.js';
-import { connectSocket, disconnectSocket } from '@/router/useSocket.js';
+import { connectSocket, disconnectSocket, onEvent } from '@/router/useSocket.js';
 import { localAuthToken } from "@/util/auth.js";
 
 const route = useRoute();
 const isSidebarOpen = ref(false);
+const notifications = ref([]);
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
@@ -37,6 +38,11 @@ watch(
   },
   { immediate: true }
 );
+
+onEvent('notification', (message) => {
+  console.log('Received notification:', message);
+  notifications.value.push(message);
+});
 </script>
 
 <template>
@@ -75,6 +81,15 @@ watch(
       @update:model-value="errorMessages.splice(index, 1)"
       type="error"
       :message="error.text"
+      :style="{ bottom: `calc(1rem + ${index * 4.5}rem)` }"
+    />
+    <BaseToast
+      v-for="(message, index) in notifications"
+      :key="index"
+      :model-value="true"
+      @update:model-value="notifications.splice(index, 1)"
+      type="info"
+      :message="message"
       :style="{ bottom: `calc(1rem + ${index * 4.5}rem)` }"
     />
   </div>

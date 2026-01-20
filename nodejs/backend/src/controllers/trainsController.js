@@ -1,5 +1,6 @@
 import Train from '#src/models/trainModel.js';
 import User from '#src/models/userModel.js';
+import { sendNotificationToUser } from '../../app.js';
 
 export const get_trains = async function(req, res) {
     try {
@@ -79,6 +80,12 @@ export const update_train = async function(req, res) {
         const id = req.params.trainId;
         const train = req.body;
         const updatedTrain = {};
+        const realTrain = await Train.findById(id);
+        if (!realTrain) {
+            return res.status(404).json({ success: false, errors: [{
+                message: "Train not found"
+            }] });
+        }
 
         if (train.delay) {
             updatedTrain.delay = train.delay;
@@ -90,10 +97,15 @@ export const update_train = async function(req, res) {
             updatedTrain.bathrooms = train.bathrooms;
             updatedTrain.bathrooms.forEach((bathroom, index) => {
                 if (!bathroom.isOccupied) {
-                    bathroom.queue.forEach((userId) => {
-                        console.log(`Notifying user ${userId} that bathroom ${index} is now available.`);
+                    const queue = realTrain.bathrooms[index]?.queue || [];
+                    queue.forEach((userId) => {
+                        sendNotificationToUser(userId, 'notification', `Bathroom ${index + 1} on train ${realTrain.code} is now available!`);
                     });
                     bathroom.queue = [];
+                } else {
+                     if (bathroom.queue === undefined) {
+                        bathroom.queue = realTrain.bathrooms[index]?.queue || [];
+                    }
                 }
             });
         }
@@ -106,6 +118,11 @@ export const update_train = async function(req, res) {
                     message: "Train not found"
                 }] });
             }
+
+            req.io.to(`train_${realTrain.code}`).emit('train_update', {
+                trainId: id,
+                ...updatedTrain
+            });
 
             if (result.modifiedCount === 0) {
                 return res.status(200).json({ success: true, message: "No changes were made" });

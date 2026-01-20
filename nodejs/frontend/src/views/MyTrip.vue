@@ -75,12 +75,13 @@
 import BaseBanner from "@/components/BaseBanner.vue";
 import BaseSelect from "@/components/BaseSelect.vue";
 import NodeTicket from "@/components/NodeTicket.vue";
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { createErrors } from '@/api/util.js';
 import { toggle_user_to_bathroom_queue } from "@/api/trains";
 import { getActiveReservations } from '@/api/reservations.js';
 import { getDelayClass, formatDuration, getTimeDifference } from "@/util/dateTime.js";
 import { localAuthToken, localId } from "@/util/auth.js";
+import { emitEvent, onEvent, offEvent } from "@/router/useSocket.js";
 
 const activeNodes = ref([]);
 const selectedNode = ref(null);
@@ -117,5 +118,44 @@ const toggleNotification = async (trainId, bathroomIndex) => {
   }  
 };
 
-onMounted(fetchActiveNodes);
+const handleTrainUpdate = (data) => {
+    if (selectedNode.value && selectedNode.value.train._id === data.trainId) {
+        if (data.bathrooms) {
+            selectedNode.value.train.bathrooms = data.bathrooms;
+        }
+        if (data.delay !== undefined) {
+             selectedNode.value.train.delay = data.delay;
+        }
+        if (data.cancelled !== undefined) {
+             selectedNode.value.train.cancelled = data.cancelled;
+        }
+    }
+    const node = activeNodes.value.find(n => n.train._id === data.trainId);
+    if (node) {
+        if (data.bathrooms) node.train.bathrooms = data.bathrooms;
+        if (data.delay !== undefined) node.train.delay = data.delay;
+        if (data.cancelled !== undefined) node.train.cancelled = data.cancelled;
+    }
+};
+
+watch(selectedNode, (newVal, oldVal) => {
+    if (oldVal) {
+        emitEvent('leave_room', `train_${oldVal.train.code}`);
+    }
+    if (newVal) {
+        emitEvent('join_room', `train_${newVal.train.code}`);
+    }
+});
+
+onMounted(() => {
+    fetchActiveNodes();
+    onEvent('train_update', handleTrainUpdate);
+});
+
+onUnmounted(() => {
+    offEvent('train_update', handleTrainUpdate);
+    if (selectedNode.value) {
+        emitEvent('leave_room', `train_${selectedNode.value.train.code}`);
+    }
+});
 </script>
