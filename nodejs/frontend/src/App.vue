@@ -5,6 +5,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import BaseToast from '@/components/BaseToast.vue';
 import { successMessage, errorMessages } from '@/api/util.js';
 import { connectSocket, disconnectSocket } from '@/router/useSocket.js';
+import { localAuthToken } from "@/util/auth.js";
 
 const route = useRoute();
 const isSidebarOpen = ref(false);
@@ -26,7 +27,7 @@ watch(
 );
 
 watch(
-  () => localStorage.getItem('authToken'),
+    localAuthToken,
   (token) => {
     if (token) {
       connectSocket(token);

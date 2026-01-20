@@ -47,6 +47,7 @@ import { getAllUsers, updateUser, deleteUser } from '@/api/users';
 import SearchBar from '@/components/SearchBar.vue';
 import UserListItem from '@/components/UserListItem.vue';
 import BaseBanner from "@/components/BaseBanner.vue";
+import { localAuthToken } from "@/util/auth.js";
 
 const userQuery = ref('');
 const users = ref([]);
@@ -61,7 +62,7 @@ const loadUsers = async () => {
   isLoading.value = true;
   error.value = null;
   try {
-    users.value = await getAllUsers(localStorage.getItem('authToken'));
+    users.value = await getAllUsers(localAuthToken.value);
     handleSearch();
   } catch (e) {
     console.error("Error during users retrieval:", e);
@@ -87,7 +88,7 @@ const handleSearch = () => {
 };
 
 const toggleAdmin = async (user) => {
-  await updateUser(localStorage.getItem('authToken'), user._id, {
+  await updateUser(localAuthToken.value, user._id, {
     first_name: user.first_name,
     last_name: user.last_name,
     is_admin: !user.is_admin
@@ -97,7 +98,7 @@ const toggleAdmin = async (user) => {
 
 const handleDelete = async (user) => {
   if(confirm(`Are you sure that your want to delete this user (${user.email})?`)) {
-    await deleteUser(localStorage.getItem('authToken'), user._id);
+    await deleteUser(localAuthToken.value, user._id);
     loadUsers();
   }
 };

@@ -47,19 +47,37 @@ io.on('connection', async (socket) => {
             onlineUsers.set(id, new Set());
         }
         onlineUsers.get(id).add(socket.id);
-        console.log(`User ${id} mapped on socket ${socket.id}`);
+        console.log(`User ${id} connected. ${onlineUsers.get(id).size} in total`);
     }
 
     socket.on('disconnect', () => {
         if (id) {
             const userSockets = onlineUsers.get(id);
             if (userSockets) {
+                console.log(`User ${socket.id} disconnected. ${userSockets.size - 1} remaining`);
                 userSockets.delete(socket.id);
                 if (userSockets.size === 0) {
                     onlineUsers.delete(id);
                 }
             }
         }
+    });
+
+    socket.on('join_room', (roomName) => {
+        socket.join(roomName);
+        console.log(`Socket ${socket.id} joined room ${roomName}`);
+    });
+
+    socket.on('leave_room', (roomName) => {
+        socket.leave(roomName);
+        console.log(`Socket ${socket.id} left room ${roomName}`);
+    });
+
+    socket.on('seat_lock', (trainsSeats) => {
+       console.log(trainsSeats);
+       trainsSeats.forEach(t => {
+
+       })
     });
 });
 
@@ -75,7 +93,7 @@ app.use('/api/solutions', solutionsRoutes);
 app.use('/api/reservations', reservationsRoutes);
 app.use('/api/trains', trainsRoutes);
 
-export { app, io};
+export { app, io };
 export default httpServer;
 
 export function sendNotificationToUser(targetUserId, ev='notification', message) {

@@ -51,6 +51,7 @@
 <script setup>
 import { ref } from 'vue'
 import { get_stations } from '@/api/stations.js'
+import { localAuthToken } from "@/util/auth.js";
 
 const props = defineProps({
   modelValue: String,
@@ -82,7 +83,7 @@ async function onInputHandler() {
   clearTimeout(debounceTimeout)
   debounceTimeout = setTimeout(async () => {
     try {
-      const results = await get_stations(localStorage.getItem("authToken"), query.value);
+      const results = await get_stations(localAuthToken.value, query.value);
       filteredSuggestions.value = results.slice(0, 10)
       isOpen.value = filteredSuggestions.value.length > 0
     } catch (error) {

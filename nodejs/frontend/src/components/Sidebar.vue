@@ -1,9 +1,12 @@
 <script setup>
-import { logout } from '@/util/auth.js';
+import {localIsAdmin, logout} from '@/util/auth.js';
 import { useRoute } from 'vue-router';
+import {computed} from "vue";
 
 const route = useRoute();
-const isAdmin = localStorage.getItem('is_admin') === 'true';
+const isAdmin = computed(() => {
+  return localIsAdmin.value === 'true' || localIsAdmin.value === true;
+});
 
 const menuItems = [
   { name: 'Home', path: '/home', icon: 'bi-house-door-fill', metaKey: 'home' },

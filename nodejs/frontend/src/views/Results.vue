@@ -38,6 +38,7 @@ import MinimalBanner from "@/components/MinimalBanner.vue";
 import ResultListItem from "@/components/ResultListItem.vue";
 import { searchSolution } from "@/api/solutions.js";
 import { formatDate, formatTime } from "@/util/dateTime.js";
+import { localAuthToken } from "@/util/auth.js";
 
 const route = useRoute();
 const results = ref([]);
@@ -59,7 +60,7 @@ const fetchResults = async () => {
 
   try {
     const data = await searchSolution(
-        localStorage.getItem("authToken"),
+        localAuthToken.value,
         route.query.from,
         route.query.to,
         route.query.date,
