@@ -74,3 +74,28 @@ export async function update_train(authToken, trainId, updateData) {
     const data = await response.json();
     checkResponseSuccess(response, data);
 }
+
+export async function toggle_user_to_bathroom_queue(authToken, trainId, bathroomIndex, userId) {
+    if (authToken == null) {
+        throw new Error('Authentication token is required');
+    }
+    if (trainId == null) {
+        throw new Error('Train ID is required');
+    }
+    if (bathroomIndex == null) {
+        throw new Error('Bathroom index is required');
+    }
+    if (userId == null) {
+        throw new Error('User ID is required');
+    }
+    const response = await fetch(`${API_BASE_URL}/trains/${trainId}/bathroom/${bathroomIndex}/queue/${userId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+        },
+    });
+
+    const data = await response.json();
+    checkResponseSuccess(response, data);
+}

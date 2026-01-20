@@ -2,12 +2,18 @@ import User from '#src/models/userModel.js';
 import Reservation from '#src/models/reservationModel.js';
 import Solution from '#src/models/solutionModel.js';
 
-export const joinReservationsWithSolutions = async (reservations) => {
+export const joinReservationsWithSolutions = async (reservations, userId) => {
     return await Promise.all(reservations.map(async(r) => {
         const solTrain = await Solution.findOne({ solution_id: r.solution_id })
             .populate('nodes.train')
             .lean()
             .exec();
+
+        solTrain.nodes.forEach(n => {
+            n.train.bathrooms.forEach(b => {
+                b.queue = b.queue.filter(uId => uId.toString() === userId.toString());
+            });
+        });
 
         const rObj = r.toObject ? r.toObject() : r;
 
@@ -36,7 +42,7 @@ export const get_user_reservations = async function(req, res) {
             .in(reservationsId)
             .exec();
 
-        const resSol = await joinReservationsWithSolutions(reservations);
+        const resSol = await joinReservationsWithSolutions(reservations, userId);
         const allNodes = resSol.flatMap(r => r.nodes);
         resSol.forEach(r => {
             r.passengers.forEach(p => p.seats.forEach(s => s.node = allNodes.find(n => n._id.toString() === s.node._id.toString())));
@@ -69,15 +75,16 @@ export const get_active_reservations_nodes = async function(req, res) {
             .where('_id')
             .in(reservationsId)
             .exec();
-        
-        const allReservations = await joinReservationsWithSolutions(reservations);
+
+        const allReservations = await joinReservationsWithSolutions(reservations, userId);
         const cetNow = new Date().getTime();
 
         const activeNodes = allReservations
             .flatMap(r => r.nodes)
-            .filter(n => !n.train.cancelled && 
-                new Date(n.departure_time).getTime() < cetNow &&
-                new Date(n.arrival_time).getTime() > cetNow);
+            // TODO: uncomment
+            // .filter(n => !n.train.cancelled && 
+            //     new Date(n.departure_time).getTime() < cetNow &&
+            //     new Date(n.arrival_time).getTime() > cetNow);
 
         const activeNodeIds = activeNodes.map(n => n._id.toString());
         const passengers = allReservations

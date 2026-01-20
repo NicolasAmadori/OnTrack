@@ -40,13 +40,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import BaseBanner from "@/components/BaseBanner.vue";
 import ReservationCard from "@/components/ReservationCard.vue";
 import { getUserReservations, deleteReservation } from '@/api/reservations';
 import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
 import ReservationDetailsPopup from '@/components/ReservationDetailsPopup.vue';
 import { localAuthToken, localId } from "@/util/auth.js";
+import { onEvent, offEvent } from "@/router/useSocket.js";
 
 const reservations = ref([]);
 const reservationToDelete = ref(null);
@@ -70,5 +71,22 @@ const delReservation = async (reservationId) => {
     reservations.value = reservations.value.filter(reservation => reservation._id !== reservationId);
 };
 
-onMounted(fetchReservations);
+const handleTrainUpdate = (data) => {
+    reservations.value.forEach(reservation => {
+        reservation.nodes.forEach(node => {
+            if (node.train._id === data.trainId && data.cancelled !== undefined) {
+                node.train.cancelled = data.cancelled;
+            }
+        });
+    });
+};
+
+onMounted(() => {
+    fetchReservations();
+    onEvent('train_update', handleTrainUpdate);
+});
+
+onUnmounted(() => {
+    offEvent('train_update', handleTrainUpdate);
+});
 </script>

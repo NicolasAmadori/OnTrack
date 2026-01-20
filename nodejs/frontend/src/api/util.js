@@ -16,6 +16,5 @@ export function checkResponseSuccess(response, data) {
 export const successMessage = ref('');
 export const errorMessages = ref([]);
 export const createErrors = (msgs) => {
-    nextId = 0;
     errorMessages.value = msgs.map(createError);
 };
