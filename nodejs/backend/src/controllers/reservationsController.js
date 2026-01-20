@@ -34,8 +34,6 @@ export const get_user_reservations = async function(req, res) {
         const reservations = await Reservation.find()
             .where('_id')
             .in(reservationsId)
-            .populate('passengers.seats.node')
-            .populate('passengers.seats.node.train')
             .exec();
 
         const resSol = await joinReservationsWithSolutions(reservations);

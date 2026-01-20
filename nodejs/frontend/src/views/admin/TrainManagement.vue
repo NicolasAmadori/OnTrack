@@ -50,6 +50,7 @@ import DateTimePopup from "@/components/DateTimePopup.vue";
 import ConfirmationPopup from '../../components/ConfirmationPopup.vue';
 import { formatDate } from "@/util/dateTime";
 import { get_trains, delete_train } from '@/api/trains';
+import { localAuthToken } from "@/util/auth.js";
 
 const showDatePopup = ref(false);
 const selectedDate = ref(new Date());
@@ -61,7 +62,7 @@ const formattedDate = computed(() => formatDate(selectedDate.value));
 
 const updateTrains = async () => {
     try {
-        trains.value = await get_trains(localStorage.getItem('authToken'), selectedDate.value, searchQuery.value);
+        trains.value = await get_trains(localAuthToken.value, selectedDate.value, searchQuery.value);
     } catch (error) {
         console.error('Error fetching trains:', error);
     }
@@ -78,7 +79,7 @@ watch([selectedDate, searchQuery], () => {
 const delTrain = async (trainId) => {
     trainToDelete.value = null;
     try {
-        await delete_train(localStorage.getItem('authToken'), trainId);
+        await delete_train(localAuthToken.value, trainId);
     } catch (error) {
         console.error('Error deleting train:', error);
     }

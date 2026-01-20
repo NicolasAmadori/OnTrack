@@ -17,6 +17,7 @@ import TrainManagement from '@/views/admin/TrainManagement.vue';
 import AdminOnBoard from '@/views/admin/AdminOnBoard.vue';
 
 import { isTokenValid } from "../api/auth.js";
+import { localAuthToken, localId, localIsAdmin } from "@/util/auth.js";
 
 const routes = [
     { path: '/', redirect: '/home' },
@@ -106,9 +107,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async(to, from, next) => {
-    const authToken = localStorage.getItem('authToken');
-    const id = localStorage.getItem('id');
-    const isAdmin = localStorage.getItem('is_admin') === 'true';
+    const authToken = localAuthToken.value;
+    const id = localId.value;
+    const isAdmin = localIsAdmin.value === 'true' || localIsAdmin.value === true;
     let isAuthenticated = false;
     if (authToken && id) {
         try {
@@ -120,7 +121,6 @@ router.beforeEach(async(to, from, next) => {
     }
 
     if (to.meta.requiresAuth && !isAuthenticated) {
-        localStorage.clear();
         next('/login');
     } else if (to.meta.requiresAdmin && !isAdmin) {
         next('/home');

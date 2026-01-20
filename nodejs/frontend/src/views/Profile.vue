@@ -52,6 +52,7 @@ import { getUser, updateUser } from '../api/users';
 import { PASSWORD_MIN_LENGTH } from '@/util/constants.js';
 import BaseBanner from "@/components/BaseBanner.vue";
 import { createErrors } from '@/api/util.js';
+import { localAuthToken, localId } from "@/util/auth.js";
 
 const form = reactive({
   first_name: '',
@@ -75,7 +76,7 @@ const isSubmitting = ref(false);
 let email = ''
 
 const fetchUser = async () => {
-  const user = await getUser(localStorage.getItem('authToken'), localStorage.getItem('id'));
+  const user = await getUser(localAuthToken.value, localId.value);
   email = user.email;
   form.first_name = user.first_name;
   form.last_name = user.last_name;
@@ -100,7 +101,7 @@ const submitForm = async () => {
       return;
     }
 
-    await updateUser(localStorage.getItem('authToken'), localStorage.getItem('id'), {
+    await updateUser(localAuthToken.value, localId.value, {
       first_name: form.first_name,
       last_name: form.last_name,
       oldpassword: form.old_password || undefined,

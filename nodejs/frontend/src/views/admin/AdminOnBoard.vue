@@ -60,6 +60,7 @@ import trainSvg from '@/assets/images/train.svg';
 import { getDelayClass } from '@/util/dateTime.js';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { localAuthToken } from "@/util/auth.js";
 
 const route = useRoute();
 const trainCode = computed(() => route.params.trainCode );
@@ -67,7 +68,7 @@ const train = ref(null);
 
 const updateDelay = async () => {
   train.value.delay = Math.min(Math.max(train.value.delay, 0), 9999);
-  await update_train(localStorage.getItem('authToken'), train.value._id, { delay: train.value.delay });
+  await update_train(localAuthToken.value, train.value._id, { delay: train.value.delay });
 };
 
 const toggleBathroom = async (index) => {
@@ -82,7 +83,7 @@ const toggleBathroom = async (index) => {
         console.log(train.value.bathrooms);
     }
     train.value.bathrooms[index].isOccupied = !train.value.bathrooms[index].isOccupied;
-    await update_train(localStorage.getItem('authToken'), train.value._id, { bathrooms: train.value.bathrooms });
+    await update_train(localAuthToken.value, train.value._id, { bathrooms: train.value.bathrooms });
 };
 
 onMounted(async () => {

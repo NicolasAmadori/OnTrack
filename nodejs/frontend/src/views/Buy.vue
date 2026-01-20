@@ -31,7 +31,7 @@
         v-model:last-name="passenger.lastName"
 
         :selectedSeats="passenger.seats"
-        @update:selectedSeats="(val) => handleSeatUpdate(index, val)"
+        @update:selectedSeats="(val) => handleLocalSeatUpdate(index, val)"
     />
   </div>
 
@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getSolution, getSolutionOccupiedSeats } from "@/api/solutions.js";
 import MinimalBanner from "@/components/MinimalBanner.vue";
@@ -50,72 +50,191 @@ import PassengerGroup from '@/components/PassengerGroup.vue';
 import ReservationCard from '@/components/ReservationCard.vue';
 import { getUser } from "@/api/users.js";
 import { createReservation } from "@/api/reservations.js";
-import {createErrors} from "@/api/util.js";
+import { createErrors } from "@/api/util.js";
+import { emitEvent, offEvent, onEvent } from "@/router/useSocket.js";
+import { localAuthToken, localId } from "@/util/auth.js";
+import { lockOrRenewSeats } from "@/api/seats.js";
+
+const REFRESH_INTERVAL = 3_000;
 
 const route = useRoute();
 const router = useRouter();
-const routeSubtitle = ref("");
 const isSubmitting = ref(false);
 const solution = ref(null);
 const passengersData = ref([]);
-const trainSeats = ref(null);
-const solutionNodes = ref(null);
 const occupiedSeats = ref({});
+let refreshIntervalId = null;
+const dynamicallySelectedSeats = ref(null);
 
-onMounted(async () => {
-  const count = Number(history.state.passengers);
-  const user = await getUser(localStorage.getItem('authToken'), localStorage.getItem('id'));
+const routeSubtitle = computed(() => {
+  if (!solution.value) return "";
+  return solution.value.nodes.map(n => n.train.code).join(" / ");
+});
 
-  solution.value = await getSolution(localStorage.getItem("authToken"), route.params.solutionId);
-  occupiedSeats.value = await getSolutionOccupiedSeats(localStorage.getItem("authToken"), solution.value.solution_id);
-  routeSubtitle.value = solution.value.nodes.map(n => n.train.code).join(" / ");
-  trainSeats.value = solution.value.nodes
-      .map(n => ({
-        "code": n.train.code,
-        "occupied": []
-      }));
-  updateSeatsVisualization();
-  solutionNodes.value = solution.value.nodes.reduce((map, node) => {
-    const trainCode = node.train.code;
-    map[trainCode] = node;
+const trainSeats = computed(() => {
+  if (!solution.value) return [];
+  const trains = solution.value.nodes.map(n => ({
+    code: n.train.code,
+    departureTime: n.departure_time,
+    arrivalTime: n.arrival_time,
+    occupied: []
+  }));
+
+  trains.forEach(train => {
+    const occupiedInThisTrain = [];
+
+    if (occupiedSeats.value[train.code]) {
+      occupiedInThisTrain.push(...occupiedSeats.value[train.code]);
+    }
+
+    passengersData.value.forEach(p => {
+      const selectedSeat = p.seats.get(train.code);
+      if (selectedSeat) {
+        occupiedInThisTrain.push(selectedSeat);
+      }
+    });
+
+    train.occupied = occupiedInThisTrain;
+  });
+
+  return trains;
+});
+
+const isFormValid = computed(() => {
+  if (passengersData.value.length === 0) return false;
+  return passengersData.value.every(p =>
+      p.firstName &&
+      p.firstName.trim() !== '' &&
+      p.lastName &&
+      p.lastName.trim() !== '' &&
+      Array.from(p.seats.values()).every(s => s !== null)
+  );
+});
+
+const solutionNodes = computed(() => {
+  if(!solution.value) return {};
+  return solution.value.nodes.reduce((map, node) => {
+    map[node.train.code] = node;
     return map;
   }, {});
-
-  if (count && count > 0) {
-    const firstPassenger = {
-      firstName: user.first_name,
-      lastName: user.last_name,
-      seats: new Map(
-          solution.value.nodes.map(n => [n.train.code, null])
-      )
-    };
-
-    const otherPassengers = Array.from({ length: count - 1 }, () => ({
-      firstName: '',
-      lastName: '',
-      seats: new Map(
-          solution.value.nodes.map(n => [n.train.code, null])
-      )
-    }));
-
-    passengersData.value = [firstPassenger, ...otherPassengers];
-  } else {
-    router.back();
-  }
 });
+
+onMounted(async () => {
+  solution.value = await getSolution(localAuthToken.value, route.params.solutionId);
+  occupiedSeats.value = await getSolutionOccupiedSeats(localAuthToken.value, solution.value.solution_id);
+
+  dynamicallySelectedSeats.value = solution.value.nodes.map(n => ({
+    trainCode: n.train.code,
+    departureTime: n.departure_time,
+    arrivalTime: n.arrival_time,
+    occupied: []
+  }));
+  await initializePassengersData();
+
+  if (solution.value) {
+    solution.value.nodes.forEach(n => {
+      emitEvent("join_room", "train_" + n.train.code);
+    });
+    onEvent('seat_selected', handledRedisSeatUpdate);
+  }
+
+  refreshIntervalId = window.setInterval(async () => {
+    await lockOrRenewSeats(localAuthToken.value, getLocallySelectedSeats());
+  }, REFRESH_INTERVAL);
+});
+
+onUnmounted(() => {
+  if (solution.value) {
+    solution.value.nodes.forEach(n => {
+      emitEvent("leave_room", "train_" + n.train.code);
+    });
+    offEvent('seat_selected', handledRedisSeatUpdate);
+  }
+  if (refreshIntervalId) clearInterval(refreshIntervalId);
+});
+
+const initializePassengersData = async () => {
+  const count = Number(history.state.passengers);
+  if (count && count > 0) {
+    const user = await getUser(localAuthToken.value, localId.value);
+    const defaultSeats = () => new Map(solution.value.nodes.map(n => [n.train.code, null]));
+
+    passengersData.value = [
+      {
+        firstName: user.first_name,
+        lastName: user.last_name,
+        seats: defaultSeats()
+      },
+      ...Array.from({ length: count - 1 }, () => ({
+        firstName: '',
+        lastName: '',
+        seats: defaultSeats()
+      }))
+    ];
+  } else {
+    router.push("/home");
+  }
+}
+
+const handleLocalSeatUpdate = async (index, newSeats) => {
+  passengersData.value[index].seats = newSeats;
+  await lockOrRenewSeats(localAuthToken.value, getLocallySelectedSeats());
+};
+
+const getLocallySelectedSeats = () => {
+  const bookingGroups = solution.value.nodes.map(n => ({
+    trainCode: n.train.code,
+    departureTime: n.departure_time,
+    arrivalTime: n.arrival_time,
+    seats: []
+  }));
+
+  bookingGroups.forEach(group => {
+    const occupiedInThisTrain = [];
+
+    passengersData.value.forEach(p => {
+      const selectedSeat = p.seats.get(group.trainCode);
+      if (selectedSeat) {
+        occupiedInThisTrain.push(selectedSeat);
+      }
+    });
+
+    group.seats = occupiedInThisTrain;
+  });
+
+  return bookingGroups;
+}
+
+const handledRedisSeatUpdate = (data) => {
+  dynamicallySelectedSeats.value.forEach(t => {
+    if (data.trainCode === t.trainCode) {
+      const nodeDepTime = new Date(t.departureTime).getTime();
+      const nodeArrTime = new Date(t.arrivalTime).getTime();
+      const trainDepTime = new Date(data.departureTime).getTime();
+      const trainArrTime = new Date(data.arrivalTime).getTime();
+      if (trainDepTime < nodeArrTime && trainArrTime > nodeDepTime) {
+        if (data.status === "locked") {
+          t.occupied.push(data.seat);
+          console.log("aggiunto: " + data.trainCode + " : " + data.seat);
+        } else {
+          t.occupied.delete(data.seat);
+          console.log("rimosso: " + data.trainCode + " : " + data.seat);
+        }
+      }
+    }
+  });
+};
 
 const handleReserve = async () => {
   isSubmitting.value = true;
   try {
-    if(!passengersData.value.every(p =>
-        p.firstName && p.lastName && Array.from(p.seats.values()).every(s => s !== null)
-    )) {
+    if(!isFormValid.value) {
       throw new Error('Fill all the fields and select a seat for every train');
     }
 
     const reservationBody = {
       solution_id: solution.value.solution_id,
-      user: localStorage.getItem("id"),
+      user: localId.value,
       passengers: passengersData.value.map(p => ({
         first_name: p.firstName,
         last_name: p.lastName,
@@ -126,48 +245,12 @@ const handleReserve = async () => {
       }))
     };
 
-    await createReservation(
-        localStorage.getItem("authToken"),
-        localStorage.getItem("id"),
-        reservationBody
-    );
+    await createReservation(localAuthToken.value, localId.value, reservationBody);
     router.push('/reservations');
   } catch (error) {
     createErrors([error.message]);
   } finally {
     isSubmitting.value = false;
   }
-};
-
-const updateSeatsVisualization = () => {
-  const allOccupiedSeats = {};
-  passengersData.value.filter(p => p.seats).forEach(passenger => {
-    passenger.seats.forEach((seatId, trainId) => {
-      if (!allOccupiedSeats[trainId]) {
-        allOccupiedSeats[trainId] = [];
-      }
-      allOccupiedSeats[trainId].push(seatId);
-    });
-  });
-
-  Object.entries(occupiedSeats.value).forEach(([trainId, seats]) => {
-    if (!allOccupiedSeats[trainId]) {
-      allOccupiedSeats[trainId] = [];
-    }
-    seats.forEach(seatId => {
-      allOccupiedSeats[trainId].push(seatId);
-    });
-  });
-
-  trainSeats.value = trainSeats.value.map(t => ({
-    code: t.code,
-    occupied: allOccupiedSeats[t.code]
-  }));
-};
-
-const handleSeatUpdate = (index, newSeats) => {
-  passengersData.value[index].seats = newSeats;
-
-  updateSeatsVisualization();
 };
 </script>
