@@ -1,37 +1,28 @@
 import getRedisClient from '#src/util/redisClient.js';
-import {io} from "../../app.js";
+import { io } from "../../app.js";
 
-export const getSelectedSeats = async function(req, res) {
-    const solutionId = req.params.solutionId;
-    try {
-        const redis = await getRedisClient();
-        const keys = await redis.keys(`lock:${solutionId}:*`);
+export const getSelectedSeats = async function (trainCode) {
+    const redis = await getRedisClient();
+    const keys = await redis.keys(`lock_${trainCode}_*`);
 
-        const seatMap = {};
+    return keys.map(key => {
+        const [_, trainCode, departureTime, arrivalTime, seat] = key.split("_");
 
-        keys.forEach(key => {
-            const suffix = key.replace(`lock:${solutionId}:`, "");
-            const [nodeId, seatNumber] = suffix.split(":");
+        return {
+            trainCode: trainCode,
+            departureTime: departureTime,
+            arrivalTime: arrivalTime,
+            seat: seat,
+            status: "locked"
+        };
+    });
+}
 
-            if (!seatMap[nodeId]) {
-                seatMap[nodeId] = [];
-            }
-            seatMap[nodeId].push(seatNumber);
-        });
-
-        res.status(200).json({ success: true, locked_seats: seatMap});
-    } catch (err) {
-        return res.status(500).json({ success: false, errors: [{ message: err.message }] });
-    }
-};
-
-export const createOrRenewLock = async function(req, res) {
-    const EXPIRATION_TIME = 5_000;
-    const userId = req.user && req.user.id;
-    const { bookingGroups } = req.body;
+export const handleSeatLock = async function (userId, bookingGroups) {
+    const EXPIRATION_TIME = 3_000;
 
     if (!bookingGroups || !Array.isArray(bookingGroups)) {
-        return res.status(400).json({ success: false, message: "Invalid format" });
+        throw new Error("Invalid format: bookingGroups must be an array");
     }
 
     const redis = await getRedisClient();
@@ -54,7 +45,7 @@ export const createOrRenewLock = async function(req, res) {
         if (!group.seats || !Array.isArray(group.seats)) return [];
 
         return group.seats.map(async (seatNum) => {
-            const lockKey = `lock:${group.trainCode}:${group.departureTime}:${group.arrivalTime}:${seatNum}`;
+            const lockKey = `lock_${group.trainCode}_${group.departureTime}_${group.arrivalTime}_${seatNum}`;
 
             try {
                 const result = await redis.eval(luaScript, {
@@ -70,11 +61,9 @@ export const createOrRenewLock = async function(req, res) {
                         seat: seatNum,
                         status: "locked"
                     });
-                    console.log("NEW LOCK: " + lockKey);
                     return { seat: seatNum, success: true, status: 'locked' };
 
                 } else if (result === 'RENEWED') {
-                    console.log("RENEWED: " + lockKey);
                     return { seat: seatNum, success: true, status: 'renewed' };
 
                 } else {
@@ -89,19 +78,11 @@ export const createOrRenewLock = async function(req, res) {
     });
 
     const results = await Promise.all(operations);
-
     const failedSeats = results.filter(r => !r.success);
 
-    if (failedSeats.length > 0) {
-        return res.status(423).json({
-            success: false,
-            message: "Some seats could not be locked",
-            failedSeats: failedSeats
-        });
-    }
-
-    return res.status(200).json({
-        success: true,
-        results: results
-    });
+    return {
+        success: failedSeats.length === 0,
+        results: results,
+        failedSeats: failedSeats.length > 0 ? failedSeats : undefined
+    };
 };
