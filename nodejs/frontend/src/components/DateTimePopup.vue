@@ -4,16 +4,18 @@
       <div class="flex items-center justify-between mb-2">
         <button 
             @click="changeMonth(-1)" 
-            class="p-2 text-dark hover:text-bright transition-colors rounded-full active:bg-lighter"
+            class="p-2 text-dark hover:text-bright transition-colors rounded-full active:bg-lighter focus:outline-none focus:ring-2 focus:ring-bright"
             type="button"
+            aria-label="Previous Month"
         >
           <i class="bi bi-chevron-left text-lg"></i>
         </button>
         <span class="text-lg font-bold text-black font-mono">{{ monthName }} {{ currentYear }}</span>
         <button 
             @click="changeMonth(1)" 
-            class="p-2 text-dark hover:text-bright transition-colors rounded-full active:bg-lighter"
+            class="p-2 text-dark hover:text-bright transition-colors rounded-full active:bg-lighter focus:outline-none focus:ring-2 focus:ring-bright"
             type="button"
+            aria-label="Next Month"
         >
           <i class="bi bi-chevron-right text-lg"></i>
         </button>
@@ -31,7 +33,7 @@
           :key="date"
           @click="updateSelection(date)"
           type="button"
-          :disabled="isDisabled(date)"
+          :disabled="isDisabled(date)" focus:outline-none focus:ring-2 focus:ring-bright
           class="h-9 w-9 rounded-full text-sm flex items-center justify-center mx-auto transition-all duration-200 border-2 border-transparent"
           :class="{
             'bg-bright text-white shadow-md hover:bg-bright!': isSelectedDate(date),
@@ -52,7 +54,8 @@
                     <select 
                         v-model="selectedHour" 
                         @change="updateTime"
-                        class="bg-transparent text-2xl font-bold text-black outline-none font-mono appearance-none pl-2 pr-6 cursor-pointer hover:text-bright text-center transition-colors z-10 relative"
+                        class="bg-transparent text-2xl font-bold text-black outline-none font-mono appearance-none pl-2 pr-6 cursor-pointer hover:text-bright text-center transition-colors z-10 relative focus:outline-none focus:text-bright focus:ring-2 focus:ring-bright rounded-md"
+                        aria-label="Select Hour"
                     >
                         <option class="text-black" v-for="h in hourOptions" :key="h" :value="h">{{ h }}</option>
                     </select>
@@ -65,8 +68,9 @@
                     <select 
                         v-model="selectedMinute" 
                         @change="updateTime"
-                        class="bg-transparent text-2xl font-bold text-black outline-none font-mono appearance-none pl-2 pr-6 cursor-pointer text-center hover:text-bright transition-colors z-10 relative"
-                    >
+                        class="bg-transparent text-2xl font-bold text-black outline-none font-mono appearance-none pl-2 pr-6 cursor-pointer text-center hover:text-bright transition-colors z-10 relative focus:outline-none focus:text-bright focus:ring-2 focus:ring-bright rounded-md"
+                        aria-label="Select Minute"
+                        >
                         <option class="text-black" v-for="m in minuteOptions" :key="m" :value="m">{{ m }}</option>
                     </select>
                     <i class="bi bi-chevron-down absolute right-0 top-1/2 -translate-y-1/2 text-xs text-black opacity-50 font-bold pointer-events-none group-hover:text-bright transition-colors"></i>

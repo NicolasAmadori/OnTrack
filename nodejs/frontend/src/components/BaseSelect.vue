@@ -1,8 +1,13 @@
 <template>
     <div class="relative mb-2 mx-3 xl:mx-40" ref="selectContainer">
         <div 
-            class="group flex items-center bg-light rounded-lg overflow-hidden cursor-pointer h-15 shadow-sm transition-opacity duration-200 hover:opacity-80 active:shadow-none" 
+            class="group flex items-center bg-light rounded-lg overflow-hidden cursor-pointer h-15 shadow-sm transition-opacity duration-200 hover:opacity-80 active:shadow-none focus:outline-none focus:ring-2 focus:ring-bright" 
             @click="handleClick"
+            @keydown.enter.prevent="handleClick"
+            @keydown.space.prevent="handleClick"
+            tabindex="0"
+            role="button"
+            :aria-expanded="isOpen"
         >
             <i :class="`bi ${iconName} text-lessdark text-xl mx-3`"></i>
             
@@ -20,8 +25,12 @@
             <div 
                 v-for="(option, index) in options" 
                 :key="index"
-                class="px-4 py-3 hover:bg-lesslight cursor-pointer text-gray-900 border-b border-lesslight last:border-0 transition-colors"
+                class="px-4 py-3 hover:bg-lesslight cursor-pointer text-gray-900 border-b border-lesslight last:border-0 transition-colors focus:outline-none focus:bg-lesslight"
                 @click="selectOption(option)"
+                @keydown.enter.prevent="selectOption(option)"
+                @keydown.space.prevent="selectOption(option)"
+                tabindex="0"
+                role="option"
             >
                 {{ option }}
             </div>

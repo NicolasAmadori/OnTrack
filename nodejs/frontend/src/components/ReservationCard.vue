@@ -1,8 +1,13 @@
 <template>
   <div class="rounded-xl flex flex-col mb-4 overflow-hidden transition-all duration-300" :class="[{ 'shadow-md': !expanded }, disabled ? 'opacity-60' : '']">
     <div
-      class="group bg-lesslight p-4 rounded-t-xl cursor-pointer relative hover:opacity-90"
+      class="group bg-lesslight p-4 rounded-t-xl cursor-pointer relative hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-bright focus:z-10"
       @click="toggleExpand"
+      @keydown.enter.prevent="toggleExpand"
+      @keydown.space.prevent="toggleExpand"
+      tabindex="0"
+      role="button"
+      :aria-expanded="expanded"
     >
       <div
         v-if="num_passengers > 1"
@@ -91,7 +96,7 @@
       <div class="absolute bottom-4 right-4">
         <button
           v-if="reservation_id"
-          class="text-dark hover:text-bright border-none bg-transparent cursor-pointer p-0 z-10 mr-2"
+          class="text-dark hover:text-bright border-none bg-transparent cursor-pointer p-0 z-10 mr-2 focus:outline-none focus:text-bright"
           @click.stop="$emit('showDetails', reservation_id)"
           title="View reservation details"
         >
@@ -101,7 +106,7 @@
 
         <button 
           v-if="reservation_id"
-          class="text-dark hover:text-bright border-none bg-transparent cursor-pointer p-0 z-10"
+          class="text-dark hover:text-bright border-none bg-transparent cursor-pointer p-0 z-10 focus:outline-none focus:text-bright"
           @click.stop="$emit('delete', reservation_id)"
           title="Delete reservation"
         >

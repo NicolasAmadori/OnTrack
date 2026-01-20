@@ -43,10 +43,16 @@
                   :class="bathroom.isOccupied ? 'text-red' : 'text-green'">
                 </i>
                 <i 
-                  @click="toggleNotification(selectedNode.train._id, index)"
-                  class="bi text-2xl cursor-pointer text-dark hover:text-bright"
+                  @click="bathroom.isOccupied && toggleNotification(selectedNode.train._id, index)"
+                  @keydown.enter.prevent="bathroom.isOccupied && toggleNotification(selectedNode.train._id, index)"
+                  @keydown.space.prevent="bathroom.isOccupied && toggleNotification(selectedNode.train._id, index)"
+                  :tabindex="bathroom.isOccupied ? 0 : -1"
+                  role="button"
+                  aria-label="Toggle notification"
+                  :aria-disabled="!bathroom.isOccupied"
+                  class="bi text-2xl focus:outline-none focus:ring-2 focus:ring-bright rounded transition-colors"
                   :class="[
-                    { 'text-disabled pointer-events-none': !bathroom.isOccupied },
+                    !bathroom.isOccupied ? 'text-disabled pointer-events-none' : 'cursor-pointer text-dark hover:text-bright',
                     selectedNode.train.bathrooms[index].queue.length > 0 ? 'bi-bell-fill' : 'bi-bell'
                   ]">
                 </i>
