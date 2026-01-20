@@ -53,6 +53,9 @@ import { createReservation } from "@/api/reservations.js";
 import { createErrors } from "@/api/util.js";
 import { emitEvent, offEvent, onEvent } from "@/router/useSocket.js";
 import { localAuthToken, localId } from "@/util/auth.js";
+import { lockOrRenewSeats } from "@/api/seats.js";
+
+const REFRESH_INTERVAL = 3_000;
 
 const route = useRoute();
 const router = useRouter();
@@ -60,6 +63,8 @@ const isSubmitting = ref(false);
 const solution = ref(null);
 const passengersData = ref([]);
 const occupiedSeats = ref({});
+let refreshIntervalId = null;
+const dynamicallySelectedSeats = ref(null);
 
 const routeSubtitle = computed(() => {
   if (!solution.value) return "";
@@ -70,6 +75,8 @@ const trainSeats = computed(() => {
   if (!solution.value) return [];
   const trains = solution.value.nodes.map(n => ({
     code: n.train.code,
+    departureTime: n.departure_time,
+    arrivalTime: n.arrival_time,
     occupied: []
   }));
 
@@ -113,13 +120,43 @@ const solutionNodes = computed(() => {
 });
 
 onMounted(async () => {
-  const count = Number(history.state.passengers);
-  const user = await getUser(localAuthToken.value, localId.value);
-
   solution.value = await getSolution(localAuthToken.value, route.params.solutionId);
   occupiedSeats.value = await getSolutionOccupiedSeats(localAuthToken.value, solution.value.solution_id);
 
+  dynamicallySelectedSeats.value = solution.value.nodes.map(n => ({
+    trainCode: n.train.code,
+    departureTime: n.departure_time,
+    arrivalTime: n.arrival_time,
+    occupied: []
+  }));
+  await initializePassengersData();
+
+  if (solution.value) {
+    solution.value.nodes.forEach(n => {
+      emitEvent("join_room", "train_" + n.train.code);
+    });
+    onEvent('seat_selected', handledRedisSeatUpdate);
+  }
+
+  refreshIntervalId = window.setInterval(async () => {
+    await lockOrRenewSeats(localAuthToken.value, getLocallySelectedSeats());
+  }, REFRESH_INTERVAL);
+});
+
+onUnmounted(() => {
+  if (solution.value) {
+    solution.value.nodes.forEach(n => {
+      emitEvent("leave_room", "train_" + n.train.code);
+    });
+    offEvent('seat_selected', handledRedisSeatUpdate);
+  }
+  if (refreshIntervalId) clearInterval(refreshIntervalId);
+});
+
+const initializePassengersData = async () => {
+  const count = Number(history.state.passengers);
   if (count && count > 0) {
+    const user = await getUser(localAuthToken.value, localId.value);
     const defaultSeats = () => new Map(solution.value.nodes.map(n => [n.train.code, null]));
 
     passengersData.value = [
@@ -135,51 +172,57 @@ onMounted(async () => {
       }))
     ];
   } else {
-    router.back();
+    router.push("/home");
   }
+}
 
-  if (solution.value) {
-    solution.value.nodes.forEach(n => {
-      emitEvent("join_room", n.train.code);
-    });
-    onEvent('seat_update', handledRedisSeatUpdate);
-  }
-});
-
-onUnmounted(() => {
-  if (solution.value) {
-    solution.value.nodes.forEach(n => {
-      emitEvent("leave_room", n.train.code);
-    });
-    offEvent('seat_update', handledRedisSeatUpdate);
-  }
-});
-
-const handleLocalSeatUpdate = (index, newSeats) => {
+const handleLocalSeatUpdate = async (index, newSeats) => {
   passengersData.value[index].seats = newSeats;
+  await lockOrRenewSeats(localAuthToken.value, getLocallySelectedSeats());
+};
 
-  const trains = solution.value.nodes.map(n => ({
-    code: n.train.code,
-    occupied: []
+const getLocallySelectedSeats = () => {
+  const bookingGroups = solution.value.nodes.map(n => ({
+    trainCode: n.train.code,
+    departureTime: n.departure_time,
+    arrivalTime: n.arrival_time,
+    seats: []
   }));
 
-  trains.forEach(train => {
+  bookingGroups.forEach(group => {
     const occupiedInThisTrain = [];
 
     passengersData.value.forEach(p => {
-      const selectedSeat = p.seats.get(train.code);
+      const selectedSeat = p.seats.get(group.trainCode);
       if (selectedSeat) {
         occupiedInThisTrain.push(selectedSeat);
       }
     });
 
-    train.occupied = occupiedInThisTrain;
+    group.seats = occupiedInThisTrain;
   });
-  emitEvent("seat_update", trains);
-};
+
+  return bookingGroups;
+}
 
 const handledRedisSeatUpdate = (data) => {
-  console.log(data);
+  dynamicallySelectedSeats.value.forEach(t => {
+    if (data.trainCode === t.trainCode) {
+      const nodeDepTime = new Date(t.departureTime).getTime();
+      const nodeArrTime = new Date(t.arrivalTime).getTime();
+      const trainDepTime = new Date(data.departureTime).getTime();
+      const trainArrTime = new Date(data.arrivalTime).getTime();
+      if (trainDepTime < nodeArrTime && trainArrTime > nodeDepTime) {
+        if (data.status === "locked") {
+          t.occupied.push(data.seat);
+          console.log("aggiunto: " + data.trainCode + " : " + data.seat);
+        } else {
+          t.occupied.delete(data.seat);
+          console.log("rimosso: " + data.trainCode + " : " + data.seat);
+        }
+      }
+    }
+  });
 };
 
 const handleReserve = async () => {

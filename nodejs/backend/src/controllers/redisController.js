@@ -1,4 +1,5 @@
 import getRedisClient from '#src/util/redisClient.js';
+import {io} from "../../app.js";
 
 export const getSelectedSeats = async function(req, res) {
     const solutionId = req.params.solutionId;
@@ -25,62 +26,82 @@ export const getSelectedSeats = async function(req, res) {
 };
 
 export const createOrRenewLock = async function(req, res) {
-    const EXPIRATION_TIME = 1000;
-    const solutionId = req.params.solutionId;
-    const { nodeId, seat } = req.body;
+    const EXPIRATION_TIME = 5_000;
     const userId = req.user && req.user.id;
+    const { bookingGroups } = req.body;
 
-    const lockKey = `lock:${solutionId}:${nodeId}:${seat}`;
-    try {
-        const redis = await getRedisClient();
+    if (!bookingGroups || !Array.isArray(bookingGroups)) {
+        return res.status(400).json({ success: false, message: "Invalid format" });
+    }
 
-        const result = await redis.set(lockKey, userId, {
-            NX: true,
-            PX: EXPIRATION_TIME
-        });
+    const redis = await getRedisClient();
 
-        if (result === 'OK') {
-            return res.status(200).json({ success: true });
-        }
+    const luaScript = `
+        local currentOwner = redis.call("get", KEYS[1])
 
-        // Caso in cui il lock esiste già, controllo chi è il proprietario
-        const currentValue = await redis.get(lockKey);
-        if (currentValue === userId) {
-            const success = await redis.pExpire(lockKey, EXPIRATION_TIME);
-            if (success === 1) {
-                return res.status(200).json({ success: true });
-            } else {
-                return res.status(404).json({ success: false, errors: [{ message: "Lock not found during renewal" }]});
+        if not currentOwner then
+            redis.call("set", KEYS[1], ARGV[1], "PX", ARGV[2])
+            return "LOCKED"
+        elseif currentOwner == ARGV[1] then
+            redis.call("pexpire", KEYS[1], ARGV[2])
+            return "RENEWED"
+        else
+            return "BUSY"
+        end
+    `;
+
+    const operations = bookingGroups.flatMap((group) => {
+        if (!group.seats || !Array.isArray(group.seats)) return [];
+
+        return group.seats.map(async (seatNum) => {
+            const lockKey = `lock:${group.trainCode}:${group.departureTime}:${group.arrivalTime}:${seatNum}`;
+
+            try {
+                const result = await redis.eval(luaScript, {
+                    keys: [lockKey],
+                    arguments: [userId, String(EXPIRATION_TIME)]
+                });
+
+                if (result === 'LOCKED') {
+                    io.to(`train_${group.trainCode}`).emit('seat_selected', {
+                        trainCode: group.trainCode,
+                        departureTime: group.departureTime,
+                        arrivalTime: group.arrivalTime,
+                        seat: seatNum,
+                        status: "locked"
+                    });
+                    console.log("NEW LOCK: " + lockKey);
+                    return { seat: seatNum, success: true, status: 'locked' };
+
+                } else if (result === 'RENEWED') {
+                    console.log("RENEWED: " + lockKey);
+                    return { seat: seatNum, success: true, status: 'renewed' };
+
+                } else {
+                    return { seat: seatNum, success: false, error: "Seat is already locked by another user" };
+                }
+
+            } catch (err) {
+                console.error(`Redis error for seat ${seatNum}:`, err);
+                return { seat: seatNum, success: false, error: err.message };
             }
-        } else {
-            return res.status(423).json({ success: false, errors: [{ message: "Seat is already locked by another user" }]});
-        }
-    } catch (err) {
-        return res.status(500).json({ success: false, errors: [{ message: err.message }]});
+        });
+    });
+
+    const results = await Promise.all(operations);
+
+    const failedSeats = results.filter(r => !r.success);
+
+    if (failedSeats.length > 0) {
+        return res.status(423).json({
+            success: false,
+            message: "Some seats could not be locked",
+            failedSeats: failedSeats
+        });
     }
-};
 
-export const deleteLock = async function(req, res) {
-    const { solutionId, nodeId, seat } = req.params;
-    const userId = req.user && req.user.id;
-
-    const lockKey = `lock:${solutionId}:${nodeId}:${seat}`;
-
-    try {
-        const redis = await getRedisClient();
-
-        const currentValue = await redis.get(lockKey);
-        if (!currentValue) {
-            return res.status(404).json({ success: false, errors: [{ message: "Lock not found" }]});
-        }
-
-        if (currentValue !== userId) {
-            return res.status(403).json({ success: false, errors: [{ message: "You do not own this lock" }]});
-        }
-
-        await redis.del(lockKey);
-        return res.status(200).json({ success: true });
-    } catch (err) {
-        return res.status(500).json({ success: false, errors: [{ message: err.message }]});
-    }
+    return res.status(200).json({
+        success: true,
+        results: results
+    });
 };

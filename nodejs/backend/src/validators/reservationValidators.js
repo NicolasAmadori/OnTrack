@@ -1,35 +1,32 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { validate } from '#src/middleware/validationResult.js';
 
-export const createLockValidator = [
-    body('nodeId')
-        .isString().withMessage('nodeId must be a string')
-        .trim()
-        .notEmpty().withMessage('Node ID cannot be empty'),
+export const createOrRenewLockValidator = [
+    body('bookingGroups')
+        .isArray()
+        .withMessage('Seats must be an array of booking groups'),
 
-    body('seat')
-        .isString().withMessage('seat must be a string')
-        .trim()
-        .notEmpty().withMessage('Seat cannot be empty'),
+    body('bookingGroups.*.trainCode')
+        .isString().notEmpty()
+        .withMessage('Train code is required and must be a string'),
 
-    validate
-];
+    body('bookingGroups.*.departureTime')
+        .isString().notEmpty()
+        .withMessage('Departure time is required'),
 
-export const deleteLockValidator = [
-    param('solutionId')
-        .isString().withMessage('solutionId must be a string')
-        .trim()
-        .notEmpty().withMessage('Solution ID is required'),
+    body('bookingGroups.*.arrivalTime')
+        .isString().notEmpty()
+        .withMessage('Arrival time is required'),
 
-    param('nodeId')
-        .isString().withMessage('nodeId must be a string')
-        .trim()
-        .notEmpty().withMessage('Node ID is required'),
+    body('bookingGroups.*.seats')
+        .isArray()
+        .withMessage('Each group must contain a list of seats'),
 
-    param('seat')
-        .isString().withMessage('seat must be a string')
+    body('bookingGroups.*.seats.*')
+        .isString()
         .trim()
-        .notEmpty().withMessage('Seat is required'),
+        .notEmpty()
+        .withMessage('Seat ID must be a valid string'),
 
     validate
 ];
