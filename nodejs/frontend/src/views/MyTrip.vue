@@ -37,14 +37,20 @@
             <img src="@/assets/images/train.svg" class="lg:h-16 mx-auto"/>
 
             <div class="flex justify-between w-full px-4">
-              <i 
-                class="bi bi-badge-wc-fill text-6xl" 
-                :class="selectedNode.train.bathrooms[0]?.isOccupied ? 'text-red' : 'text-green'">
-              </i>
-              <i 
-                class="bi bi-badge-wc-fill text-6xl" 
-                :class="selectedNode.train.bathrooms[1]?.isOccupied ? 'text-red' : 'text-green'">
-              </i>
+                <div v-for="(bathroom, index) in selectedNode.train.bathrooms.slice(0, 2)" :key="index" class="flex flex-col items-center">
+                <i 
+                  class="bi bi-badge-wc-fill text-6xl" 
+                  :class="bathroom.isOccupied ? 'text-red' : 'text-green'">
+                </i>
+                <i 
+                  @click="toggleNotification(selectedNode.train._id, index)"
+                  class="bi text-2xl cursor-pointer text-dark hover:text-bright"
+                  :class="[
+                    { 'text-disabled pointer-events-none': !bathroom.isOccupied },
+                    selectedNode.train.bathrooms[index].queue.length > 0 ? 'bi-bell-fill' : 'bi-bell'
+                  ]">
+                </i>
+                </div>
             </div>
             
           </div>
@@ -58,7 +64,6 @@
         :seats="passenger.seats.filter(s => s.node._id === selectedNode._id)"
         :class="index > 0 ? 'border-t-2 border-white border-dashed' : ''"
       />
-     
     </div>
   </div>
   <div v-else class="text-center text-disabled mt-10">
@@ -72,6 +77,7 @@ import BaseSelect from "@/components/BaseSelect.vue";
 import NodeTicket from "@/components/NodeTicket.vue";
 import { computed, onMounted, ref } from 'vue';
 import { createErrors } from '@/api/util.js';
+import { toggle_user_to_bathroom_queue } from "@/api/trains";
 import { getActiveReservations } from '@/api/reservations.js';
 import { getDelayClass, formatDuration, getTimeDifference } from "@/util/dateTime.js";
 
@@ -79,10 +85,10 @@ const activeNodes = ref([]);
 const selectedNode = ref(null);
 const passengers = computed(() => {
   if (!data || !data.passengers || !selectedNode.value) return [];
+  console.log(selectedNode.value);
   return data.passengers.filter(p => p.seats.some(s => s.node._id.toString() === selectedNode.value._id.toString()));
 });
 let data = null;
-
 
 const fetchActiveNodes = async () => {
   try {
@@ -94,6 +100,20 @@ const fetchActiveNodes = async () => {
   } catch (error) {
     createErrors(['Error fetching active nodes: ' + error.message]);
   }
+};
+
+const toggleNotification = async (trainId, bathroomIndex) => {
+  try {
+    const train = selectedNode.value.train;
+    if (train.bathrooms[bathroomIndex].queue.includes(localStorage.getItem('id'))) {
+      train.bathrooms[bathroomIndex].queue = train.bathrooms[bathroomIndex].queue.filter(userId => userId !== localStorage.getItem('id'));
+    } else {
+      train.bathrooms[bathroomIndex].queue.push(localStorage.getItem('id'));
+    } 
+    return await toggle_user_to_bathroom_queue(localStorage.getItem('authToken'), trainId, bathroomIndex, localStorage.getItem('id'));
+  } catch (error) {
+    createErrors(['Error updating bathroom status: ' + error.message]);
+  }  
 };
 
 onMounted(fetchActiveNodes);

@@ -1,10 +1,11 @@
 import Train from '#src/models/trainModel.js';
+import User from '#src/models/userModel.js';
 
 export const get_trains = async function(req, res) {
     try {
         const dateParam = req.query.date || new Date().toISOString();
         const searchQuery = req.query.search || '';
-        
+
         const dateObj = new Date(dateParam);
         dateObj.setUTCHours(0, 0, 0, 0);
 
@@ -87,6 +88,14 @@ export const update_train = async function(req, res) {
         }
         if (train.bathrooms) {
             updatedTrain.bathrooms = train.bathrooms;
+            updatedTrain.bathrooms.forEach((bathroom, index) => {
+                if (!bathroom.isOccupied) {
+                    bathroom.queue.forEach((userId) => {
+                        console.log(`Notifying user ${userId} that bathroom ${index} is now available.`);
+                    });
+                    bathroom.queue = [];
+                }
+            });
         }
 
         if (Object.keys(updatedTrain).length !== 0) {
@@ -110,3 +119,48 @@ export const update_train = async function(req, res) {
         }] });
     }
 }
+
+export const toggle_user_to_bathroom_queue = async function(req, res) {
+    try {
+        const trainId = req.params.trainId;
+        const bathroomIndex = parseInt(req.params.bathroomIndex);
+        const userId = req.params.userId;
+
+        const train = await Train.findById(trainId);
+        if (!train) {
+            return res.status(404).json({ success: false, errors: [{ message: "Train not found" }] });
+        }
+        const bathroom = train.bathrooms[bathroomIndex];
+        if (!bathroom) {
+            return res.status(404).json({ success: false, errors: [{ message: "Bathroom not found" }] });
+        }
+        if (!bathroom.isOccupied) {
+            return res.status(400).json({ success: false, errors: [{ message: "Cannot queue a bathroom that is not occupied" }] });
+        }
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, errors: [{ message: "User not found" }] });
+        }
+        const userIndex = bathroom.queue.indexOf(userId);
+        if (userIndex === -1) {
+            bathroom.queue.push(userId);
+        } else {
+            bathroom.queue.splice(userIndex, 1);
+        }
+
+        await train.save();
+
+        return res.status(200).json({
+            success: true,
+            message: `User ${userIndex === -1 ? 'added to' : 'removed from'} bathroom queue successfully`
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            errors: [{
+                message: err.message
+            }]
+        });
+    }
+}
+

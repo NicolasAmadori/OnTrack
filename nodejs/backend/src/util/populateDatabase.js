@@ -92,8 +92,12 @@ const trains = [
         name: "3940",
         acronym: "FR",
         denomination: "Frecciarossa",
-        date: new Date("2026-01-18"),
-        delay: 67
+        date: new Date("2026-01-20"),
+        delay: 67,
+        bathrooms: [
+            { isOccupied: true, queue: [] },
+            { isOccupied: false, queue: [] }
+        ]
     },
     {
         _id: "69667b56b0b90d2b71e06992",
@@ -102,8 +106,12 @@ const trains = [
         name: "3942",
         acronym: "FR",
         denomination: "Frecciarossa",
-        date: new Date("2026-01-18"),
-        delay: 15
+        date: new Date("2026-01-20"),
+        delay: 15,
+        bathrooms: [
+            { isOccupied: false, queue: [] },
+            { isOccupied: true, queue: [] }
+        ]
     },
     {
         _id: "69667b56b0b90d2b71e06993",
@@ -112,7 +120,7 @@ const trains = [
         name: "9400",
         acronym: "FR",
         denomination: "Frecciarossa",
-        date: new Date("2026-01-18"),
+        date: new Date("2026-01-20"),
         delay: 5
     }
 ]
@@ -122,8 +130,8 @@ const solutions = [
         solution_id: "SOL001",
         origin: "Roma",
         destination: "Milano",
-        departure_time: new Date("2026-01-18T08:00:00Z"),
-        arrival_time: new Date("2026-01-18T11:00:00Z"),
+        departure_time: new Date("2026-01-20T08:00:00Z"),
+        arrival_time: new Date("2026-01-20T11:00:00Z"),
         duration: "3h",
         status: "Confirmed",
         price_currency: "€",
@@ -133,16 +141,16 @@ const solutions = [
                 _id: "69667b56b0b90d2b71e07991",
                 origin: "Roma",
                 destination: "Bologna Centrale",
-                departure_time: new Date("2026-01-18T08:00:00Z"),
-                arrival_time: new Date("2026-01-18T09:30:00Z"),
+                departure_time: new Date("2026-01-20T08:00:00Z"),
+                arrival_time: new Date("2026-01-20T09:30:00Z"),
                 train: "69667b56b0b90d2b71e06991"
             },
             {
                 _id: "69667b56b0b90d2b71e07992",
                 origin: "Bologna Centrale",
                 destination: "Milano",
-                departure_time: new Date("2026-01-18T09:45:00Z"),
-                arrival_time: new Date("2026-01-18T11:00:00Z"),
+                departure_time: new Date("2026-01-20T09:45:00Z"),
+                arrival_time: new Date("2026-01-20T11:00:00Z"),
                 train: "69667b56b0b90d2b71e06992",
             }
         ]
@@ -151,8 +159,8 @@ const solutions = [
         solution_id: "SOL002",
         origin: "Napoli",
         destination: "Roma",
-        departure_time: new Date("2026-01-18T09:30:00Z"),
-        arrival_time: new Date("2026-01-18T12:00:00Z"),
+        departure_time: new Date("2026-01-20T09:30:00Z"),
+        arrival_time: new Date("2026-01-20T12:00:00Z"),
         duration: "2h 30m",
         status: "Pending",
         price_currency: "€",
@@ -162,8 +170,8 @@ const solutions = [
                 _id: "69667b56b0b90d2b71e07993",
                 origin: "Napoli",
                 destination: "Roma",
-                departure_time: new Date("2026-01-18T09:30:00Z"),
-                arrival_time: new Date("2026-01-18T12:00:00Z"),
+                departure_time: new Date("2026-01-20T09:30:00Z"),
+                arrival_time: new Date("2026-01-20T12:00:00Z"),
                 train: "69667b56b0b90d2b71e06993",
             }
         ]

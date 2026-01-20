@@ -10,10 +10,13 @@ var TrainSchema = new Schema({
     date: { type: Date, required: true },
     delay: { type: Number, default: 0 },
     cancelled: { type: Boolean, default: false },
-    bathrooms: [{
-        isOccupied: { type: Boolean, default: false },
-        queue: { type: [String], default: [] }
-    }]
+    bathrooms: {
+        type: [{
+            isOccupied: { type: Boolean, default: false },
+            queue: { type: [String], default: [] }
+        }],
+        default: [{ isOccupied: false, queue: [] }, { isOccupied: false, queue: [] }]
+    }
 });
 
 export default mongoose.model('Train', TrainSchema);
