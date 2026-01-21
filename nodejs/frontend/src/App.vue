@@ -40,7 +40,6 @@ watch(
 );
 
 onEvent('notification', (message) => {
-  console.log('Received notification:', message);
   notifications.value.push({ id: Date.now(), text: message });
 });
 </script>
