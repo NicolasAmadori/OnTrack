@@ -55,7 +55,7 @@ const submitForm = async () => {
 
   try {
     await login(form.email, form.password);
-    router.push({ path: '/home' });
+    await router.push({ path: '/home' });
   } catch (error) {
     createErrors([error.message]);
   } finally {

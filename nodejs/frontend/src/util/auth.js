@@ -13,7 +13,7 @@ export async function logout() {
     localId.value = null;
     localIsAdmin.value = null;
 
-    router.push('/login');
+    await router.push('/login');
 }
 
 export const localAuthToken = useStorage('authToken', null);
