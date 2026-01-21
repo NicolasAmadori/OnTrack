@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+:root {
+  --dark: #123441;
+  --darker: #0D2832;
+  --lessdark: #134D57;
+  --bright: #F9744D;
+  --light: #E2D8D0;
+  --white: #EFEFEF;
+  --black: #07151B;
+  --disabled: #C2C2C2;
+  --red: #c01c1f;
+  --lesslight: #CEC4BC;
+  --gray: #878787;
+  --lighter: #EAE5E1;
+  --lessbright: #c75735;
+  --brighter: #fc9272;
+  --lightgray: #CFCFCF;
+
+  --orange: #e99210;
+  --yellow: #dbc605;
+  --green: #257727;
+  --cyan: #96dbdd;
+}
+
+@theme {
+  /* Colors */
+  --color-dark: var(--dark);
+  --color-darker: var(--darker);
+  --color-lessdark: var(--lessdark);
+  --color-bright: var(--bright);
+  --color-lessbright: var(--lessbright);
+  --color-brighter: var(--brighter);
+  --color-light: var(--light);
+  --color-lighter: var(--lighter);
+  --color-lesslight: var(--lesslight);
+  --color-white: var(--white);
+  --color-black: var(--black);
+  --color-disabled: var(--disabled);
+  --color-red: var(--red);
+  --color-gray: var(--gray);
+  --color-lightgray: var(--lightgray);
+  --color-orange: var(--orange);
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-cyan: var(--cyan);
+
+  /* Fonts */
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+
+@layer base {
+  * {
+    @apply font-mono font-normal;
+  }
+
+  body {
+    background-color: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.bright {
+  color: var(--bright);
+}
+
+.dark {
+  color: var(--dark);
+}
