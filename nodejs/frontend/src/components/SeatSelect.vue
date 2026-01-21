@@ -111,6 +111,10 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  initialSelection: {
+    type: Map,
+    default: () => new Map()
+  }
 });
 
 const emit = defineEmits(['select', 'click-empty']);
@@ -120,12 +124,16 @@ const currentTrainIndex = ref(0);
 const selectContainer = ref(null);
 const seatSelectionMap = ref(new Map());
 
-watch(() => props.trains, (newTrains) => {
+watch([() => props.trains, () => props.initialSelection], ([newTrains, newSelection]) => {
   const newMap = new Map();
+
   if (newTrains && newTrains.length > 0) {
     newTrains.forEach(train => {
-      const existingSelection = seatSelectionMap.value.get(train.code);
-      newMap.set(train.code, existingSelection !== undefined ? existingSelection : null);
+      let selected = seatSelectionMap.value.get(train.code);
+      if (!selected && newSelection && newSelection.get(train.code)) {
+        selected = newSelection.get(train.code);
+      }
+      newMap.set(train.code, selected || null);
     });
   }
   seatSelectionMap.value = newMap;

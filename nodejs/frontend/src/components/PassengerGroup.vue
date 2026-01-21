@@ -15,6 +15,7 @@
   />
   <SeatSelect
       :trains="trains"
+      :initial-selection="selectedSeats"
       @select="handleSelection"
   />
 </template>

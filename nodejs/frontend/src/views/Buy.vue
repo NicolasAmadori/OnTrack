@@ -154,24 +154,58 @@ const initializePassengersData = async () => {
   const count = Number(history.state.passengers);
   if (count && count > 0) {
     const user = await getUser(localAuthToken.value, localId.value);
-    const defaultSeats = () => new Map(solution.value.nodes.map(n => [n.train.code, null]));
 
-    passengersData.value = [
+    const tempPassengers = [
       {
         firstName: user.first_name,
         lastName: user.last_name,
-        seats: defaultSeats()
+        seats: new Map()
       },
       ...Array.from({ length: count - 1 }, () => ({
         firstName: '',
         lastName: '',
-        seats: defaultSeats()
+        seats: new Map()
       }))
     ];
+
+    const allSeats = getAllSeats();
+
+    solution.value.nodes.forEach(node => {
+      const trainCode = node.train.code;
+      const dbOccupied = bookedSeats.value[trainCode] || [];
+      const currentSessionAllocated = new Set();
+
+      tempPassengers.forEach(passenger => {
+        const availableSeats = allSeats.filter(s =>
+            !dbOccupied.includes(s) && !currentSessionAllocated.has(s)
+        );
+
+        if (availableSeats.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableSeats.length);
+          const selectedSeat = availableSeats[randomIndex];
+          passenger.seats.set(trainCode, selectedSeat);
+          currentSessionAllocated.add(selectedSeat);
+        } else {
+          passenger.seats.set(trainCode, null);
+        }
+      });
+    });
+
+    passengersData.value = tempPassengers;
+    emitEvent('lock_seats', { bookingGroups: getLocallySelectedSeats() });
   } else {
     await router.push("/home");
   }
 }
+
+const getAllSeats = () => {
+  const seats = [];
+  const cols = ['A', 'B', 'C', 'D'];
+  for (let r = 1; r <= 30; r++) {
+    cols.forEach(c => seats.push(`${c}${r}`));
+  }
+  return seats;
+};
 
 const handleLocalSeatUpdate = async (index, newSeats) => {
   passengersData.value[index].seats = newSeats;

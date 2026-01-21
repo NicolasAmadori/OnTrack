@@ -136,7 +136,7 @@ const props = defineProps({
   num_passengers: { type: Number, default: 1 },
   reservation_id: { type: String }
 });
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['delete', 'showDetails']);
 
 const expanded = ref(false);
 const cancelled = computed(() => props.nodes.some(node => node.train.cancelled));
