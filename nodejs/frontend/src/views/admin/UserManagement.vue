@@ -32,7 +32,7 @@
           />
         </div>
 
-        <div v-else class="text-center py-10 w-full bg-lighter rounded-lg border border-lesslight border-dashed">
+        <div v-else class="text-center py-10 w-full rounded-lg">
           <p class="font-mono text-lessdark mb-0">No users found matching your search.</p>
         </div>
 
