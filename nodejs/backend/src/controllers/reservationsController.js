@@ -47,6 +47,8 @@ export const get_user_reservations = async function(req, res) {
             r.passengers.forEach(p => p.seats.forEach(s => s.node = allNodes.find(n => n._id.toString() === s.node._id.toString())));
         });
 
+        resSol.sort((a, b) => new Date(b.departure_time) - new Date(a.departure_time));
+
         return res.status(200).json({
             success: true,
             count: reservations.length,
