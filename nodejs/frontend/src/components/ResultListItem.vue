@@ -39,7 +39,7 @@
     </router-link>
 
     <div class="flex items-center px-2 md:px-3 w-25 md:w-50 justify-center" :style="divStyle">
-      <h1 class="font-bold text-[20px] md:text-[25px]" :style="priceStyle">{{ price }}</h1>
+      <h3 class="font-bold text-[20px] md:text-[25px]" :style="priceStyle">{{ price }}</h3>
     </div>
   </div>
 </template>

@@ -3,13 +3,9 @@
     class="mb-2"
     :class="cancelled ? 'opacity-50' : ''"
     left-class="gap-3"
-    clickable
   >
     <template #left>
-      <router-link
-          :to="`/admin/on-board/${code}`"
-          class="flex flex-1 items-center min-w-0 h-full gap-3"
-        >
+      <div class="flex flex-1 items-center min-w-0 h-full gap-3">
         <span
           class="truncate font-mono text-lg text-black font-bold"
           :class="cancelled ? 'line-through' : ''"
@@ -21,7 +17,7 @@
           alt="Logo"
           class="h-3 lg:h-4 w-auto object-contain"
         />
-      </router-link>
+      </div>
     </template>
 
     <template #right>
@@ -31,11 +27,11 @@
         :title="cancelled ? 'Restore Train' : 'Cancel Train'"
       >
         <i
-          class="text-2xl transition-colors hover:text-red"
+          class="text-2xl transition-colors"
           :class="
             cancelled
-              ? 'bi bi-x-circle-fill text-red hover:text-dark'
-              : 'bi bi-x-circle text-dark'
+              ? 'bi bi-arrow-clockwise text-dark hover:text-green'
+              : 'bi bi-x-circle-fill text-dark hover:text-red'
           "
         ></i>
       </button>
@@ -46,7 +42,6 @@
 <script setup>
 import { getTrainLogo } from '@/util/trainLogos';
 import BaseListItem from '@/components/BaseListItem.vue';
-import router from '../router';
 
 defineProps({
   code: {

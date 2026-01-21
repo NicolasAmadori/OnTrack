@@ -8,7 +8,8 @@
           @input="$emit('update:modelValue', $event.target.value)"
           @keyup.enter="$emit('search')"
           class="flex-1 bg-transparent text-black px-5 text-[1.1rem] outline-none min-w-0 font-mono font-light placeholder:font-mono placeholder:font-light placeholder:text-lessdark placeholder:transition-opacity placeholder:duration-200 focus:placeholder:opacity-0"
-          placeholder="Cerca..."
+          placeholder="Search..."
+          aria-label="Search"
           v-bind="inputAttrs"
       />
       <button

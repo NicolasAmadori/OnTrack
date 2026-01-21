@@ -9,8 +9,8 @@
         
         <div v-if="train">
             <div class="relative z-10 flex flex-col items-center w-full">
-                <h1 class="text-bright font-bold text-[4rem] md:text-[6rem] lg:text-[10rem] leading-none mb-30 sm:ml-20 md:ml-0 ml-50"
-                    :class="train.cancelled ? 'line-through text-gray' : ''">{{ trainCode }}</h1>
+                <h2 class="text-bright font-bold text-[4rem] md:text-[6rem] lg:text-[10rem] leading-none mb-30 sm:ml-20 md:ml-0 ml-50"
+                    :class="train.cancelled ? 'line-through text-gray' : ''">{{ trainCode }}</h2>
                 <div v-if="train.cancelled" class="bg-red text-white text-center font-bold py-1 text-2xl w-full">
                     TRAIN CANCELLED
                 </div>
@@ -18,6 +18,7 @@
                     <div class="flex items-center gap-4 mb-12" :class="getDelayClass(train.delay)">
                         <i class="bi bi-clock-fill text-5xl lg:text-8xl md:text-6xl"></i>
                         <input 
+                            aria-label="Train delay in minutes"
                             type="number" 
                             v-model="train.delay" 
                             @change="updateDelay" 
@@ -33,11 +34,21 @@
                         <img :src="trainSvg" class="h-16 md:h-32 lg:h-48 mx-auto" alt="Train Diagram" />
                         <div class="flex justify-between w-full px-12">
                         <i 
+                            role="button"
+                            tabindex="0"
+                            aria-label="Toggle bathroom 1"
+                            @keydown.enter="toggleBathroom(0)"
+                            @keydown.space="toggleBathroom(0)"
                             class="bi bi-badge-wc-fill text-8xl lg:text-9xl transition-colors duration-300 cursor-pointer hover:scale-110" 
                             :class="train.bathrooms[0]?.isOccupied ? 'text-red' : 'text-green'"
                             @click="toggleBathroom(0)">
                         </i>
                         <i 
+                            role="button"
+                            tabindex="0"
+                            aria-label="Toggle bathroom 2"
+                            @keydown.enter="toggleBathroom(1)"
+                            @keydown.space="toggleBathroom(1)"
                             class="bi bi-badge-wc-fill text-8xl lg:text-9xl transition-colors duration-300 cursor-pointer hover:scale-110" 
                             :class="train.bathrooms[1]?.isOccupied ? 'text-red' : 'text-green'"
                             @click="toggleBathroom(1)">
