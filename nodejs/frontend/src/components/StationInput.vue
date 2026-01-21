@@ -39,7 +39,7 @@
 
       <div
           v-if="invalid"
-          class="absolute bottom-full left-0 mb-1 ml-1 text-red text-sm font-medium"
+          class="absolute bottom-full left-0 mb-1 ml-1 text-white text-sm font-medium bg-red rounded-t-2xl px-2"
       >
         Select a valid station from the list.
       </div>
