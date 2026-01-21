@@ -4,7 +4,7 @@
       <div v-if="activePage === 'login'" class="text-bright font-bold">
         Login
       </div>
-      <a v-else href="/login" class="text-black hover:text-lessbright transition-colors duration-200">
+      <a v-else href="/login" class="text-black underline hover:text-lessbright transition-colors duration-200">
         Login
       </a>
     </div>
@@ -13,7 +13,7 @@
       <div v-if="activePage === 'signup'" class="text-bright font-bold">
         Sign Up
       </div>
-      <a v-else href="/signup" class="text-black hover:text-lessbright transition-colors duration-200">
+      <a v-else href="/signup" class="text-black underline hover:text-lessbright transition-colors duration-200">
         Sign Up
       </a>
     </div>
