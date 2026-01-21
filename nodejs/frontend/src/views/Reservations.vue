@@ -1,7 +1,7 @@
 <template>
     <BaseBanner title="Reservations" imageType="tickets"/>
     <div class="max-w-4xl mx-auto p-4">
-        <div v-if="reservations.length === 0" class="text-center text-disabled mt-10">
+        <div v-if="reservations.length === 0" class="text-center text-lessdark mt-10">
         You have no reservations yet.
         </div>
         <div v-else class="space-y-6">

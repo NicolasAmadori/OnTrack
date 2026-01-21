@@ -1,7 +1,7 @@
 <template>
   <BaseBanner title="Reservation Management" imageType="tickets" :subtitle="displaySubtitle" admin goBackIcon/>
     <div class="max-w-4xl mx-auto p-4">
-      <div v-if="reservations.length === 0" class="text-center text-disabled mt-10">
+      <div v-if="reservations.length === 0" class="text-center text-lessdark mt-10">
         User has no reservations yet.
       </div>
       <div v-else class="space-y-6">

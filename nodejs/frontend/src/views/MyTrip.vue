@@ -72,7 +72,7 @@
       />
     </div>
   </div>
-  <div v-else class="text-center text-disabled mt-10">
+  <div v-else class="text-center text-lessdark mt-10">
     You have no active trips.
   </div>
 </template>
