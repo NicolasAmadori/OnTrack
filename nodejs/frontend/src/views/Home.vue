@@ -47,6 +47,7 @@
     variant="primary"
     class="mt-4"
     @click="handleSearch"
+    :disabled="!areStationsSelected"
   >
     Search Trains
   </BaseButton>
@@ -87,6 +88,12 @@ const formattedDate = computed(() => {
   });
 });
 
+const areStationsSelected = computed( () => {
+  const hasLocations = !!fromLocation.value && !!toLocation.value;
+  const locationsAreDifferent = fromLocation.value !== toLocation.value;
+  return hasLocations && locationsAreDifferent;
+});
+
 const swapLocations = () => {
   const tempId = fromLocation.value;
   fromLocation.value = toLocation.value;
@@ -105,8 +112,8 @@ const handleDateSelect = () => {
 };
 
 const handleSearch = async () => {
-  if (!fromLocation.value || !toLocation.value) {
-    createErrors(["Please select both stations"]);
+  if (!areStationsSelected.value) {
+    createErrors(["Please select both stations (they must be different)"]);
     return;
   }
   await router.push({
