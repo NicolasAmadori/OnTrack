@@ -12,7 +12,12 @@ const connectWithRetry = (retries = 5, delay = 3000) => {
         .then(async () => {
             console.log('MongoDB Connected');
 
-            await populateDatabase();
+            if (process.env.SEED_DATABASE === "true") {
+                console.log("Started database population.");
+                await populateDatabase();
+                console.log("Completed database population.");
+            }
+
 
             app.listen(PORT, () => {
                 console.log('Node API server started on port ' + PORT + '!');
