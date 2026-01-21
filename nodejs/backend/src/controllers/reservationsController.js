@@ -81,10 +81,9 @@ export const get_active_reservations_nodes = async function(req, res) {
 
         const activeNodes = allReservations
             .flatMap(r => r.nodes)
-            // TODO: uncomment
-            // .filter(n => !n.train.cancelled && 
-            //     new Date(n.departure_time).getTime() < cetNow &&
-            //     new Date(n.arrival_time).getTime() > cetNow);
+            .filter(n => !n.train.cancelled && 
+                new Date(n.departure_time).getTime() < cetNow &&
+                new Date(n.arrival_time).getTime() > cetNow);
 
         const activeNodeIds = activeNodes.map(n => n._id.toString());
         const passengers = allReservations
