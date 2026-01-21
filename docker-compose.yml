@@ -50,7 +50,6 @@ services:
     networks:
       - inner
 
-  #TODO: Remove after developing is complete
   mongoexpress:
     image: mongo-express
     environment:
