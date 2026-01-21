@@ -6,6 +6,7 @@
 
       <div class="flex items-center gap-2">
         <button
+            v-if="route.meta.showSidebar"
             @click.stop="sidebar.toggleSidebar"
             class="bg-transparent border-0 cursor-pointer transition-transform duration-200 hover:scale-110 md:hidden flex items-center"
             title="Open menu"
@@ -44,10 +45,11 @@
 
 <script setup>
 import { computed, inject } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const sidebar = inject('sidebarControl');
 const router = useRouter();
+const route = useRoute();
 
 const props = defineProps({
   title: { type: String, default: 'OnTrack' },
