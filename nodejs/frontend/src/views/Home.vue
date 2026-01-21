@@ -38,7 +38,7 @@
   <BaseSelect
     iconName="bi-people-fill"
     :text="numPassengers + ' Passenger' + (numPassengers > 1 ? 's' : '')"
-    :options="[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+    :options="[1, 2, 3, 4, 5, 6, 7]"
     v-model="numPassengers"
     @select="numPassengers = $event"
     class="mt-3 mx-2"
