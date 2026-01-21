@@ -76,11 +76,9 @@ networks:
     driver: bridge
     internal: true
     driver_opts:
-      com.docker.network.bridge.name: "br-inner89012"
       com.docker.network.enable_ipv6: "false"
   outer:
     driver: bridge
     internal: false
     driver_opts:
-      com.docker.network.bridge.name: "br-outer89012"
       com.docker.network.enable_ipv6: "false"
