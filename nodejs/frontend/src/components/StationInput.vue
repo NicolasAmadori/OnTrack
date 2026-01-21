@@ -14,6 +14,7 @@
           aria-controls="suggestions-list"
           :aria-expanded="isOpen"
           aria-haspopup="listbox"
+          aria-label="Search station"
           placeholder="Search station"
           class="h-15 w-full bg-lighter text-black text-lg py-4 px-3 border-none outline-none placeholder:text-lessdark placeholder:transition-opacity placeholder:duration-200 focus:placeholder:opacity-0 rounded-xl transition-all"
           :class="{ 'ring-2 ring-red': invalid, 'focus:bg-white': !invalid }"

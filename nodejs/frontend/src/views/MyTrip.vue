@@ -34,7 +34,7 @@
   
           <div class="flex flex-col w-fit">
             
-            <img src="@/assets/images/train.svg" class="lg:h-16 mx-auto"/>
+            <img src="@/assets/images/train.svg" class="lg:h-16 mx-auto" alt="Train layout"/>
 
             <div class="flex justify-between w-full px-4">
                 <div v-for="(bathroom, index) in selectedNode.train.bathrooms.slice(0, 2)" :key="index" class="flex flex-col items-center">

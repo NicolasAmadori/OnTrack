@@ -13,6 +13,7 @@
           v-if="type === 'password'"
           type="button"
           @click="togglePassword"
+          aria-label="Toggle password visibility"
           class="absolute inset-y-0 right-0 flex items-center pr-3 text-lessdark hover:text-black cursor-pointer bg-transparent border-none outline-none"
       >
         <i :class="isPasswordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" class="text-xl"></i>
