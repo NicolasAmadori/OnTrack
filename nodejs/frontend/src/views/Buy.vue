@@ -202,7 +202,7 @@ const getLocallySelectedSeats = () => {
   return bookingGroups;
 }
 
-const handledRedisSeatUpdate = (data) => {
+const handledRedisSeatUpdate = async (data) => {
   dynamicallySelectedSeats.value.forEach(t => {
     if (data.trainCode === t.trainCode) {
       const nodeDepTime = new Date(t.departureTime).getTime();
@@ -218,6 +218,7 @@ const handledRedisSeatUpdate = (data) => {
       }
     }
   });
+  bookedSeats.value = await getSolutionOccupiedSeats(localAuthToken.value, solution.value.solution_id);
 };
 
 const handleReserve = async () => {
