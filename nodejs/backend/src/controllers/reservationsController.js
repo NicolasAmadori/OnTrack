@@ -19,12 +19,11 @@ export const joinReservationsWithSolutions = async (reservations, userId) => {
 
         const { _id: solutionDbId, ...solutionData } = solTrain || {};
 
-        const combined = { 
-            ...rObj, 
+        return {
+            ...rObj,
             ...solutionData,
             solution_id: solutionDbId
         };
-        return combined;
     }));
 };
 
@@ -107,7 +106,6 @@ export const get_active_reservations_nodes = async function(req, res) {
         });
     }
 }
-
 
 export const delete_reservation = async function(req, res) {
     try {
