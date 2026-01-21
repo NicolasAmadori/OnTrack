@@ -93,7 +93,6 @@ const activeNodes = ref([]);
 const selectedNode = ref(null);
 const passengers = computed(() => {
   if (!data || !data.passengers || !selectedNode.value) return [];
-  console.log(selectedNode.value);
   return data.passengers.filter(p => p.seats.some(s => s.node._id.toString() === selectedNode.value._id.toString()));
 });
 let data = null;

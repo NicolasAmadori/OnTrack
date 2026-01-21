@@ -105,7 +105,6 @@ export default httpServer;
 export function sendNotificationToUser(targetUserId, ev='notification', message) {
   const socketIds = onlineUsers.get(targetUserId);
   if (socketIds) {
-    console.log(`Sending event ${ev} with message ${message} to user ${targetUserId} on sockets:`, socketIds);
     socketIds.forEach(socketId => io.to(socketId).emit(ev, message));
   }
 }
