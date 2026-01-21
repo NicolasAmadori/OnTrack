@@ -50,7 +50,7 @@ import PassengerGroup from '@/components/PassengerGroup.vue';
 import ReservationCard from '@/components/ReservationCard.vue';
 import { getUser } from "@/api/users.js";
 import { createReservation } from "@/api/reservations.js";
-import { createErrors } from "@/api/util.js";
+import {createErrors, successMessage} from "@/api/util.js";
 import { emitEvent, offEvent, onEvent } from "@/router/useSocket.js";
 import { localAuthToken, localId } from "@/util/auth.js";
 
@@ -169,7 +169,7 @@ const initializePassengersData = async () => {
       }))
     ];
   } else {
-    router.push("/home");
+    await router.push("/home");
   }
 }
 
@@ -241,7 +241,8 @@ const handleReserve = async () => {
     };
 
     await createReservation(localAuthToken.value, localId.value, reservationBody);
-    router.push('/reservations');
+    await router.push('/reservations');
+    successMessage.value = "Reservation completed successfully";
   } catch (error) {
     createErrors([error.message]);
   } finally {

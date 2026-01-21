@@ -104,12 +104,12 @@ const handleDateSelect = () => {
     showDatePopup.value = true;
 };
 
-const handleSearch = () => {
+const handleSearch = async () => {
   if (!fromLocation.value || !toLocation.value) {
     createErrors(["Please select both stations"]);
     return;
   }
-  router.push({
+  await router.push({
     name: 'Results',
     query: {
       from: fromLocation.value,

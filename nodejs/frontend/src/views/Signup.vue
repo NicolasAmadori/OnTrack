@@ -37,23 +37,23 @@ const form = reactive({
 const isSubmitting = ref(false);
 
 const submitForm = async () => {
+  if ( form.password !== form.confirm_password ) {
+    createErrors(['Passwords do not match']);
+    return;
+  }
+
   isSubmitting.value = true;
 
   try {
-    if ( form.password !== form.confirm_password ) {
-      createErrors(['Passwords do not match']);
-      return;
-    }
-
     await register(form.email, form.first_name, form.last_name, form.password, form.confirm_password);
     await login(form.email, form.password);
-    router.push({ path: '/home' });
+    await router.push({ path: '/home' });
 
   } catch (error) {
     createErrors([error.message]);
-  } finally {
     form.password = '';
     form.confirm_password = '';
+  } finally {
     isSubmitting.value = false;
   }
 }
