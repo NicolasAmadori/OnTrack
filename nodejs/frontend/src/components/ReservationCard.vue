@@ -100,7 +100,7 @@
           @click.stop="$emit('showDetails', reservation_id)"
           title="View reservation details"
         >
-          <i class="bi bi-info-circle-fill text-2xl"></i>
+          <i class="bi bi-ticket-detailed text-2xl"></i>
         </button>
 
 
