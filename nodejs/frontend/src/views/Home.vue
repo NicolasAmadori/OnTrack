@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <BaseBanner title="OnTrack" imageType="station">
+  <BaseBanner title="Home" imageType="station">
     <div class="relative w-full p-2 bg-transparent z-1000">
       <StationInput
           ref="fromInputComponent"
